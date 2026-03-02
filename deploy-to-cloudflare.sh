@@ -2,7 +2,7 @@
 
 # ==============================================================================
 # DEPLOY TO CLOUDFLARE PAGES
-# Deploy the enhanced CaixaPreta Stack installation guide
+# Deploy the enhanced Infra Caixa Preta v2 installation guide
 # ==============================================================================
 
 set -e
@@ -14,7 +14,7 @@ CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo -e "${CYAN}🚀 DEPLOYING CAIXAPRETA STACK INSTALLATION GUIDE${NC}"
+echo -e "${CYAN}🚀 DEPLOYING INFRA CAIXA PRETA v2 INSTALLATION GUIDE${NC}"
 echo "=================================================="
 echo
 
