@@ -1072,7 +1072,7 @@ services:
         max_attempts: 5
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(\`portainer.DOMAIN_PLACEHOLDER\`)"
+        - "traefik.http.routers.portainer.rule=Host(\\`portainer.DOMAIN_PLACEHOLDER\\`)"
         - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
@@ -1425,7 +1425,7 @@ services:
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.n8n.rule=Host(\`n8n.$domain\`)"
+        - "traefik.http.routers.n8n.rule=Host(\\`n8n.$domain\\`)"
         - "traefik.http.routers.n8n.entrypoints=websecure"
         - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
         - "traefik.http.services.n8n.loadbalancer.server.port=5678"
@@ -1508,7 +1508,7 @@ EOF
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.evolution.rule=Host(\`evolution.$domain\`)"
+        - "traefik.http.routers.evolution.rule=Host(\\`evolution.$domain\\`)"
         - "traefik.http.routers.evolution.entrypoints=websecure"
         - "traefik.http.routers.evolution.tls.certresolver=letsencrypt"
         - "traefik.http.services.evolution.loadbalancer.server.port=8080"
@@ -1586,7 +1586,7 @@ services:
           memory: 512M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.mega.rule=Host(\`mega.$domain\`)"
+        - "traefik.http.routers.mega.rule=Host(\\`mega.$domain\\`)"
         - "traefik.http.routers.mega.entrypoints=websecure"
         - "traefik.http.routers.mega.tls.certresolver=letsencrypt"
         - "traefik.http.services.mega.loadbalancer.server.port=3000"
@@ -1654,13 +1654,13 @@ EOF
       labels:
         - "traefik.enable=true"
         # S3 API endpoint
-        - "traefik.http.routers.minio-api.rule=Host(\`s3.$domain\`)"
+        - "traefik.http.routers.minio-api.rule=Host(\\`s3.$domain\\`)"
         - "traefik.http.routers.minio-api.entrypoints=websecure"
         - "traefik.http.routers.minio-api.tls.certresolver=letsencrypt"
         - "traefik.http.routers.minio-api.service=minio-api"
         - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
         # Console endpoint
-        - "traefik.http.routers.minio-console.rule=Host(\`minio.$domain\`)"
+        - "traefik.http.routers.minio-console.rule=Host(\\`minio.$domain\\`)"
         - "traefik.http.routers.minio-console.entrypoints=websecure"
         - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
         - "traefik.http.routers.minio-console.service=minio-console"
@@ -1701,7 +1701,7 @@ EOF
           memory: 128M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.grafana.rule=Host(\`grafana.$domain\`)"
+        - "traefik.http.routers.grafana.rule=Host(\\`grafana.$domain\\`)"
         - "traefik.http.routers.grafana.entrypoints=websecure"
         - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
