@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infra Caixa Preta v2 - Installation Protocol</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
         
@@ -721,6 +723,234 @@
             margin-top: 20px;
         }
         
+        /* Script Selection Grid */
+        .script-selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .script-option {
+            background: linear-gradient(135deg, #111 0%, #1a1a2e 100%);
+            border: 2px solid rgba(0, 153, 255, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .script-option.enhanced {
+            border-color: rgba(0, 255, 136, 0.4);
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a2e1a 100%);
+        }
+        
+        .script-option:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 8px 30px rgba(0, 153, 255, 0.2),
+                0 0 40px rgba(0, 153, 255, 0.1);
+            border-color: rgba(0, 153, 255, 0.6);
+        }
+        
+        .script-option.enhanced:hover {
+            box-shadow: 
+                0 8px 30px rgba(0, 255, 136, 0.2),
+                0 0 40px rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.7);
+        }
+        
+        .script-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .script-icon {
+            width: 32px;
+            height: 32px;
+            color: #0099ff;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .script-option.enhanced .script-icon {
+            color: #00ff88;
+        }
+        
+        .script-info {
+            flex: 1;
+        }
+        
+        .script-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0099ff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(0, 153, 255, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .script-option.enhanced .script-name {
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .script-desc {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+        }
+        
+        .enhanced-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+        }
+        
+        .script-features {
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: #aaa;
+        }
+        
+        .feature-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            color: #0099ff;
+            flex-shrink: 0;
+        }
+        
+        .script-option.enhanced .feature-icon {
+            color: #00ff88;
+        }
+        
+        .script-commands {
+            margin-top: 15px;
+        }
+        
+        .script-commands .command-block {
+            margin-bottom: 10px;
+            font-size: 11px;
+        }
+        
+        /* Troubleshooting Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .tool-category {
+            background: linear-gradient(135deg, #111 0%, #1a1a2e 100%);
+            border: 1px solid rgba(0, 153, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-category:hover {
+            border-color: rgba(0, 153, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 153, 255, 0.1);
+        }
+        
+        .tool-category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .tool-category-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            color: #0099ff;
+        }
+        
+        .tool-category-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0099ff;
+            text-shadow: 0 0 5px rgba(0, 153, 255, 0.3);
+        }
+        
+        .tool-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 153, 255, 0.1);
+        }
+        
+        .tool-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .tool-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            color: #0099ff;
+        }
+        
+        .tool-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0099ff;
+        }
+        
+        .tool-description {
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .tool-commands .command-block {
+            font-size: 10px;
+            margin-bottom: 5px;
+            padding: 8px 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .script-selection-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .script-option {
+                padding: 20px;
+            }
+        }
+        
         .service-card {
             background: linear-gradient(135deg, #111 0%, #1a1a2e 100%);
             border: 1px solid #0099ff;
@@ -897,24 +1127,94 @@
                             <div class="dot yellow"></div>
                             <div class="dot green"></div>
                         </div>
-                        <div class="terminal-title">download_protocol.sh</div>
+                        <div class="terminal-title">deployment_scripts.sh</div>
                     </div>
                     <div class="terminal-body">
                         <div class="step">
                             <div class="step-header">
                                 <div class="step-number">2</div>
-                                <div class="step-title">DOWNLOAD & EXECUTE DEPLOYMENT</div>
+                                <div class="step-title">CHOOSE DEPLOYMENT METHOD</div>
                             </div>
                             <div class="step-description">
-                                Fetch and run the automated deployment script
+                                Select your preferred deployment script based on your requirements
                             </div>
-                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
-                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
-                                <div class="copy-indicator">click to copy</div>
-                            </div>
-                            <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh')">
-                                <div class="command-text">chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh</div>
-                                <div class="copy-indicator">click to copy</div>
+                            
+                            <!-- Script Selection Grid -->
+                            <div class="script-selection-grid">
+                                <!-- Standard Script -->
+                                <div class="script-option">
+                                    <div class="script-header">
+                                        <i data-lucide="zap" class="script-icon"></i>
+                                        <div class="script-info">
+                                            <div class="script-name">STANDARD DEPLOYMENT</div>
+                                            <div class="script-desc">Quick and reliable deployment</div>
+                                        </div>
+                                    </div>
+                                    <div class="script-features">
+                                        <div class="feature-item">
+                                            <i data-lucide="check-circle" class="feature-icon"></i>
+                                            <span>Fast deployment</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="shield" class="feature-icon"></i>
+                                            <span>Stable & tested</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="users" class="feature-icon"></i>
+                                            <span>Recommended for most users</span>
+                                        </div>
+                                    </div>
+                                    <div class="script-commands">
+                                        <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
+                                            <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
+                                            <div class="copy-indicator">click to copy</div>
+                                        </div>
+                                        <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh')">
+                                            <div class="command-text">chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh</div>
+                                            <div class="copy-indicator">click to copy</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Enhanced Script -->
+                                <div class="script-option enhanced">
+                                    <div class="script-header">
+                                        <i data-lucide="rocket" class="script-icon"></i>
+                                        <div class="script-info">
+                                            <div class="script-name">ENHANCED DEPLOYMENT</div>
+                                            <div class="script-desc">Advanced features & monitoring</div>
+                                        </div>
+                                        <div class="enhanced-badge">ENHANCED</div>
+                                    </div>
+                                    <div class="script-features">
+                                        <div class="feature-item">
+                                            <i data-lucide="activity" class="feature-icon"></i>
+                                            <span>Advanced monitoring</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="settings" class="feature-icon"></i>
+                                            <span>Enhanced error handling</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="cpu" class="feature-icon"></i>
+                                            <span>Resource optimization</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="shield-check" class="feature-icon"></i>
+                                            <span>Comprehensive validation</span>
+                                        </div>
+                                    </div>
+                                    <div class="script-commands">
+                                        <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack-enhanced.sh')">
+                                            <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack-enhanced.sh</div>
+                                            <div class="copy-indicator">click to copy</div>
+                                        </div>
+                                        <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack-enhanced.sh && sudo ./caixapreta-stack-enhanced.sh')">
+                                            <div class="command-text">chmod +x caixapreta-stack-enhanced.sh && sudo ./caixapreta-stack-enhanced.sh</div>
+                                            <div class="copy-indicator">click to copy</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -983,25 +1283,252 @@
                             <div class="dot yellow"></div>
                             <div class="dot green"></div>
                         </div>
-                        <div class="terminal-title">troubleshooting_tools.sh</div>
+                        <div class="terminal-title">troubleshooting_arsenal.sh</div>
                     </div>
                     <div class="terminal-body">
                         <div class="step">
                             <div class="step-header">
                                 <div class="step-number">4</div>
-                                <div class="step-title">TROUBLESHOOTING UTILITIES</div>
+                                <div class="step-title">TROUBLESHOOTING ARSENAL</div>
                             </div>
                             <div class="step-description">
-                                Additional tools for diagnostics and system recovery
+                                Comprehensive diagnostic and repair tools organized by category
                             </div>
                             
-                            <div style="margin: 15px 0;">
-                                <div style="color: #0099ff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔍 VALIDATION SCRIPT:</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh</div>
-                                    <div class="copy-indicator">click to copy</div>
+                            <div class="tools-grid">
+                                <!-- Validation & General Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="check-circle" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">VALIDATION & GENERAL</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="search" class="tool-icon"></i>
+                                            <div class="tool-name">SYSTEM VALIDATION</div>
+                                        </div>
+                                        <div class="tool-description">Comprehensive system health check and validation</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x validate-installation.sh && sudo ./validate-installation.sh')">
+                                                <div class="command-text">chmod +x validate-installation.sh && sudo ./validate-installation.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="network" class="tool-icon"></i>
+                                            <div class="tool-name">NETWORK CONFLICT FIX</div>
+                                        </div>
+                                        <div class="tool-description">Resolve "network with name already exists" errors</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-network-conflict.sh && sudo ./fix-network-conflict.sh')">
+                                                <div class="command-text">chmod +x fix-network-conflict.sh && sudo ./fix-network-conflict.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x validate-installation.sh && sudo ./validate-installation.sh')">
+                                
+                                <!-- Database Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="database" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">DATABASE TOOLS</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">POSTGRESQL DIAGNOSTIC</div>
+                                        </div>
+                                        <div class="tool-description">Comprehensive PostgreSQL deployment analysis</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh')">
+                                                <div class="command-text">chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">POSTGRESQL FIX</div>
+                                        </div>
+                                        <div class="tool-description">Quick fix for PostgreSQL service stalling issues</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">REDIS DIAGNOSTIC</div>
+                                        </div>
+                                        <div class="tool-description">Comprehensive Redis deployment analysis</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-redis.sh && sudo ./diagnose-redis.sh')">
+                                                <div class="command-text">chmod +x diagnose-redis.sh && sudo ./diagnose-redis.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">REDIS DEPLOYMENT FIX</div>
+                                        </div>
+                                        <div class="tool-description">Fix Redis services deployment and connectivity</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-redis-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-redis-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-redis-deployment.sh && sudo ./fix-redis-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-redis-deployment.sh && sudo ./fix-redis-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Proxy & SSL Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="shield" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">PROXY & SSL</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">TRAEFIK DIAGNOSTIC</div>
+                                        </div>
+                                        <div class="tool-description">Comprehensive Traefik deployment analysis</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh')">
+                                                <div class="command-text">chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">TRAEFIK DEPLOYMENT FIX</div>
+                                        </div>
+                                        <div class="tool-description">Fix Traefik service failures (0/1 replicas)</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="globe" class="tool-icon"></i>
+                                            <div class="tool-name">SSL & DNS DIAGNOSTICS</div>
+                                        </div>
+                                        <div class="tool-description">SSL certificate and DNS configuration analysis</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh')">
+                                                <div class="command-text">chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Emergency Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="alert-triangle" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">EMERGENCY TOOLS</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="message-circle" class="tool-icon"></i>
+                                            <div class="tool-name">MEGA (CHATWOOT) FIX</div>
+                                        </div>
+                                        <div class="tool-description">Repair Chatwoot service deployment issues</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-mega.sh && sudo ./fix-mega.sh')">
+                                                <div class="command-text">chmod +x fix-mega.sh && sudo ./fix-mega.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="skull" class="tool-icon"></i>
+                                            <div class="tool-name">COMPLETE VPS WIPE</div>
+                                        </div>
+                                        <div class="tool-description">⚠️ DANGER: Complete VPS destruction and cleanup</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/wipe-vps.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/wipe-vps.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x wipe-vps.sh && sudo ./wipe-vps.sh')">
+                                                <div class="command-text">chmod +x wipe-vps.sh && sudo ./wipe-vps.sh</div>
+                                                <div class="copy-indicator">click to copy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>and(this, 'chmod +x validate-installation.sh && sudo ./validate-installation.sh')">
                                     <div class="command-text">chmod +x validate-installation.sh && sudo ./validate-installation.sh</div>
                                     <div class="copy-indicator">click to copy</div>
                                 </div>
@@ -1188,24 +1715,94 @@
                             <div class="dot yellow"></div>
                             <div class="dot green"></div>
                         </div>
-                        <div class="terminal-title">download_protocolo.sh</div>
+                        <div class="terminal-title">scripts_implantacao.sh</div>
                     </div>
                     <div class="terminal-body">
                         <div class="step">
                             <div class="step-header">
                                 <div class="step-number">2</div>
-                                <div class="step-title">BAIXAR E EXECUTAR IMPLANTAÇÃO</div>
+                                <div class="step-title">ESCOLHER MÉTODO DE IMPLANTAÇÃO</div>
                             </div>
                             <div class="step-description">
-                                Baixe e execute o script de implantação automatizada
+                                Selecione seu script de implantação preferido baseado em seus requisitos
                             </div>
-                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
-                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
-                                <div class="copy-indicator">clique para copiar</div>
-                            </div>
-                            <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh')">
-                                <div class="command-text">chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh</div>
-                                <div class="copy-indicator">clique para copiar</div>
+                            
+                            <!-- Script Selection Grid -->
+                            <div class="script-selection-grid">
+                                <!-- Standard Script -->
+                                <div class="script-option">
+                                    <div class="script-header">
+                                        <i data-lucide="zap" class="script-icon"></i>
+                                        <div class="script-info">
+                                            <div class="script-name">IMPLANTAÇÃO PADRÃO</div>
+                                            <div class="script-desc">Implantação rápida e confiável</div>
+                                        </div>
+                                    </div>
+                                    <div class="script-features">
+                                        <div class="feature-item">
+                                            <i data-lucide="check-circle" class="feature-icon"></i>
+                                            <span>Implantação rápida</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="shield" class="feature-icon"></i>
+                                            <span>Estável e testado</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="users" class="feature-icon"></i>
+                                            <span>Recomendado para maioria dos usuários</span>
+                                        </div>
+                                    </div>
+                                    <div class="script-commands">
+                                        <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
+                                            <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
+                                            <div class="copy-indicator">clique para copiar</div>
+                                        </div>
+                                        <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh')">
+                                            <div class="command-text">chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh</div>
+                                            <div class="copy-indicator">clique para copiar</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Enhanced Script -->
+                                <div class="script-option enhanced">
+                                    <div class="script-header">
+                                        <i data-lucide="rocket" class="script-icon"></i>
+                                        <div class="script-info">
+                                            <div class="script-name">IMPLANTAÇÃO AVANÇADA</div>
+                                            <div class="script-desc">Recursos avançados e monitoramento</div>
+                                        </div>
+                                        <div class="enhanced-badge">AVANÇADO</div>
+                                    </div>
+                                    <div class="script-features">
+                                        <div class="feature-item">
+                                            <i data-lucide="activity" class="feature-icon"></i>
+                                            <span>Monitoramento avançado</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="settings" class="feature-icon"></i>
+                                            <span>Tratamento de erros aprimorado</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="cpu" class="feature-icon"></i>
+                                            <span>Otimização de recursos</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i data-lucide="shield-check" class="feature-icon"></i>
+                                            <span>Validação abrangente</span>
+                                        </div>
+                                    </div>
+                                    <div class="script-commands">
+                                        <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack-enhanced.sh')">
+                                            <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack-enhanced.sh</div>
+                                            <div class="copy-indicator">clique para copiar</div>
+                                        </div>
+                                        <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack-enhanced.sh && sudo ./caixapreta-stack-enhanced.sh')">
+                                            <div class="command-text">chmod +x caixapreta-stack-enhanced.sh && sudo ./caixapreta-stack-enhanced.sh</div>
+                                            <div class="copy-indicator">clique para copiar</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1274,97 +1871,252 @@
                             <div class="dot yellow"></div>
                             <div class="dot green"></div>
                         </div>
-                        <div class="terminal-title">ferramentas_diagnostico.sh</div>
+                        <div class="terminal-title">arsenal_diagnostico.sh</div>
                     </div>
                     <div class="terminal-body">
                         <div class="step">
                             <div class="step-header">
                                 <div class="step-number">4</div>
-                                <div class="step-title">UTILITÁRIOS DE DIAGNÓSTICO</div>
+                                <div class="step-title">ARSENAL DE DIAGNÓSTICO</div>
                             </div>
                             <div class="step-description">
-                                Ferramentas adicionais para diagnóstico e recuperação do sistema
+                                Ferramentas abrangentes de diagnóstico e reparo organizadas por categoria
                             </div>
                             
-                            <div style="margin: 15px 0;">
-                                <div style="color: #0099ff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔍 SCRIPT DE VALIDAÇÃO:</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
+                            <div class="tools-grid">
+                                <!-- Validation & General Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="check-circle" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">VALIDAÇÃO E GERAL</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="search" class="tool-icon"></i>
+                                            <div class="tool-name">VALIDAÇÃO DO SISTEMA</div>
+                                        </div>
+                                        <div class="tool-description">Verificação abrangente de saúde e validação do sistema</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x validate-installation.sh && sudo ./validate-installation.sh')">
+                                                <div class="command-text">chmod +x validate-installation.sh && sudo ./validate-installation.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="network" class="tool-icon"></i>
+                                            <div class="tool-name">CORREÇÃO CONFLITO DE REDE</div>
+                                        </div>
+                                        <div class="tool-description">Resolver erros "network with name already exists"</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-network-conflict.sh && sudo ./fix-network-conflict.sh')">
+                                                <div class="command-text">chmod +x fix-network-conflict.sh && sudo ./fix-network-conflict.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x validate-installation.sh && sudo ./validate-installation.sh')">
-                                    <div class="command-text">chmod +x validate-installation.sh && sudo ./validate-installation.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
+                                
+                                <!-- Database Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="database" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">FERRAMENTAS DE BANCO</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">DIAGNÓSTICO POSTGRESQL</div>
+                                        </div>
+                                        <div class="tool-description">Análise abrangente de implantação do PostgreSQL</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh')">
+                                                <div class="command-text">chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">CORREÇÃO POSTGRESQL</div>
+                                        </div>
+                                        <div class="tool-description">Correção rápida para problemas de travamento do PostgreSQL</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">DIAGNÓSTICO REDIS</div>
+                                        </div>
+                                        <div class="tool-description">Análise abrangente de implantação do Redis</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-redis.sh && sudo ./diagnose-redis.sh')">
+                                                <div class="command-text">chmod +x diagnose-redis.sh && sudo ./diagnose-redis.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">CORREÇÃO IMPLANTAÇÃO REDIS</div>
+                                        </div>
+                                        <div class="tool-description">Corrigir serviços Redis e problemas de conectividade</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-redis-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-redis-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-redis-deployment.sh && sudo ./fix-redis-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-redis-deployment.sh && sudo ./fix-redis-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Proxy & SSL Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="shield" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">PROXY E SSL</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="activity" class="tool-icon"></i>
+                                            <div class="tool-name">DIAGNÓSTICO TRAEFIK</div>
+                                        </div>
+                                        <div class="tool-description">Análise abrangente de implantação do Traefik</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh')">
+                                                <div class="command-text">chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="wrench" class="tool-icon"></i>
+                                            <div class="tool-name">CORREÇÃO IMPLANTAÇÃO TRAEFIK</div>
+                                        </div>
+                                        <div class="tool-description">Corrigir falhas do serviço Traefik (0/1 réplicas)</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh')">
+                                                <div class="command-text">chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="globe" class="tool-icon"></i>
+                                            <div class="tool-name">DIAGNÓSTICO SSL E DNS</div>
+                                        </div>
+                                        <div class="tool-description">Análise de certificado SSL e configuração DNS</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh')">
+                                                <div class="command-text">chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Emergency Tools -->
+                                <div class="tool-category">
+                                    <div class="tool-category-header">
+                                        <i data-lucide="alert-triangle" class="tool-category-icon"></i>
+                                        <div class="tool-category-title">FERRAMENTAS DE EMERGÊNCIA</div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="message-circle" class="tool-icon"></i>
+                                            <div class="tool-name">CORREÇÃO DO MEGA (CHATWOOT)</div>
+                                        </div>
+                                        <div class="tool-description">Reparar problemas de implantação do serviço Chatwoot</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-mega.sh && sudo ./fix-mega.sh')">
+                                                <div class="command-text">chmod +x fix-mega.sh && sudo ./fix-mega.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tool-item">
+                                        <div class="tool-header">
+                                            <i data-lucide="skull" class="tool-icon"></i>
+                                            <div class="tool-name">LIMPEZA COMPLETA DO VPS</div>
+                                        </div>
+                                        <div class="tool-description">⚠️ PERIGO: Destruição completa e limpeza do VPS</div>
+                                        <div class="tool-commands">
+                                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/wipe-vps.sh')">
+                                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/wipe-vps.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                            <div class="command-block" onclick="copyCommand(this, 'chmod +x wipe-vps.sh && sudo ./wipe-vps.sh')">
+                                                <div class="command-text">chmod +x wipe-vps.sh && sudo ./wipe-vps.sh</div>
+                                                <div class="copy-indicator">clique para copiar</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #0099ff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🗄️ CORREÇÃO POSTGRESQL:</div>
-                                <div style="color: #888; font-size: 11px; margin-bottom: 8px;">⚡ Correção rápida para problemas de travamento do PostgreSQL</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh')">
-                                    <div class="command-text">chmod +x fix-postgres-deployment.sh && sudo ./fix-postgres-deployment.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #00aaff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔍 FERRAMENTA DIAGNÓSTICO POSTGRESQL:</div>
-                                <div style="color: #888; font-size: 11px; margin-bottom: 8px;">📊 Análise abrangente para problemas de implantação do PostgreSQL</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh')">
-                                    <div class="command-text">chmod +x diagnose-postgres.sh && sudo ./diagnose-postgres.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #00ccff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔧 CORREÇÃO TRAEFIK:</div>
-                                <div style="color: #888; font-size: 11px; margin-bottom: 8px;">⚡ Correção rápida para falhas do serviço Traefik (0/1 réplicas)</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-traefik-deployment.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh')">
-                                    <div class="command-text">chmod +x fix-traefik-deployment.sh && sudo ./fix-traefik-deployment.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #0099ff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔍 FERRAMENTA DIAGNÓSTICO TRAEFIK:</div>
-                                <div style="color: #888; font-size: 11px; margin-bottom: 8px;">📊 Análise abrangente para problemas de implantação do Traefik</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-traefik.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh')">
-                                    <div class="command-text">chmod +x diagnose-traefik.sh && sudo ./diagnose-traefik.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #00aaff; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🌐 DIAGNÓSTICO SSL & DNS:</div>
-                                <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh')">
-                                    <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-ssl-dns.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                                <div class="command-block" onclick="copyCommand(this, 'chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh')">
-                                    <div class="command-text">chmod +x diagnose-ssl-dns.sh && sudo ./diagnose-ssl-dns.sh</div>
-                                    <div class="copy-indicator">clique para copiar</div>
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <div style="color: #ff6b35; font-size: 12px; margin-bottom: 8px; font-weight: 600;">🔧 CORREÇÃO CONFLITO DE REDE:</div>
-                                <div style="color: #888; font-size: 11px; margin-bottom: 8px;">⚡ Correção rápida para erros "network with name already exists"</div>
+                        </div>
+                    </div>
+                </div>h name already exists"</div>
                                 <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh')">
                                     <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-network-conflict.sh</div>
                                     <div class="copy-indicator">clique para copiar</div>
@@ -1527,6 +2279,9 @@
         
         // Enter key support for both language inputs
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
             document.getElementById('accessCode').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     authenticate();
