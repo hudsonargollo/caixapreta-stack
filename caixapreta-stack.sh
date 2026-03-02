@@ -277,11 +277,95 @@ msg() {
                 echo "Docker Swarm already active"
             fi
             ;;
-        "docker_security")
+        "docker_verifying")
             if [ "$LANG" = "pt" ]; then
-                echo "Configurando permissoes de seguranca do Docker..."
+                echo "Verificando instalacao do Docker..."
             else
-                echo "Configuring Docker security permissions..."
+                echo "Verifying Docker installation..."
+            fi
+            ;;
+        "docker_daemon_check")
+            if [ "$LANG" = "pt" ]; then
+                echo "Testando conexao com daemon do Docker..."
+            else
+                echo "Testing Docker daemon connection..."
+            fi
+            ;;
+        "docker_ready")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker esta pronto e respondendo"
+            else
+                echo "Docker is ready and responding"
+            fi
+            ;;
+        "swarm_failed")
+            if [ "$LANG" = "pt" ]; then
+                echo "Falha ao inicializar Docker Swarm"
+            else
+                echo "Failed to initialize Docker Swarm"
+            fi
+            ;;
+        "swarm_issues")
+            if [ "$LANG" = "pt" ]; then
+                echo "Isso pode ser devido a:"
+            else
+                echo "This could be due to:"
+            fi
+            ;;
+        "swarm_alternative")
+            if [ "$LANG" = "pt" ]; then
+                echo "Tentando inicializacao alternativa..."
+            else
+                echo "Attempting alternative initialization..."
+            fi
+            ;;
+        "swarm_default_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker Swarm inicializado com configuracoes padrao"
+            else
+                echo "Docker Swarm initialized with default settings"
+            fi
+            ;;
+        "swarm_complete_failure")
+            if [ "$LANG" = "pt" ]; then
+                echo "Falha completa na inicializacao do Docker Swarm"
+            else
+                echo "Docker Swarm initialization failed completely"
+            fi
+            ;;
+        "swarm_manual_fix")
+            if [ "$LANG" = "pt" ]; then
+                echo "Correcao manual: docker swarm init --advertise-addr SEU_IP_DO_SERVIDOR"
+            else
+                echo "Manual fix: docker swarm init --advertise-addr YOUR_SERVER_IP"
+            fi
+            ;;
+        "docker_waiting")
+            if [ "$LANG" = "pt" ]; then
+                echo "Aguardando inicializacao do Docker..."
+            else
+                echo "Waiting for Docker to initialize..."
+            fi
+            ;;
+        "docker_daemon_error")
+            if [ "$LANG" = "pt" ]; then
+                echo "Nao foi possivel conectar ao daemon do Docker"
+            else
+                echo "Cannot connect to Docker daemon"
+            fi
+            ;;
+        "docker_daemon_info")
+            if [ "$LANG" = "pt" ]; then
+                echo "Isso geralmente significa que o servico Docker nao esta rodando ou as permissoes do socket estao erradas"
+            else
+                echo "This usually means Docker service is not running or socket permissions are wrong"
+            fi
+            ;;
+        "docker_quick_fix")
+            if [ "$LANG" = "pt" ]; then
+                echo "Opcoes de correcao rapida:"
+            else
+                echo "Quick fix options:"
             fi
             ;;
         "security_applying")
@@ -296,6 +380,13 @@ msg() {
                 echo "Seguranca do Docker configurada"
             else
                 echo "Docker security configured"
+            fi
+            ;;
+        "docker_security")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando permissoes de seguranca do Docker..."
+            else
+                echo "Configuring Docker security permissions..."
             fi
             ;;
         "network_infra")
@@ -668,7 +759,7 @@ if ! command -v docker &> /dev/null; then
     systemctl enable docker >/dev/null 2>&1
     
     # Wait for Docker to be ready
-    print_info "Waiting for Docker to initialize..."
+    print_info "$(msg "docker_waiting")"
     sleep 5
     
 else
@@ -676,23 +767,24 @@ else
 fi
 
 # Verify Docker is working
-print_info "Verifying Docker installation..."
+print_info "$(msg "docker_verifying")"
 if ! docker --version >/dev/null 2>&1; then
     print_error "Docker command not found after installation"
     exit 1
 fi
 
 # Test Docker daemon connection
+print_info "$(msg "docker_daemon_check")"
 if ! docker info >/dev/null 2>&1; then
     print_warning "Docker daemon not responding, attempting to start..."
     systemctl start docker >/dev/null 2>&1
     sleep 5
     
     if ! docker info >/dev/null 2>&1; then
-        print_error "Cannot connect to Docker daemon"
-        print_info "This usually means Docker service is not running or socket permissions are wrong"
+        print_error "$(msg "docker_daemon_error")"
+        print_info "$(msg "docker_daemon_info")"
         echo
-        print_info "Quick fix options:"
+        print_info "$(msg "docker_quick_fix")"
         echo "1. Run the Docker fix script:"
         echo "   wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-docker.sh"
         echo "   chmod +x fix-docker.sh && sudo ./fix-docker.sh"
@@ -705,7 +797,7 @@ if ! docker info >/dev/null 2>&1; then
     fi
 fi
 
-print_success "Docker is ready and responding"
+print_success "$(msg "docker_ready")"
 
 # 4. Inicialização do Docker Swarm
 echo
@@ -722,20 +814,20 @@ if ! docker info | grep -q "Swarm: active"; then
     if docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1; then
         print_success "$(msg "swarm_success")"
     else
-        print_error "Failed to initialize Docker Swarm"
-        print_info "This could be due to:"
+        print_error "$(msg "swarm_failed")"
+        print_info "$(msg "swarm_issues")"
         print_info "  → Network connectivity issues"
         print_info "  → Firewall blocking Docker ports"
         print_info "  → IP address detection problems"
         echo
-        print_info "Attempting alternative initialization..."
+        print_info "$(msg "swarm_alternative")"
         
         # Try without specific IP
         if docker swarm init >/dev/null 2>&1; then
-            print_success "Docker Swarm initialized with default settings"
+            print_success "$(msg "swarm_default_success")"
         else
-            print_error "Docker Swarm initialization failed completely"
-            print_info "Manual fix: docker swarm init --advertise-addr YOUR_SERVER_IP"
+            print_error "$(msg "swarm_complete_failure")"
+            print_info "$(msg "swarm_manual_fix")"
             exit 1
         fi
     fi
