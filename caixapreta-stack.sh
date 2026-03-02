@@ -1265,11 +1265,11 @@ loading_animation 3 "Collecting service status information"
 docker service ls
 
 print_hacker "Identifying services with deployment issues..."
-FAILED_SERVICES=$(docker service ls --filter "desired-state=running" --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
+FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
 
 if [ "$FAILED_SERVICES" -gt 0 ]; then
     print_warning "Some services are still initializing:"
-    docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
 else
     print_success "All services are operational"
 fi
@@ -1347,11 +1347,11 @@ print_info "MEGA Fix Script: wget https://raw.githubusercontent.com/hudsonargoll
 print_info "Portainer Diagnostic: wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-portainer.sh"
 
 # Verificar se há serviços com problemas
-FAILED_SERVICES=$(docker service ls --filter "desired-state=running" --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
+FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
 if [ "$FAILED_SERVICES" -gt 0 ]; then
     echo
     print_error "⚠️  ATTENTION: Some services failed to start properly:"
-    docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
     echo
     print_warning "Execute troubleshooting commands above to investigate"
     print_warning "Wait 2-3 minutes and check again with: docker service ls"
