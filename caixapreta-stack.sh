@@ -987,55 +987,31 @@ deploy_traefik() {
     log_step "$(msg "deploying_traefik")"
     
     # Create Traefik configuration
-    cat <<EOF > /data/traefik/traefik.yml
-api:
-  dashboard: true
-  insecure: false
-
-entryPoints:
-  web:
-    address: :80
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-          permanent: true
-  websecure:
-    address: :443
-
-providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    swarmMode: true
-    exposedByDefault: false
-    network: traefik-public
-    watch: true
-
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: $email
-      storage: acme.json
-      httpChallenge:
-        entryPoint: web
-      caServer: https://acme-v02.api.letsencrypt.org/directory
-
-log:
-  level: INFO
-  format: common
-
-accessLog: {}
-EOF
+    # Create ACME file with proper permissions (no config file needed for v3.1)
+    touch /data/traefik/acme.json
+    chmod 600 /data/traefik/acme.json
 
     # Deploy Traefik with explicit host mode port binding
     cat <<EOF > /tmp/traefik-stack.yml
 version: '3.8'
 services:
   traefik:
-    image: traefik:v2.10
+    image: traefik:v3.1
     command:
-      - "--configfile=/etc/traefik/traefik.yml"
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.swarm=true"
+      - "--providers.swarm.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.email=$email"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--log.level=INFO"
     ports:
       - target: 80
         published: 80
@@ -1045,10 +1021,13 @@ services:
         published: 443
         protocol: tcp
         mode: host
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - /data/traefik/acme.json:/etc/traefik/acme.json
+      - /data/traefik:/data
     networks:
       - traefik-public
     deploy:
