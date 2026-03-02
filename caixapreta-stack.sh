@@ -50,6 +50,19 @@ log_step() {
     echo -e "${PURPLE}${BOLD}>>> ${NC}${PURPLE}$1${NC}"
 }
 
+# Progress indicator
+show_progress() {
+    local message="$1"
+    local duration="${2:-3}"
+    
+    echo -ne "${BLUE}${message}${NC}"
+    for i in $(seq 1 $duration); do
+        echo -ne "${BLUE}.${NC}"
+        sleep 1
+    done
+    echo -e " ${GREEN}✓${NC}"
+}
+
 # Enhanced error handling
 handle_error() {
     local exit_code=$?
@@ -120,6 +133,20 @@ verify_port_binding() {
 msg() {
     local key="$1"
     case "$key" in
+        "welcome_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "BEM-VINDOS AO CAIXA PRETA STACK v2.0"
+            else
+                echo "WELCOME TO CAIXA PRETA STACK v2.0"
+            fi
+            ;;
+        "enhanced_version")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Versao aprimorada com correcoes robustas"
+            else
+                echo "Enhanced version with robust fixes"
+            fi
+            ;;
         "root_check")
             if [ "$LANG_MODE" = "pt" ]; then
                 echo "Verificando privilegios do sistema..."
@@ -132,6 +159,41 @@ msg() {
                 echo "Acesso root necessario. Execute como root ou com sudo."
             else
                 echo "Root access required. Please run as root or with sudo."
+            fi
+            ;;
+        "root_confirmed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Privilegios root confirmados"
+            else
+                echo "Root privileges confirmed"
+            fi
+            ;;
+        "config_setup")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CONFIGURACAO DO SISTEMA"
+            else
+                echo "CONFIGURATION SETUP"
+            fi
+            ;;
+        "domain_config")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CONFIGURACAO DE DOMINIO"
+            else
+                echo "DOMAIN CONFIGURATION"
+            fi
+            ;;
+        "enter_domain")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Digite seu dominio (ex: meudominio.com): "
+            else
+                echo "Enter your domain (e.g., mydomain.com): "
+            fi
+            ;;
+        "enter_email")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Digite seu email para SSL: "
+            else
+                echo "Enter your email for SSL: "
             fi
             ;;
         "config_accepted")
@@ -169,6 +231,265 @@ msg() {
                 echo "Setting up data directories..."
             fi
             ;;
+        "system_prep_complete")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Preparacao do sistema concluida"
+            else
+                echo "System preparation completed"
+            fi
+            ;;
+        "docker_installing")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Instalando e configurando Docker..."
+            else
+                echo "Installing and configuring Docker..."
+            fi
+            ;;
+        "docker_already_installed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker ja instalado"
+            else
+                echo "Docker already installed"
+            fi
+            ;;
+        "docker_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker daemon esta pronto"
+            else
+                echo "Docker daemon is ready"
+            fi
+            ;;
+        "swarm_initializing")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializando Docker Swarm..."
+            else
+                echo "Initializing Docker Swarm..."
+            fi
+            ;;
+        "swarm_active")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Swarm ja ativo"
+            else
+                echo "Docker Swarm already active"
+            fi
+            ;;
+        "detecting_ip")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Detectando enderecos IP do servidor..."
+            else
+                echo "Detecting server IP addresses..."
+            fi
+            ;;
+        "using_ipv4")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Usando IPv4:"
+            else
+                echo "Using IPv4:"
+            fi
+            ;;
+        "using_ipv6")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Usando IPv6:"
+            else
+                echo "Using IPv6:"
+            fi
+            ;;
+        "swarm_initialized")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Swarm inicializado com IP:"
+            else
+                echo "Docker Swarm initialized with IP:"
+            fi
+            ;;
+        "creating_networks")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Criando redes Docker com verificacao..."
+            else
+                echo "Creating Docker networks with verification..."
+            fi
+            ;;
+        "networks_created")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Redes criadas com sucesso"
+            else
+                echo "Networks created successfully"
+            fi
+            ;;
+        "deploying_traefik")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando Traefik com vinculacao de porta aprimorada..."
+            else
+                echo "Deploying Traefik with enhanced port binding..."
+            fi
+            ;;
+        "traefik_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Traefik implantado com sucesso com vinculacao de porta verificada"
+            else
+                echo "Traefik deployed successfully with verified port binding"
+            fi
+            ;;
+        "deploying_databases")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando servicos de banco de dados com verificacoes de saude..."
+            else
+                echo "Deploying database services with health checks..."
+            fi
+            ;;
+        "databases_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Servicos de banco de dados implantados e verificados"
+            else
+                echo "Database services deployed and verified"
+            fi
+            ;;
+        "initializing_databases")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializando bancos de dados da aplicacao..."
+            else
+                echo "Initializing application databases..."
+            fi
+            ;;
+        "databases_initialized")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializacao do banco de dados concluida"
+            else
+                echo "Database initialization completed"
+            fi
+            ;;
+        "deploying_apps")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando servicos de aplicacao..."
+            else
+                echo "Deploying application services..."
+            fi
+            ;;
+        "apps_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Servicos de automacao implantados com sucesso"
+            else
+                echo "Automation services deployed successfully"
+            fi
+            ;;
+        "deploying_mega")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando MEGA (Chatwoot) e servicos adicionais..."
+            else
+                echo "Deploying MEGA (Chatwoot) and additional services..."
+            fi
+            ;;
+        "mega_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "MEGA e servicos adicionais implantados com sucesso"
+            else
+                echo "MEGA and additional services deployed successfully"
+            fi
+            ;;
+        "final_verification")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "VERIFICACAO FINAL DO SISTEMA"
+            else
+                echo "FINAL SYSTEM VERIFICATION"
+            fi
+            ;;
+        "deployment_success")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantacao aprimorada concluida com sucesso!"
+            else
+                echo "Enhanced deployment completed successfully!"
+            fi
+            ;;
+        "access_endpoints")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PONTOS DE ACESSO"
+            else
+                echo "ACCESS ENDPOINTS"
+            fi
+            ;;
+        "important_notes")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "NOTAS IMPORTANTES"
+            else
+                echo "IMPORTANT NOTES"
+            fi
+            ;;
+        "dns_config_required")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Configuracao DNS Necessaria:"
+            else
+                echo "DNS Configuration Required:"
+            fi
+            ;;
+        "dns_instructions")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Crie registros AAAA para todos os subdominios apontando para o IPv6 do servidor"
+            else
+                echo "Create AAAA records for all subdomains pointing to your server IPv6"
+            fi
+            ;;
+        "ssl_certificates")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Certificados SSL:"
+            else
+                echo "SSL Certificates:"
+            fi
+            ;;
+        "ssl_auto_generate")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Certificados Let's Encrypt serao gerados automaticamente (5-15 minutos)"
+            else
+                echo "Let's Encrypt certificates will generate automatically (5-15 minutes)"
+            fi
+            ;;
+        "monitor_progress")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Monitorar progresso: docker service logs core_traefik"
+            else
+                echo "Monitor progress: docker service logs core_traefik"
+            fi
+            ;;
+        "default_credentials")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Credenciais Padrao:"
+            else
+                echo "Default Credentials:"
+            fi
+            ;;
+        "password_info")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os servicos usam senha: caixapretastack2626"
+            else
+                echo "All services use password: caixapretastack2626"
+            fi
+            ;;
+        "change_passwords")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Altere as senhas apos o primeiro login para seguranca"
+            else
+                echo "Change passwords after first login for security"
+            fi
+            ;;
+        "deployment_complete")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantacao concluida! Seu CaixaPreta Stack esta pronto!"
+            else
+                echo "Deployment completed! Your CaixaPreta Stack is ready!"
+            fi
+            ;;
+        "waiting_postgresql")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando PostgreSQL ficar pronto para conexoes..."
+            else
+                echo "Waiting for PostgreSQL to be ready for connections..."
+            fi
+            ;;
+        "postgresql_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PostgreSQL esta pronto para conexoes"
+            else
+                echo "PostgreSQL is ready for connections"
+            fi
+            ;;
         *)
             echo "$key"
             ;;
@@ -177,7 +498,7 @@ msg() {
 
 # Network cleanup and creation with verification
 create_networks() {
-    log_step "Creating Docker networks with verification..."
+    log_step "$(msg "creating_networks")"
     
     # Remove existing networks if they exist
     docker network rm traefik-public internal-net 2>/dev/null || true
@@ -200,7 +521,7 @@ create_networks() {
     
     # Verify networks exist
     if docker network ls | grep -q "traefik-public" && docker network ls | grep -q "internal-net"; then
-        log_success "Networks created successfully"
+        log_success "$(msg "networks_created")"
     else
         log_error "Failed to create networks"
         exit 1
@@ -209,7 +530,7 @@ create_networks() {
 
 # Enhanced Docker installation with verification
 install_docker() {
-    log_step "Installing and configuring Docker..."
+    log_step "$(msg "docker_installing")"
     
     if ! verify_command docker; then
         log_info "Installing Docker Engine..."
@@ -224,7 +545,7 @@ install_docker() {
         # Wait for Docker to be ready
         sleep 10
     else
-        log_success "Docker already installed"
+        log_success "$(msg "docker_already_installed")"
     fi
     
     # Verify Docker is working
@@ -239,7 +560,7 @@ install_docker() {
     
     while [ $attempt -le $max_attempts ]; do
         if docker info >/dev/null 2>&1; then
-            log_success "Docker daemon is ready"
+            log_success "$(msg "docker_ready")"
             break
         fi
         
@@ -259,15 +580,15 @@ install_docker() {
 
 # Enhanced Swarm initialization with better IP detection
 initialize_swarm() {
-    log_step "Initializing Docker Swarm..."
+    log_step "$(msg "swarm_initializing")"
     
     if docker info | grep -q "Swarm: active"; then
-        log_success "Docker Swarm already active"
+        log_success "$(msg "swarm_active")"
         return 0
     fi
     
     # Enhanced IP detection with fallbacks
-    log_info "Detecting server IP addresses..."
+    log_info "$(msg "detecting_ip")"
     
     # Try multiple methods to get IP
     PUBLIC_IPV4=$(timeout 10 curl -s -4 ifconfig.me 2>/dev/null || \
@@ -284,10 +605,10 @@ initialize_swarm() {
     
     if [ -n "$PUBLIC_IPV4" ] && [[ "$PUBLIC_IPV4" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         ADVERTISE_ADDR="$PUBLIC_IPV4"
-        log_info "Using IPv4: $PUBLIC_IPV4"
+        log_info "$(msg "using_ipv4") $PUBLIC_IPV4"
     elif [ -n "$LOCAL_IPV6" ]; then
         ADVERTISE_ADDR="[$LOCAL_IPV6]"
-        log_info "Using IPv6: $LOCAL_IPV6"
+        log_info "$(msg "using_ipv6") $LOCAL_IPV6"
     else
         log_warning "Could not detect IP, using default configuration"
     fi
@@ -301,12 +622,12 @@ initialize_swarm() {
         
         if [ -n "$ADVERTISE_ADDR" ]; then
             if docker swarm init --advertise-addr "$ADVERTISE_ADDR" >/dev/null 2>&1; then
-                log_success "Docker Swarm initialized with IP: $ADVERTISE_ADDR"
+                log_success "$(msg "swarm_initialized") $ADVERTISE_ADDR"
                 return 0
             fi
         else
             if docker swarm init >/dev/null 2>&1; then
-                log_success "Docker Swarm initialized with default settings"
+                log_success "$(msg "swarm_initialized") default settings"
                 return 0
             fi
         fi
@@ -324,7 +645,7 @@ deploy_traefik() {
     local domain="$1"
     local email="$2"
     
-    log_step "Deploying Traefik with enhanced port binding..."
+    log_step "$(msg "deploying_traefik")"
     
     # Create Traefik configuration
     cat <<EOF > /data/traefik/traefik.yml
@@ -465,12 +786,14 @@ EOF
     # Cleanup
     rm -f /tmp/traefik-stack.yml
     
+    log_success "$(msg "traefik_deployed")"
+    
     log_success "Traefik deployed successfully with verified port binding"
 }
 
 # Enhanced database deployment with health checks
 deploy_databases() {
-    log_step "Deploying database services with health checks..."
+    log_step "$(msg "deploying_databases")"
     
     cat <<EOF > /tmp/database-stack.yml
 version: '3.8'
@@ -564,13 +887,13 @@ EOF
     verify_service "db_redis-mega" "1/1"
     
     # Wait for PostgreSQL to be fully ready
-    log_info "Waiting for PostgreSQL to be ready for connections..."
+    log_info "$(msg "waiting_postgresql")"
     local max_attempts=60
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
         if docker exec $(docker ps -q -f name=db_postgres) pg_isready -U postgres >/dev/null 2>&1; then
-            log_success "PostgreSQL is ready for connections"
+            log_success "$(msg "postgresql_ready")"
             break
         fi
         
@@ -585,11 +908,11 @@ EOF
     done
     
     rm -f /tmp/database-stack.yml
-    log_success "Database services deployed and verified"
+    log_success "$(msg "databases_deployed")"
 }
 # Initialize databases with proper error handling
 initialize_databases() {
-    log_step "Initializing application databases..."
+    log_step "$(msg "initializing_databases")"
     
     # Wait a bit more for PostgreSQL to be fully stable
     sleep 15
@@ -612,14 +935,14 @@ initialize_databases() {
         bundle exec rails db:chatwoot_prepare >/dev/null 2>&1 || \
         log_info "Chatwoot database already initialized"
     
-    log_success "Database initialization completed"
+    log_success "$(msg "databases_initialized")"
 }
 
 # Deploy applications with enhanced configuration
 deploy_applications() {
     local domain="$1"
     
-    log_step "Deploying application services..."
+    log_step "$(msg "deploying_apps")"
     
     cat <<EOF > /tmp/apps-stack.yml
 version: '3.8'
@@ -755,13 +1078,13 @@ EOF
     verify_service "automation_n8n-worker" "2/2"
     
     rm -f /tmp/apps-stack.yml
-    log_success "Automation services deployed successfully"
+    log_success "$(msg "apps_deployed")"
 }
 # Deploy MEGA and additional services
 deploy_mega_services() {
     local domain="$1"
     
-    log_step "Deploying MEGA (Chatwoot) and additional services..."
+    log_step "$(msg "deploying_mega")"
     
     cat <<EOF > /tmp/mega-stack.yml
 version: '3.8'
@@ -936,7 +1259,7 @@ EOF
     verify_service "apps_mega-sidekiq" "1/1"
     
     rm -f /tmp/mega-stack.yml
-    log_success "MEGA and additional services deployed successfully"
+    log_success "$(msg "mega_deployed")"
 }
 # Main execution flow
 main() {
@@ -966,55 +1289,54 @@ EOF
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo
     
-    # Language Selection
+    # Language Selection with enhanced visuals
     echo -e "${WHITE}${BOLD}Welcome! / Bem-vindos!${NC}"
     echo
-    echo -e "${CYAN}Please choose your language / Por favor, escolha seu idioma:${NC}"
-    echo -e "${GREEN}${BOLD}[1]${NC} ${GREEN}English${NC}"
-    echo -e "${GREEN}${BOLD}[2]${NC} ${GREEN}Português${NC}"
+    echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${CYAN}${BOLD}│                    LANGUAGE SELECTION                       │${NC}"
+    echo -e "${CYAN}${BOLD}│                 SELECAO DE IDIOMA                           │${NC}"
+    echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+    echo
+    echo -e "${GREEN}${BOLD}[1]${NC} ${GREEN}🇺🇸 English${NC}"
+    echo -e "${GREEN}${BOLD}[2]${NC} ${GREEN}🇧🇷 Português${NC}"
     echo
     echo -ne "${GREEN}${BOLD}language@caixapreta:~$ ${NC}"
     read LANGUAGE_CHOICE
     
-    # Set language
+    # Set language and show initialization
     if [ "$LANGUAGE_CHOICE" = "2" ]; then
         LANG_MODE="pt"
-        log_step "INICIALIZANDO CAIXA PRETA STACK v2.0..."
-        log_info "Versão aprimorada com correções robustas"
+        echo
+        log_step "$(msg "welcome_title")"
+        log_info "$(msg "enhanced_version")"
     else
         LANG_MODE="en"
-        log_step "INITIALIZING CAIXA PRETA STACK v2.0..."
-        log_info "Enhanced version with robust fixes"
+        echo
+        log_step "$(msg "welcome_title")"
+        log_info "$(msg "enhanced_version")"
     fi
     
     # Root check
+    log_info "$(msg "root_check")"
     if [ "$EUID" -ne 0 ]; then 
         log_error "$(msg "root_error")"
         exit 1
     fi
-    log_success "Root privileges confirmed"
+    log_success "$(msg "root_confirmed")"
     
     # Configuration
     echo
-    log_step "CONFIGURATION SETUP"
+    log_step "$(msg "config_setup")"
     echo
     echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+    echo -e "${CYAN}${BOLD}│                    $(msg "domain_config")                     │${NC}"
     echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
-    if [ "$LANG_MODE" = "pt" ]; then
-        echo -ne "${GREEN}${BOLD}Digite seu domínio (ex: meudominio.com): ${NC}"
-    else
-        echo -ne "${GREEN}${BOLD}Enter your domain (e.g., mydomain.com): ${NC}"
-    fi
+    echo -ne "${GREEN}${BOLD}$(msg "enter_domain")${NC}"
     read DOMAIN
     
-    if [ "$LANG_MODE" = "pt" ]; then
-        echo -ne "${GREEN}${BOLD}Digite seu email para SSL: ${NC}"
-    else
-        echo -ne "${GREEN}${BOLD}Enter your email for SSL: ${NC}"
-    fi
+    echo -ne "${GREEN}${BOLD}$(msg "enter_email")${NC}"
     read EMAIL
     
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
@@ -1027,6 +1349,7 @@ EOF
     log_info "Email: $EMAIL"
     
     # System preparation
+    echo
     log_step "$(msg "system_prep")"
     
     # Update system
@@ -1051,34 +1374,66 @@ EOF
     touch /data/traefik/acme.json
     chmod 600 /data/traefik/acme.json
     
-    log_success "System preparation completed"
+    log_success "$(msg "system_prep_complete")"
     
     # Docker installation and setup
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    DOCKER SETUP                             │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     install_docker
     
     # Swarm initialization
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    SWARM CLUSTER                            │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     initialize_swarm
     
     # Network creation
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    NETWORK SETUP                            │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     create_networks
     
     # Deploy core services (Traefik + Portainer)
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    CORE SERVICES                            │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_traefik "$DOMAIN" "$EMAIL"
     
     # Deploy databases
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    DATABASE LAYER                           │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_databases
     
     # Initialize databases
     initialize_databases
     
     # Deploy automation services (n8n + Evolution)
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_applications "$DOMAIN"
     
     # Deploy MEGA and additional services
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    APPLICATION LAYER                        │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_mega_services "$DOMAIN"
     
     # Final verification
-    log_step "FINAL SYSTEM VERIFICATION"
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}${BOLD}│                    FINAL VERIFICATION                       │${NC}"
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+    log_step "$(msg "final_verification")"
     
     echo
     echo "Final service status:"
@@ -1095,7 +1450,7 @@ EOF
         log_success "All services are operational!"
     fi
     
-    # Success message
+    # Success message with enhanced visuals
     echo
     echo -e "${GREEN}${BOLD}"
     cat << "EOF"
@@ -1107,12 +1462,12 @@ EOF
 EOF
     echo -e "${NC}"
     
-    log_success "Enhanced deployment completed successfully!"
+    log_success "$(msg "deployment_success")"
     echo
     
-    # Access information
+    # Access information with enhanced visuals
     echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}${BOLD}│                    ACCESS ENDPOINTS                         │${NC}"
+    echo -e "${CYAN}${BOLD}│                    $(msg "access_endpoints")                         │${NC}"
     echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
@@ -1127,23 +1482,23 @@ EOF
     
     echo
     echo -e "${YELLOW}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${YELLOW}${BOLD}│                    IMPORTANT NOTES                          │${NC}"
+    echo -e "${YELLOW}${BOLD}│                    $(msg "important_notes")                          │${NC}"
     echo -e "${YELLOW}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
-    log_warning "DNS Configuration Required:"
-    log_info "Create AAAA records for all subdomains pointing to your server IPv6"
+    log_warning "$(msg "dns_config_required")"
+    log_info "$(msg "dns_instructions")"
     
-    log_warning "SSL Certificates:"
-    log_info "Let's Encrypt certificates will generate automatically (5-15 minutes)"
-    log_info "Monitor progress: docker service logs core_traefik"
+    log_warning "$(msg "ssl_certificates")"
+    log_info "$(msg "ssl_auto_generate")"
+    log_info "$(msg "monitor_progress")"
     
-    log_warning "Default Credentials:"
-    log_info "All services use password: caixapretastack2626"
-    log_info "Change passwords after first login for security"
+    log_warning "$(msg "default_credentials")"
+    log_info "$(msg "password_info")"
+    log_info "$(msg "change_passwords")"
     
     echo
-    log_success "🎉 Deployment completed! Your CaixaPreta Stack is ready!"
+    log_success "🎉 $(msg "deployment_complete")"
 }
 
 # Execute main function
