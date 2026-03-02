@@ -571,6 +571,279 @@ msg() {
                 echo "                    ACCESS ENDPOINTS                         "
             fi
             ;;
+        "verifying_core")
+            if [ "$LANG" = "pt" ]; then
+                echo "Verificando status dos serviços principais..."
+            else
+                echo "Verifying core services status..."
+            fi
+            ;;
+        "db_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando cluster de banco PostgreSQL"
+            else
+                echo "Deploying PostgreSQL database cluster"
+            fi
+            ;;
+        "redis_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando servidores de cache Redis"
+            else
+                echo "Deploying Redis cache servers"
+            fi
+            ;;
+        "data_persistence_config")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando persistência de dados"
+            else
+                echo "Configuring data persistence"
+            fi
+            ;;
+        "db_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Infraestrutura de banco implantada"
+            else
+                echo "Database infrastructure deployed"
+            fi
+            ;;
+        "db_status_check")
+            if [ "$LANG" = "pt" ]; then
+                echo "Verificando status dos serviços de banco..."
+            else
+                echo "Verifying database services status..."
+            fi
+            ;;
+        "automation_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando motor de automação n8n"
+            else
+                echo "Deploying n8n automation engine"
+            fi
+            ;;
+        "workflow_workers")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando workers de workflow"
+            else
+                echo "Configuring workflow workers"
+            fi
+            ;;
+        "queue_system")
+            if [ "$LANG" = "pt" ]; then
+                echo "Estabelecendo sistema de filas"
+            else
+                echo "Establishing queue system"
+            fi
+            ;;
+        "automation_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Infraestrutura de automação implantada"
+            else
+                echo "Automation infrastructure deployed"
+            fi
+            ;;
+        "automation_status_check")
+            if [ "$LANG" = "pt" ]; then
+                echo "Verificando status dos serviços de automação..."
+            else
+                echo "Verifying automation services status..."
+            fi
+            ;;
+        "mega_db_prep")
+            if [ "$LANG" = "pt" ]; then
+                echo "PREPARANDO BANCO DE DADOS MEGA (CHATWOOT)..."
+            else
+                echo "PREPARING MEGA (CHATWOOT) DATABASE..."
+            fi
+            ;;
+        "postgres_waiting")
+            if [ "$LANG" = "pt" ]; then
+                echo "Aguardando cluster PostgreSQL ficar pronto..."
+            else
+                echo "Waiting for PostgreSQL cluster to be ready..."
+            fi
+            ;;
+        "db_connections")
+            if [ "$LANG" = "pt" ]; then
+                echo "Estabelecendo conexões de banco"
+            else
+                echo "Establishing database connections"
+            fi
+            ;;
+        "chatwoot_init")
+            if [ "$LANG" = "pt" ]; then
+                echo "Inicializando esquema de banco Chatwoot..."
+            else
+                echo "Initializing Chatwoot database schema..."
+            fi
+            ;;
+        "db_init_prep")
+            if [ "$LANG" = "pt" ]; then
+                echo "Preparando inicialização do banco"
+            else
+                echo "Preparing database initialization"
+            fi
+            ;;
+        "chatwoot_db_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Banco Chatwoot preparado"
+            else
+                echo "Chatwoot database prepared"
+            fi
+            ;;
+        "evolution_db_create")
+            if [ "$LANG" = "pt" ]; then
+                echo "Criando banco Evolution API..."
+            else
+                echo "Creating Evolution API database..."
+            fi
+            ;;
+        "db_schemas_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Esquemas de banco preparados"
+            else
+                echo "Database schemas prepared"
+            fi
+            ;;
+        "postgres_test")
+            if [ "$LANG" = "pt" ]; then
+                echo "Testando conexão PostgreSQL..."
+            else
+                echo "Testing PostgreSQL connection..."
+            fi
+            ;;
+        "postgres_ready")
+            if [ "$LANG" = "pt" ]; then
+                echo "PostgreSQL está pronto"
+            else
+                echo "PostgreSQL is ready"
+            fi
+            ;;
+        "postgres_failed")
+            if [ "$LANG" = "pt" ]; then
+                echo "PostgreSQL falhou ao iniciar corretamente"
+            else
+                echo "PostgreSQL failed to start properly"
+            fi
+            ;;
+        "app_layer_deploy")
+            if [ "$LANG" = "pt" ]; then
+                echo "IMPLANTANDO CAMADA DE APLICAÇÃO..."
+            else
+                echo "DEPLOYING APPLICATION LAYER..."
+            fi
+            ;;
+        "apps_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando MEGA (Chatwoot V4), Evolution API, MinIO e Grafana..."
+            else
+                echo "Deploying MEGA (Chatwoot V4), Evolution API, MinIO & Grafana..."
+            fi
+            ;;
+        "evolution_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando Evolution API (Integração WhatsApp)"
+            else
+                echo "Deploying Evolution API (WhatsApp Integration)"
+            fi
+            ;;
+        "mega_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando MEGA (Chatwoot V4 Atendimento)"
+            else
+                echo "Deploying MEGA (Chatwoot V4 Customer Service)"
+            fi
+            ;;
+        "minio_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando MinIO Armazenamento de Objetos"
+            else
+                echo "Deploying MinIO Object Storage"
+            fi
+            ;;
+        "grafana_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando Dashboard de Monitoramento Grafana"
+            else
+                echo "Deploying Grafana Monitoring Dashboard"
+            fi
+            ;;
+        "service_mesh")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando malha de serviços"
+            else
+                echo "Configuring service mesh"
+            fi
+            ;;
+        "app_layer_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Camada de aplicação implantada com sucesso"
+            else
+                echo "Application layer deployed successfully"
+            fi
+            ;;
+        "final_verification")
+            if [ "$LANG" = "pt" ]; then
+                echo "REALIZANDO VERIFICAÇÃO FINAL DO SISTEMA..."
+            else
+                echo "PERFORMING FINAL SYSTEM VERIFICATION..."
+            fi
+            ;;
+        "scanning_services")
+            if [ "$LANG" = "pt" ]; then
+                echo "Escaneando todos os serviços implantados..."
+            else
+                echo "Scanning all deployed services..."
+            fi
+            ;;
+        "collecting_status")
+            if [ "$LANG" = "pt" ]; then
+                echo "Coletando informações de status dos serviços"
+            else
+                echo "Collecting service status information"
+            fi
+            ;;
+        "identifying_issues")
+            if [ "$LANG" = "pt" ]; then
+                echo "Identificando serviços com problemas de implantação..."
+            else
+                echo "Identifying services with deployment issues..."
+            fi
+            ;;
+        "services_initializing")
+            if [ "$LANG" = "pt" ]; then
+                echo "Alguns serviços ainda estão inicializando:"
+            else
+                echo "Some services are still initializing:"
+            fi
+            ;;
+        "all_operational")
+            if [ "$LANG" = "pt" ]; then
+                echo "Todos os serviços estão operacionais"
+            else
+                echo "All services are operational"
+            fi
+            ;;
+        "docker_daemon_start")
+            if [ "$LANG" = "pt" ]; then
+                echo "Aguardando daemon Docker iniciar..."
+            else
+                echo "Waiting for Docker daemon to start..."
+            fi
+            ;;
+        "evolution_db_ensure")
+            if [ "$LANG" = "pt" ]; then
+                echo "Garantindo que banco Evolution API existe..."
+            else
+                echo "Ensuring Evolution API database exists..."
+            fi
+            ;;
+        "ipv6_detected")
+            if [ "$LANG" = "pt" ]; then
+                echo "Não foi possível detectar IP público, usando configuração padrão"
+            else
+                echo "Could not detect public IP, using default configuration"
+            fi
+            ;;
         *)
             echo "$key"
             ;;
@@ -818,7 +1091,7 @@ if ! docker info | grep -q "Swarm: active"; then
         print_info "$(msg "swarm_ip_detected") $PUBLIC_IP (IPv4)"
         ADVERTISE_ADDR="$PUBLIC_IP"
     else
-        print_warning "Could not detect public IP, using default configuration"
+        print_warning "$(msg "ipv6_detected")"
         ADVERTISE_ADDR=""
     fi
     
@@ -867,7 +1140,7 @@ systemctl start docker >/dev/null 2>&1
 systemctl enable docker >/dev/null 2>&1
 
 # Wait for Docker daemon to be ready
-print_info "Waiting for Docker daemon to start..."
+print_info "$(msg "docker_daemon_start")"
 for i in {1..30}; do
     if docker info >/dev/null 2>&1; then
         break
@@ -943,7 +1216,7 @@ print_hacker "$(msg "permissions_setting")"
 loading_animation 1 "$(msg "permissions_applying")"
 
 # Set proper permissions for specific services
-print_info "Setting service-specific directory permissions..."
+print_info "$(msg "permissions_setting")"
 
 # Create and set Grafana permissions properly
 mkdir -p /data/grafana
@@ -1150,14 +1423,14 @@ EOF
 
 docker stack deploy -c swarm-db.yml db >/dev/null 2>&1
 
-loading_animation 10 "Deploying PostgreSQL database cluster"
-loading_animation 8 "Deploying Redis cache servers"
-loading_animation 5 "Configuring data persistence"
+loading_animation 10 "$(msg "db_deploying")"
+loading_animation 8 "$(msg "redis_deploying")"
+loading_animation 5 "$(msg "data_persistence_config")"
 
-print_success "Database infrastructure deployed"
+print_success "$(msg "db_success")"
 
 # Verificar se os serviços de banco estão rodando
-print_info "Verifying database services status..."
+print_info "$(msg "db_status_check")"
 docker service ls | grep db
 
 # STACK 3: Automação (n8n em modo Queue)
@@ -1228,44 +1501,44 @@ EOF
 
 docker stack deploy -c swarm-automation.yml automation >/dev/null 2>&1
 
-loading_animation 8 "Deploying n8n automation engine"
-loading_animation 6 "Configuring workflow workers"
-loading_animation 4 "Establishing queue system"
+loading_animation 8 "$(msg "automation_deploying")"
+loading_animation 6 "$(msg "workflow_workers")"
+loading_animation 4 "$(msg "queue_system")"
 
-print_success "Automation infrastructure deployed"
+print_success "$(msg "automation_success")"
 
 # Verificar se os serviços de automação estão rodando
-print_info "Verifying automation services status..."
+print_info "$(msg "automation_status_check")"
 docker service ls | grep automation
 
 echo
-print_matrix "PREPARING MEGA (CHATWOOT) DATABASE..."
+print_matrix "$(msg "mega_db_prep")"
 echo
 
 # Wait for PostgreSQL to be ready
-print_hacker "Waiting for PostgreSQL cluster to be ready..."
-loading_animation 5 "Establishing database connections"
+print_hacker "$(msg "postgres_waiting")"
+loading_animation 5 "$(msg "db_connections")"
 
 # Wait for PostgreSQL service to be fully ready
 sleep 15
 
 # Check if PostgreSQL is responding
-print_info "Testing PostgreSQL connection..."
+print_info "$(msg "postgres_test")"
 for i in {1..30}; do
     if docker run --rm --network db_internal-net postgres:15-alpine pg_isready -h postgres -U postgres >/dev/null 2>&1; then
-        print_success "PostgreSQL is ready"
+        print_success "$(msg "postgres_ready")"
         break
     fi
     if [ $i -eq 30 ]; then
-        print_error "PostgreSQL failed to start properly"
+        print_error "$(msg "postgres_failed")"
         exit 1
     fi
     sleep 2
 done
 
 # Initialize Chatwoot database
-print_hacker "Initializing Chatwoot database schema..."
-loading_animation 3 "Preparing database initialization"
+print_hacker "$(msg "chatwoot_init")"
+loading_animation 3 "$(msg "db_init_prep")"
 
 docker run --rm --network db_internal-net \
   -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
@@ -1275,22 +1548,22 @@ docker run --rm --network db_internal-net \
   bundle exec rails db:chatwoot_prepare >/dev/null 2>&1 || print_warning "Database already initialized or initialization failed - continuing..."
 
 # Create Evolution API database
-print_hacker "Creating Evolution API database..."
+print_hacker "$(msg "evolution_db_create")"
 docker run --rm --network db_internal-net \
   -e PGPASSWORD=caixapretastack2626 \
   postgres:15-alpine \
   psql -h postgres -U postgres -d main_db -c "CREATE DATABASE evolution_db;" 2>/dev/null || print_warning "Evolution database already exists - continuing..."
 
-print_success "Database schemas prepared"
+print_success "$(msg "db_schemas_success")"
 
 echo
-print_matrix "DEPLOYING APPLICATION LAYER..."
+print_matrix "$(msg "app_layer_deploy")"
 echo
 
-print_hacker "Deploying MEGA (Chatwoot V4), Evolution API, MinIO & Grafana..."
+print_hacker "$(msg "apps_deploying")"
 
 # First, ensure Evolution database exists
-print_info "Ensuring Evolution API database exists..."
+print_info "$(msg "evolution_db_ensure")"
 docker run --rm --network db_internal-net \
   -e PGPASSWORD=caixapretastack2626 \
   postgres:15-alpine \
@@ -1470,32 +1743,32 @@ EOF
 
 docker stack deploy -c swarm-apps.yml apps >/dev/null 2>&1
 
-loading_animation 10 "Deploying Evolution API (WhatsApp Integration)"
-loading_animation 12 "Deploying MEGA (Chatwoot V4 Customer Service)"
-loading_animation 8 "Deploying MinIO Object Storage"
-loading_animation 6 "Deploying Grafana Monitoring Dashboard"
-loading_animation 4 "Configuring service mesh"
+loading_animation 10 "$(msg "evolution_deploying")"
+loading_animation 12 "$(msg "mega_deploying")"
+loading_animation 8 "$(msg "minio_deploying")"
+loading_animation 6 "$(msg "grafana_deploying")"
+loading_animation 4 "$(msg "service_mesh")"
 
-print_success "Application layer deployed successfully"
+print_success "$(msg "app_layer_success")"
 
 # Verificar se todos os serviços estão rodando
 echo
-print_matrix "PERFORMING FINAL SYSTEM VERIFICATION..."
+print_matrix "$(msg "final_verification")"
 echo
 
-print_hacker "Scanning all deployed services..."
-loading_animation 3 "Collecting service status information"
+print_hacker "$(msg "scanning_services")"
+loading_animation 3 "$(msg "collecting_status")"
 
 docker service ls
 
-print_hacker "Identifying services with deployment issues..."
+print_hacker "$(msg "identifying_issues")"
 FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
 
 if [ "$FAILED_SERVICES" -gt 0 ]; then
-    print_warning "Some services are still initializing:"
+    print_warning "$(msg "services_initializing")"
     docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/" || true
 else
-    print_success "All services are operational"
+    print_success "$(msg "all_operational")"
 fi
 
 # 9. Finalização
