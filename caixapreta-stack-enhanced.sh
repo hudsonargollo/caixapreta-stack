@@ -611,7 +611,7 @@ verify_service() {
 verify_service_health() {
     local service_name="$1"
     
-    local container_id=$(docker_safe ps -q -f name="$service_name" 2>/dev/null | head -1)
+    local container_id=$(docker ps -q -f "label=com.docker.swarm.service.name=$service_name" 2>/dev/null | head -1)
     
     if [ -z "$container_id" ]; then
         return 1
@@ -2009,5 +2009,4 @@ EOF
 }
 
 # Execute main function
-main "$@"
 main "$@"
