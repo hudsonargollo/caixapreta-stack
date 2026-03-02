@@ -1,0 +1,56 @@
+name: Deploy Simple Static Guide
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Prepare static deployment
+        run: |
+          mkdir -p _site
+          cd docs
+          
+          # Copy Matrix guide as main page
+          cp matrix-index.html ../_site/index.html
+          
+          # Copy both guides with different names
+          cp matrix-index.html ../_site/matrix.html
+          cp simple-index.html ../_site/simple.html
+          
+          # Create install subdirectory
+          mkdir -p ../_site/install
+          cp matrix-index.html ../_site/install/index.html
+          
+          echo "Static site prepared with Matrix guide as main page"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
