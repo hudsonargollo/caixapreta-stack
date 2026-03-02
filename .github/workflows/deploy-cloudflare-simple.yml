@@ -27,26 +27,27 @@ jobs:
           cd docs
           
           if [ "${{ github.event.inputs.deploy_type }}" = "matrix" ] || [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
-            # Matrix guide as main page
-            cp matrix-index.html ../deploy/index.html
+            # Clean installation guide as main page (most polished)
+            cp clean-install.html ../deploy/index.html
             cp matrix-index.html ../deploy/matrix.html
-            echo "Matrix guide deployed as main page"
+            echo "Clean installation guide deployed as main page"
           fi
           
           if [ "${{ github.event.inputs.deploy_type }}" = "simple" ]; then
-            # Simple guide as main page
-            cp simple-index.html ../deploy/index.html
-            echo "Simple guide deployed as main page"
+            # Clean installation guide as main page
+            cp clean-install.html ../deploy/index.html
+            echo "Clean installation guide deployed as main page"
           fi
           
           if [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
             cp simple-index.html ../deploy/simple.html
-            echo "Both guides deployed"
+            cp clean-install.html ../deploy/clean.html
+            echo "All guides deployed"
           fi
           
-          # Create install subdirectory
+          # Create install subdirectory with clean guide
           mkdir -p ../deploy/install
-          cp matrix-index.html ../deploy/install/index.html
+          cp clean-install.html ../deploy/install/index.html
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
