@@ -730,19 +730,27 @@ install_docker() {
         sh get-docker.sh >/dev/null 2>&1
         rm get-docker.sh
         
+        # Ensure Docker is in PATH for current session
+        export PATH="/usr/bin:/usr/local/bin:$PATH"
+        hash -r  # Refresh command hash table
+        
         # Start and enable Docker
         systemctl start docker
         systemctl enable docker
         
+        # Wait for Docker service to be fully ready
+        sleep 5
+        
         log_success "Docker installed successfully"
     fi
     
-    # Verify Docker daemon
+    # Verify Docker daemon with full path fallback
     local max_attempts=30
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker info >/dev/null 2>&1; then
+        # Try both docker command and full path
+        if docker info >/dev/null 2>&1 || /usr/bin/docker info >/dev/null 2>&1; then
             log_success "Docker daemon is ready"
             break
         fi
@@ -751,14 +759,29 @@ install_docker() {
         sleep 2
         ((attempt++))
         
+        # Try to restart Docker if it's taking too long
+        if [ $attempt -eq 15 ]; then
+            log_warning "Restarting Docker service..."
+            systemctl restart docker
+            sleep 5
+        fi
+        
         if [ $attempt -gt $max_attempts ]; then
-            log_error "Docker daemon failed to start"
+            log_error "Docker daemon failed to start after $max_attempts attempts"
+            log_error "Please check Docker installation manually: systemctl status docker"
             exit 1
         fi
     done
     
     # Fix Docker socket permissions
     chmod 666 /var/run/docker.sock 2>/dev/null || true
+    
+    # Create docker command wrapper function for reliability
+    if ! command -v docker >/dev/null 2>&1; then
+        # If docker is not in PATH, create an alias to the full path
+        alias docker='/usr/bin/docker'
+        export PATH="/usr/bin:$PATH"
+    fi
 }
 # Enhanced Swarm initialization with multiple IP detection methods
 initialize_swarm() {
