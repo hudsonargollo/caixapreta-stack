@@ -806,22 +806,46 @@ echo
 
 if ! docker info | grep -q "Swarm: active"; then
     print_hacker "$(msg "swarm_configuring")"
-    PUBLIC_IP=$(curl -s ifconfig.me)
-    print_info "$(msg "swarm_ip_detected") $PUBLIC_IP"
+    
+    # Detect both IPv4 and IPv6 addresses
+    PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null)
+    PUBLIC_IPV6=$(curl -s -6 ifconfig.me 2>/dev/null || curl -s -6 ipinfo.io/ip 2>/dev/null)
+    
+    if [ -n "$PUBLIC_IPV6" ]; then
+        print_info "$(msg "swarm_ip_detected") $PUBLIC_IPV6 (IPv6)"
+        ADVERTISE_ADDR="[$PUBLIC_IPV6]"
+    elif [ -n "$PUBLIC_IP" ]; then
+        print_info "$(msg "swarm_ip_detected") $PUBLIC_IP (IPv4)"
+        ADVERTISE_ADDR="$PUBLIC_IP"
+    else
+        print_warning "Could not detect public IP, using default configuration"
+        ADVERTISE_ADDR=""
+    fi
     
     loading_animation 2 "$(msg "swarm_initializing")"
     
-    if docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1; then
-        print_success "$(msg "swarm_success")"
+    if [ -n "$ADVERTISE_ADDR" ]; then
+        if docker swarm init --advertise-addr "$ADVERTISE_ADDR" >/dev/null 2>&1; then
+            print_success "$(msg "swarm_success")"
+        else
+            print_error "$(msg "swarm_failed")"
+            print_info "$(msg "swarm_issues")"
+            print_info "  → Network connectivity issues"
+            print_info "  → Firewall blocking Docker ports"
+            print_info "  → IP address detection problems"
+            echo
+            print_info "$(msg "swarm_alternative")"
+            
+            # Try without specific IP
+            if docker swarm init >/dev/null 2>&1; then
+                print_success "$(msg "swarm_default_success")"
+            else
+                print_error "$(msg "swarm_complete_failure")"
+                print_info "$(msg "swarm_manual_fix")"
+                exit 1
+            fi
+        fi
     else
-        print_error "$(msg "swarm_failed")"
-        print_info "$(msg "swarm_issues")"
-        print_info "  → Network connectivity issues"
-        print_info "  → Firewall blocking Docker ports"
-        print_info "  → IP address detection problems"
-        echo
-        print_info "$(msg "swarm_alternative")"
-        
         # Try without specific IP
         if docker swarm init >/dev/null 2>&1; then
             print_success "$(msg "swarm_default_success")"
@@ -917,8 +941,33 @@ chmod 600 /data/traefik/acme.json
 
 print_hacker "$(msg "permissions_setting")"
 loading_animation 1 "$(msg "permissions_applying")"
-chown -R root:root /data >/dev/null 2>&1
-chmod -R 755 /data >/dev/null 2>&1
+
+# Set proper permissions for specific services
+print_info "Setting service-specific directory permissions..."
+
+# Create and set Grafana permissions properly
+mkdir -p /data/grafana
+chown -R 472:472 /data/grafana
+chmod -R 755 /data/grafana
+
+# Create and set MinIO permissions
+mkdir -p /data/minio
+chown -R 1001:1001 /data/minio
+chmod -R 755 /data/minio
+
+# Create and set n8n permissions
+mkdir -p /data/n8n
+chown -R 1000:1000 /data/n8n
+chmod -R 755 /data/n8n
+
+# Create and set Evolution API permissions
+mkdir -p /data/evolution
+chown -R 1000:1000 /data/evolution
+chmod -R 755 /data/evolution
+
+# Set general permissions
+chmod -R 755 /data
+chown -R root:root /data/traefik /data/portainer >/dev/null 2>&1
 chmod 600 /data/traefik/acme.json
 
 print_success "$(msg "data_success")"
@@ -1197,6 +1246,23 @@ echo
 print_hacker "Waiting for PostgreSQL cluster to be ready..."
 loading_animation 5 "Establishing database connections"
 
+# Wait for PostgreSQL service to be fully ready
+sleep 15
+
+# Check if PostgreSQL is responding
+print_info "Testing PostgreSQL connection..."
+for i in {1..30}; do
+    if docker run --rm --network db_internal-net postgres:15-alpine pg_isready -h postgres -U postgres >/dev/null 2>&1; then
+        print_success "PostgreSQL is ready"
+        break
+    fi
+    if [ $i -eq 30 ]; then
+        print_error "PostgreSQL failed to start properly"
+        exit 1
+    fi
+    sleep 2
+done
+
 # Initialize Chatwoot database
 print_hacker "Initializing Chatwoot database schema..."
 loading_animation 3 "Preparing database initialization"
@@ -1204,16 +1270,36 @@ loading_animation 3 "Preparing database initialization"
 docker run --rm --network db_internal-net \
   -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
   -e RAILS_ENV=production \
+  -e PGPASSWORD=caixapretastack2626 \
   sendingtk/chatwoot:v4.11.2 \
   bundle exec rails db:chatwoot_prepare >/dev/null 2>&1 || print_warning "Database already initialized or initialization failed - continuing..."
 
-print_success "Chatwoot database prepared"
+# Create Evolution API database
+print_hacker "Creating Evolution API database..."
+docker run --rm --network db_internal-net \
+  -e PGPASSWORD=caixapretastack2626 \
+  postgres:15-alpine \
+  psql -h postgres -U postgres -d main_db -c "CREATE DATABASE evolution_db;" 2>/dev/null || print_warning "Evolution database already exists - continuing..."
+
+print_success "Database schemas prepared"
 
 echo
 print_matrix "DEPLOYING APPLICATION LAYER..."
 echo
 
 print_hacker "Deploying MEGA (Chatwoot V4), Evolution API, MinIO & Grafana..."
+
+# First, ensure Evolution database exists
+print_info "Ensuring Evolution API database exists..."
+docker run --rm --network db_internal-net \
+  -e PGPASSWORD=caixapretastack2626 \
+  postgres:15-alpine \
+  psql -h postgres -U postgres -c "SELECT 1 FROM pg_database WHERE datname='evolution_db';" | grep -q 1 || \
+docker run --rm --network db_internal-net \
+  -e PGPASSWORD=caixapretastack2626 \
+  postgres:15-alpine \
+  psql -h postgres -U postgres -c "CREATE DATABASE evolution_db;" 2>/dev/null || true
+
 cat <<EOF > swarm-apps.yml
 version: '3.8'
 services:
@@ -1221,10 +1307,22 @@ services:
     image: atendai/evolution-api:latest
     environment:
       - SERVER_URL=https://evolution.$DOMAIN
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_ENABLED=true
+      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@postgres:5432/evolution_db
+      - DATABASE_CONNECTION_STRING=postgresql://postgres:caixapretastack2626@postgres:5432/evolution_db
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://redis-n8n:6379
       - AUTHENTICATION_TYPE=apikey
       - AUTHENTICATION_API_KEY=caixapretastack2626
-      - DATABASE_CONNECTION_STRING=postgresql://postgres:caixapretastack2626@postgres:5432/main_db
-      - REDIS_URI=redis://redis-mega:6379/0
+      - WEBHOOK_GLOBAL_URL=https://evolution.$DOMAIN
+      - CONFIG_SESSION_SECRET=caixapretastack2626
+      - QRCODE_LIMIT=30
+      - CORS_ORIGIN=*
+      - CORS_METHODS=GET,POST,PUT,DELETE
+      - CORS_CREDENTIALS=true
+    volumes:
+      - /data/evolution:/evolution/instances
     networks:
       - traefik-public
       - internal-net
@@ -1233,8 +1331,8 @@ services:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        delay: 10s
+        max_attempts: 5
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.evolution.rule=Host(\`evolution.$DOMAIN\`)"
@@ -1301,10 +1399,12 @@ services:
 
   minio:
     image: minio/minio:latest
-    command: server /data --console-address ":9001"
+    command: server /data --console-address ":9001" --address ":9000"
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=caixapretastack2626
+      - MINIO_SERVER_URL=https://s3.$DOMAIN
+      - MINIO_BROWSER_REDIRECT_URL=https://minio.$DOMAIN
     volumes:
       - /data/minio:/data
     networks:
@@ -1314,21 +1414,34 @@ services:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        delay: 10s
+        max_attempts: 5
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.minio.rule=Host(\`s3.$DOMAIN\`)"
-        - "traefik.http.routers.minio.entrypoints=websecure"
-        - "traefik.http.routers.minio.tls.certresolver=letsencrypt"
-        - "traefik.http.services.minio.loadbalancer.server.port=9000"
+        # S3 API endpoint
+        - "traefik.http.routers.minio-api.rule=Host(\`s3.$DOMAIN\`)"
+        - "traefik.http.routers.minio-api.entrypoints=websecure"
+        - "traefik.http.routers.minio-api.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.minio-api.service=minio-api"
+        - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+        # Console endpoint
         - "traefik.http.routers.minio-console.rule=Host(\`minio.$DOMAIN\`)"
         - "traefik.http.routers.minio-console.entrypoints=websecure"
         - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.minio-console.service=minio-console"
         - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
 
   grafana:
     image: grafana/grafana:latest
+    user: "472:472"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=caixapretastack2626
+      - GF_SERVER_ROOT_URL=https://grafana.$DOMAIN
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_PATHS_DATA=/var/lib/grafana
+      - GF_PATHS_LOGS=/var/log/grafana
+      - GF_PATHS_PLUGINS=/var/lib/grafana/plugins
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
     volumes:
       - /data/grafana:/var/lib/grafana
     networks:
@@ -1339,8 +1452,8 @@ services:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        delay: 10s
+        max_attempts: 5
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.grafana.rule=Host(\`grafana.$DOMAIN\`)"
@@ -1380,7 +1493,7 @@ FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0
 
 if [ "$FAILED_SERVICES" -gt 0 ]; then
     print_warning "Some services are still initializing:"
-    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/" || true
 else
     print_success "All services are operational"
 fi
@@ -1423,8 +1536,29 @@ echo -e "${YELLOW}${BOLD}└─────────────────�
 echo
 
 print_warning "DNS Configuration Required:"
-print_info "  → Create A records for all subdomains pointing to this server"
-print_info "  → Server IP: $(curl -s ifconfig.me)"
+print_info "  → Create DNS records for all subdomains pointing to this server"
+
+# Show both IPv4 and IPv6 if available
+PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null)
+PUBLIC_IPV6=$(curl -s -6 ifconfig.me 2>/dev/null || curl -s -6 ipinfo.io/ip 2>/dev/null)
+
+if [ -n "$PUBLIC_IP" ]; then
+    print_info "  → Server IPv4: $PUBLIC_IP (create A records)"
+fi
+
+if [ -n "$PUBLIC_IPV6" ]; then
+    print_info "  → Server IPv6: $PUBLIC_IPV6 (create AAAA records)"
+fi
+
+print_info "  → Required DNS records:"
+print_info "    * portainer.$DOMAIN"
+print_info "    * traefik.$DOMAIN"
+print_info "    * n8n.$DOMAIN"
+print_info "    * evolution.$DOMAIN"
+print_info "    * minio.$DOMAIN"
+print_info "    * s3.$DOMAIN"
+print_info "    * mega.$DOMAIN"
+print_info "    * grafana.$DOMAIN"
 
 print_warning "SSL Certificate Generation:"
 print_info "  → Let's Encrypt certificates will auto-generate (5-15 minutes)"
@@ -1462,7 +1596,7 @@ FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0
 if [ "$FAILED_SERVICES" -gt 0 ]; then
     echo
     print_error "⚠️  ATTENTION: Some services failed to start properly:"
-    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+    docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/" || true
     echo
     print_warning "Execute troubleshooting commands above to investigate"
     print_warning "Wait 2-3 minutes and check again with: docker service ls"
