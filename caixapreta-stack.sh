@@ -1190,7 +1190,7 @@ services:
 
   redis-n8n:
     image: redis:7-alpine
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru --save 60 1000
     volumes:
       - /data/redis_n8n:/data
     networks:
@@ -1199,21 +1199,25 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
-      retries: 3
+      retries: 5
+      start_period: 30s
     deploy:
       placement:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
         delay: 5s
-        max_attempts: 3
+        max_attempts: 5
+        window: 60s
       resources:
         limits:
           memory: 256M
+        reservations:
+          memory: 128M
 
   redis-mega:
     image: redis:7-alpine
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru --save 60 1000
     volumes:
       - /data/redis_mega:/data
     networks:
@@ -1222,17 +1226,21 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
-      retries: 3
+      retries: 5
+      start_period: 30s
     deploy:
       placement:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
         delay: 5s
-        max_attempts: 3
+        max_attempts: 5
+        window: 60s
       resources:
         limits:
           memory: 256M
+        reservations:
+          memory: 128M
 
 networks:
   internal-net:
