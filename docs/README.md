@@ -37,3 +37,7 @@ Este projeto está configurado para deploy automático no Cloudflare Pages em `c
 
 - `/docs` - Aplicação Next.js do guia de instalação
 - `/caixapreta-stack.sh` - Script principal de instalação
+
+## Última Atualização
+
+Script principal atualizado com correções para IPv6, Evolution API, Grafana e MinIO - Março 2026
