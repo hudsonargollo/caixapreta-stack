@@ -662,9 +662,50 @@ if ! command -v docker &> /dev/null; then
     rm get-docker.sh
     
     print_success "$(msg "docker_success")"
+    
+    # Start Docker service after installation
+    systemctl start docker >/dev/null 2>&1
+    systemctl enable docker >/dev/null 2>&1
+    
+    # Wait for Docker to be ready
+    print_info "Waiting for Docker to initialize..."
+    sleep 5
+    
 else
     print_success "$(msg "docker_exists")"
 fi
+
+# Verify Docker is working
+print_info "Verifying Docker installation..."
+if ! docker --version >/dev/null 2>&1; then
+    print_error "Docker command not found after installation"
+    exit 1
+fi
+
+# Test Docker daemon connection
+if ! docker info >/dev/null 2>&1; then
+    print_warning "Docker daemon not responding, attempting to start..."
+    systemctl start docker >/dev/null 2>&1
+    sleep 5
+    
+    if ! docker info >/dev/null 2>&1; then
+        print_error "Cannot connect to Docker daemon"
+        print_info "This usually means Docker service is not running or socket permissions are wrong"
+        echo
+        print_info "Quick fix options:"
+        echo "1. Run the Docker fix script:"
+        echo "   wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-docker.sh"
+        echo "   chmod +x fix-docker.sh && sudo ./fix-docker.sh"
+        echo
+        echo "2. Manual fix:"
+        echo "   sudo systemctl start docker"
+        echo "   sudo chmod 666 /var/run/docker.sock"
+        echo
+        exit 1
+    fi
+fi
+
+print_success "Docker is ready and responding"
 
 # 4. Inicialização do Docker Swarm
 echo
@@ -685,9 +726,43 @@ fi
 
 # 4.1. Configuração de permissões do Docker
 print_hacker "$(msg "docker_security")"
-chmod 666 /var/run/docker.sock
+
+# Ensure Docker service is running
+systemctl start docker >/dev/null 2>&1
 systemctl enable docker >/dev/null 2>&1
-systemctl restart docker >/dev/null 2>&1
+
+# Wait for Docker daemon to be ready
+print_info "Waiting for Docker daemon to start..."
+for i in {1..30}; do
+    if docker info >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+
+# Check if Docker is responding
+if ! docker info >/dev/null 2>&1; then
+    print_error "Docker daemon failed to start properly"
+    print_info "Attempting to fix Docker socket permissions..."
+    
+    # Fix socket permissions
+    chmod 666 /var/run/docker.sock 2>/dev/null || true
+    
+    # Restart Docker service
+    systemctl restart docker
+    
+    # Wait again
+    sleep 10
+    
+    # Final check
+    if ! docker info >/dev/null 2>&1; then
+        print_error "Docker is still not responding. Please check Docker installation."
+        print_info "Try running: systemctl status docker"
+        exit 1
+    fi
+fi
+
+chmod 666 /var/run/docker.sock 2>/dev/null || true
 
 loading_animation 3 "$(msg "security_applying")"
 print_success "$(msg "security_success")"
