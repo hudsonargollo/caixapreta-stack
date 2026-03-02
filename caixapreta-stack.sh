@@ -718,8 +718,27 @@ if ! docker info | grep -q "Swarm: active"; then
     print_info "$(msg "swarm_ip_detected") $PUBLIC_IP"
     
     loading_animation 2 "$(msg "swarm_initializing")"
-    docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1
-    print_success "$(msg "swarm_success")"
+    
+    if docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1; then
+        print_success "$(msg "swarm_success")"
+    else
+        print_error "Failed to initialize Docker Swarm"
+        print_info "This could be due to:"
+        print_info "  → Network connectivity issues"
+        print_info "  → Firewall blocking Docker ports"
+        print_info "  → IP address detection problems"
+        echo
+        print_info "Attempting alternative initialization..."
+        
+        # Try without specific IP
+        if docker swarm init >/dev/null 2>&1; then
+            print_success "Docker Swarm initialized with default settings"
+        else
+            print_error "Docker Swarm initialization failed completely"
+            print_info "Manual fix: docker swarm init --advertise-addr YOUR_SERVER_IP"
+            exit 1
+        fi
+    fi
 else
     print_success "$(msg "swarm_active")"
 fi

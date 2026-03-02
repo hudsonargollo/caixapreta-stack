@@ -169,10 +169,22 @@ echo
 print_hacker "Forcing Swarm cluster dissolution..."
 loading_animation 3 "Dismantling cluster coordination"
 
-if docker swarm leave --force >/dev/null 2>&1; then
-    print_success "Docker Swarm cluster destroyed"
+# Check if swarm is actually active first
+SWARM_STATUS=$(docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null)
+
+if [ "$SWARM_STATUS" = "active" ]; then
+    if docker swarm leave --force >/dev/null 2>&1; then
+        print_success "Docker Swarm cluster destroyed"
+    else
+        print_error "Failed to leave Docker Swarm cluster"
+    fi
+elif [ "$SWARM_STATUS" = "inactive" ]; then
+    print_warning "Docker Swarm was not active (already disbanded or never initialized)"
+    print_info "This is normal if the installation failed or was incomplete"
 else
-    print_warning "No active Swarm cluster found"
+    print_warning "Docker Swarm status: $SWARM_STATUS"
+    # Try to leave anyway in case of edge cases
+    docker swarm leave --force >/dev/null 2>&1 || true
 fi
 
 # Phase 2: Container and Image Annihilation
