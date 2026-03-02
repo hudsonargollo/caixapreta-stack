@@ -580,7 +580,7 @@ verify_service() {
     log_info "Verifying service: $service_name (expecting $expected_replicas replicas)"
     
     while [ $attempt -le $max_attempts ]; do
-        local current_replicas=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "^$service_name " | awk '{print $2}' || echo "0/0")
+        local current_replicas=$(docker_safe service ls --format "{{.Name}} {{.Replicas}}" 2>/dev/null | grep "^$service_name " | awk '{print $2}' || echo "0/0")
         
         if [ "$current_replicas" = "$expected_replicas" ]; then
             log_success "Service $service_name is ready ($current_replicas)"
@@ -610,14 +610,15 @@ verify_service() {
 # Service health verification
 verify_service_health() {
     local service_name="$1"
-    local container_id=$(docker ps -q -f name="$service_name" | head -1)
+    
+    local container_id=$(docker_safe ps -q -f name="$service_name" 2>/dev/null | head -1)
     
     if [ -z "$container_id" ]; then
         return 1
     fi
     
     # Check container health status
-    local health_status=$(docker inspect "$container_id" --format='{{.State.Health.Status}}' 2>/dev/null || echo "none")
+    local health_status=$(docker_safe inspect "$container_id" --format='{{.State.Health.Status}}' 2>/dev/null || echo "none")
     
     if [ "$health_status" = "healthy" ] || [ "$health_status" = "none" ]; then
         return 0
@@ -782,6 +783,21 @@ install_docker() {
         alias docker='/usr/bin/docker'
         export PATH="/usr/bin:$PATH"
     fi
+    
+    # Create a reliable docker function that always works
+    docker_safe() {
+        if command -v docker >/dev/null 2>&1; then
+            docker "$@"
+        elif [ -x "/usr/bin/docker" ]; then
+            /usr/bin/docker "$@"
+        else
+            log_error "Docker command not found in PATH or /usr/bin/docker"
+            return 1
+        fi
+    }
+    
+    # Export the function for subshells
+    export -f docker_safe
 }
 # Enhanced Swarm initialization with multiple IP detection methods
 initialize_swarm() {
