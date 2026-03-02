@@ -76,49 +76,49 @@ msg() {
     case "$key" in
         "root_check")
             if [ "$LANG" = "pt" ]; then
-                echo "Verificando privilégios do sistema..."
+                echo "Verificando privilegios do sistema..."
             else
                 echo "Checking system privileges..."
             fi
             ;;
         "root_error")
             if [ "$LANG" = "pt" ]; then
-                echo "Acesso root necessário. Execute como root ou com sudo."
+                echo "Acesso root necessario. Execute como root ou com sudo."
             else
                 echo "Root access required. Please run as root or with sudo."
             fi
             ;;
         "root_terminating")
             if [ "$LANG" = "pt" ]; then
-                echo "FINALIZANDO PROCESSO..."
+                echo "TERMINANDO PROCESSO..."
             else
                 echo "TERMINATING PROCESS..."
             fi
             ;;
         "root_success")
             if [ "$LANG" = "pt" ]; then
-                echo "Privilégios root confirmados"
+                echo "Privilegios root confirmados"
             else
                 echo "Root privileges confirmed"
             fi
             ;;
         "config_mode")
             if [ "$LANG" = "pt" ]; then
-                echo "ENTRANDO NO MODO DE CONFIGURAÇÃO..."
+                echo "ENTRANDO NO MODO DE CONFIGURACAO..."
             else
                 echo "ENTERING CONFIGURATION MODE..."
             fi
             ;;
         "domain_config")
             if [ "$LANG" = "pt" ]; then
-                echo "                    CONFIGURAÇÃO DE DOMÍNIO                     "
+                echo "                    CONFIGURACAO DE DOMINIO                     "
             else
                 echo "                    DOMAIN CONFIGURATION                     "
             fi
             ;;
         "enter_domain")
             if [ "$LANG" = "pt" ]; then
-                echo "Digite seu domínio base (ex: seu-dominio.com):"
+                echo "Digite seu dominio base (ex: seu-dominio.com):"
             else
                 echo "Enter your base domain (e.g., your-domain.com):"
             fi
@@ -132,28 +132,28 @@ msg() {
             ;;
         "config_required")
             if [ "$LANG" = "pt" ]; then
-                echo "Domínio e email são obrigatórios para implantação segura"
+                echo "Dominio e email sao obrigatorios para implantacao segura"
             else
                 echo "Domain and email are required for secure deployment"
             fi
             ;;
         "aborting")
             if [ "$LANG" = "pt" ]; then
-                echo "ABORTANDO MISSÃO..."
+                echo "ABORTANDO MISSAO..."
             else
                 echo "ABORTING MISSION..."
             fi
             ;;
         "config_accepted")
             if [ "$LANG" = "pt" ]; then
-                echo "Configuração aceita"
+                echo "Configuracao aceita"
             else
                 echo "Configuration accepted"
             fi
             ;;
         "validating_config")
             if [ "$LANG" = "pt" ]; then
-                echo "Validando parâmetros de configuração"
+                echo "Validando parametros de configuracao"
             else
                 echo "Validating configuration parameters"
             fi
@@ -195,28 +195,28 @@ msg() {
             ;;
         "docker_deploy")
             if [ "$LANG" = "pt" ]; then
-                echo "IMPLANTAÇÃO DO SISTEMA DE CONTÊINERS DOCKER..."
+                echo "IMPLANTACAO DO SISTEMA DE CONTAINERIZACAO DOCKER..."
             else
                 echo "DOCKER CONTAINERIZATION SYSTEM DEPLOYMENT..."
             fi
             ;;
         "docker_installing")
             if [ "$LANG" = "pt" ]; then
-                echo "Docker não detectado. Instalando Docker Engine..."
+                echo "Docker nao detectado. Instalando Docker Engine..."
             else
                 echo "Docker not detected. Installing Docker Engine..."
             fi
             ;;
         "docker_downloading")
             if [ "$LANG" = "pt" ]; then
-                echo "Baixando script de instalação do Docker"
+                echo "Baixando script de instalacao do Docker"
             else
                 echo "Downloading Docker installation script"
             fi
             ;;
         "docker_executing")
             if [ "$LANG" = "pt" ]; then
-                echo "Executando instalação do Docker..."
+                echo "Executando instalacao do Docker..."
             else
                 echo "Executing Docker installation..."
             fi
@@ -230,7 +230,7 @@ msg() {
             ;;
         "docker_exists")
             if [ "$LANG" = "pt" ]; then
-                echo "Docker Engine já instalado"
+                echo "Docker Engine ja instalado"
             else
                 echo "Docker Engine already installed"
             fi
@@ -244,14 +244,14 @@ msg() {
             ;;
         "swarm_configuring")
             if [ "$LANG" = "pt" ]; then
-                echo "Configurando orquestração Docker Swarm..."
+                echo "Configurando orquestracao Docker Swarm..."
             else
                 echo "Configuring Docker Swarm orchestration..."
             fi
             ;;
         "swarm_ip_detected")
             if [ "$LANG" = "pt" ]; then
-                echo "IP público detectado:"
+                echo "IP publico detectado:"
             else
                 echo "Public IP detected:"
             fi
@@ -272,28 +272,28 @@ msg() {
             ;;
         "swarm_active")
             if [ "$LANG" = "pt" ]; then
-                echo "Docker Swarm já ativo"
+                echo "Docker Swarm ja ativo"
             else
                 echo "Docker Swarm already active"
             fi
             ;;
         "docker_security")
             if [ "$LANG" = "pt" ]; then
-                echo "Configurando permissões de segurança do Docker..."
+                echo "Configurando permissoes de seguranca do Docker..."
             else
                 echo "Configuring Docker security permissions..."
             fi
             ;;
         "security_applying")
             if [ "$LANG" = "pt" ]; then
-                echo "Aplicando configurações de segurança"
+                echo "Aplicando configuracoes de seguranca"
             else
                 echo "Applying security configurations"
             fi
             ;;
         "security_success")
             if [ "$LANG" = "pt" ]; then
-                echo "Segurança do Docker configurada"
+                echo "Seguranca do Docker configurada"
             else
                 echo "Docker security configured"
             fi
