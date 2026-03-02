@@ -1,9 +1,7 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Pages (DISABLED - use simple deployment)
 
 on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
+  # Disabled - use deploy-cloudflare-simple.yml instead
   workflow_dispatch:
 
 jobs:

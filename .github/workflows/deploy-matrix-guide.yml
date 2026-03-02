@@ -1,0 +1,44 @@
+name: Deploy Matrix Guide to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/matrix-index.html']
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Matrix Installation Guide
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare Matrix deployment
+        run: |
+          mkdir -p deploy
+          cd docs
+          
+          # Deploy Matrix guide as main page
+          cp matrix-index.html ../deploy/index.html
+          
+          # Also make it available at /matrix.html
+          cp matrix-index.html ../deploy/matrix.html
+          
+          # Create install subdirectory for alternative access
+          mkdir -p ../deploy/install
+          cp matrix-index.html ../deploy/install/index.html
+          
+          echo "✅ Matrix installation guide prepared for deployment"
+          echo "📁 Files created:"
+          ls -la ../deploy/
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: caixapreta-install-guide
+          directory: deploy
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: '3'
