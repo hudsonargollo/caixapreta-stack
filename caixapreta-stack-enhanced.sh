@@ -1757,6 +1757,7 @@ EOF
     
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}${BOLD}                    ENHANCED FRESH INSTALL SYSTEM v2${NC}"
+    echo -e "${YELLOW}${BOLD}                      Created by Hudson Argollo (@getrules)${NC}"
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo
     
