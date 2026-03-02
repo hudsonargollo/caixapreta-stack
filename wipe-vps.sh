@@ -96,6 +96,20 @@ msg() {
                 echo "  → Purge Docker system files and configurations"
             fi
             ;;
+        "purge_caches")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Limpar todos os caches do sistema e arquivos temporarios"
+            else
+                echo "  → Clear all system caches and temporary files"
+            fi
+            ;;
+        "clear_logs")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Limpar logs do sistema e arquivos de journal"
+            else
+                echo "  → Clear system logs and journal files"
+            fi
+            ;;
         "cannot_undo")
             if [ "$LANG_MODE" = "pt" ]; then
                 echo "ESTA ACAO NAO PODE SER DESFEITA!"
@@ -411,6 +425,20 @@ msg() {
                 echo "  → Configuration files: ${GREEN}PURGED${NC}"
             fi
             ;;
+        "system_caches")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Caches do sistema: ${GREEN}OBLITERADOS${NC}"
+            else
+                echo "  → System caches: ${GREEN}OBLITERATED${NC}"
+            fi
+            ;;
+        "log_files")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Arquivos de log: ${GREEN}LIMPOS${NC}"
+            else
+                echo "  → Log files: ${GREEN}CLEARED${NC}"
+            fi
+            ;;
         "ready_fresh")
             if [ "$LANG_MODE" = "pt" ]; then
                 echo "SEU VPS ESTA PRONTO PARA INSTALACAO NOVA"
@@ -577,6 +605,8 @@ print_info "$(msg "uninstall_docker")"
 print_info "$(msg "delete_data")"
 print_info "$(msg "remove_configs")"
 print_info "$(msg "purge_system")"
+print_info "$(msg "purge_caches")"
+print_info "$(msg "clear_logs")"
 echo
 
 print_danger "$(msg "cannot_undo")"
@@ -636,12 +666,24 @@ print_matrix "$(msg "phase2_title")"
 echo
 
 print_hacker "$(msg "stopping_containers")"
+# Stop all containers forcefully
 docker stop $(docker ps -aq) >/dev/null 2>&1 || true
+docker kill $(docker ps -aq) >/dev/null 2>&1 || true
 
 print_hacker "$(msg "removing_all")"
 loading_animation 5 "$(msg "purging_docker")"
 
+# Complete Docker cleanup - everything must go
+docker container prune -f >/dev/null 2>&1 || true
+docker image prune -a -f >/dev/null 2>&1 || true
+docker volume prune -f >/dev/null 2>&1 || true
+docker network prune -f >/dev/null 2>&1 || true
 docker system prune -a --volumes -f >/dev/null 2>&1 || true
+docker builder prune -a -f >/dev/null 2>&1 || true
+
+# Force remove any remaining containers and images
+docker rm -f $(docker ps -aq) >/dev/null 2>&1 || true
+docker rmi -f $(docker images -aq) >/dev/null 2>&1 || true
 
 print_success "$(msg "containers_annihilated")"
 
@@ -653,8 +695,22 @@ echo
 print_hacker "$(msg "uninstalling_docker")"
 loading_animation 4 "$(msg "removing_packages")"
 
-apt-get purge -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null 2>&1 || true
+# Stop Docker services completely
+systemctl stop docker.service >/dev/null 2>&1 || true
+systemctl stop docker.socket >/dev/null 2>&1 || true
+systemctl stop containerd.service >/dev/null 2>&1 || true
+systemctl disable docker.service >/dev/null 2>&1 || true
+systemctl disable docker.socket >/dev/null 2>&1 || true
+systemctl disable containerd.service >/dev/null 2>&1 || true
+
+# Remove Docker packages completely
+apt-get purge -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras docker-scan-plugin >/dev/null 2>&1 || true
+apt-get purge -y docker.io docker-doc docker-compose podman-docker containerd runc >/dev/null 2>&1 || true
 apt-get autoremove -y --purge >/dev/null 2>&1 || true
+
+# Remove Docker repository
+rm -f /etc/apt/sources.list.d/docker.list >/dev/null 2>&1 || true
+rm -f /etc/apt/keyrings/docker.gpg >/dev/null 2>&1 || true
 
 print_success "$(msg "docker_terminated")"
 
@@ -666,18 +722,81 @@ echo
 print_hacker "$(msg "destroying_directories")"
 
 # Progress simulation for dramatic effect
-directories=("/var/lib/docker" "/etc/docker" "/data" "~/stacks" "/var/run/docker.sock")
+directories=(
+    "/var/lib/docker" 
+    "/etc/docker" 
+    "/data" 
+    "~/stacks" 
+    "/var/run/docker.sock"
+    "/var/lib/containerd"
+    "/var/lib/docker-engine"
+    "/var/cache/docker"
+    "/opt/containerd"
+    "/run/docker"
+    "/run/containerd"
+    "$HOME/.docker"
+    "/root/.docker"
+    "/home/*/.docker"
+)
 total_dirs=${#directories[@]}
 
 for i in "${!directories[@]}"; do
     destruction_bar $((i+1)) $total_dirs
     rm -rf "${directories[$i]}" 2>/dev/null || true
-    sleep 0.5
+    sleep 0.3
 done
 
 print_success "$(msg "data_obliterated")"
 
-# Phase 5: Script Cleanup
+# Phase 5: Cache and System Cleanup
+echo
+print_matrix "PHASE 5: PURGING ALL CACHES AND SYSTEM ARTIFACTS..."
+echo
+
+print_hacker "Obliterating system caches and temporary files..."
+loading_animation 4 "Purging cache artifacts"
+
+# Clear package manager caches
+apt-get clean >/dev/null 2>&1 || true
+apt-get autoclean >/dev/null 2>&1 || true
+
+# Clear system caches
+rm -rf /var/cache/* >/dev/null 2>&1 || true
+rm -rf /tmp/* >/dev/null 2>&1 || true
+rm -rf /var/tmp/* >/dev/null 2>&1 || true
+
+# Clear log files
+rm -rf /var/log/docker* >/dev/null 2>&1 || true
+rm -rf /var/log/containers* >/dev/null 2>&1 || true
+rm -rf /var/log/pods* >/dev/null 2>&1 || true
+truncate -s 0 /var/log/syslog >/dev/null 2>&1 || true
+truncate -s 0 /var/log/kern.log >/dev/null 2>&1 || true
+
+# Clear systemd journal logs
+journalctl --vacuum-time=1s >/dev/null 2>&1 || true
+journalctl --vacuum-size=1M >/dev/null 2>&1 || true
+
+# Clear user caches
+rm -rf /root/.cache/* >/dev/null 2>&1 || true
+rm -rf /home/*/.cache/* >/dev/null 2>&1 || true
+
+# Clear network configurations
+rm -rf /etc/systemd/network/docker* >/dev/null 2>&1 || true
+rm -rf /etc/systemd/network/*-docker* >/dev/null 2>&1 || true
+
+# Clear any remaining Docker-related systemd units
+rm -f /etc/systemd/system/docker* >/dev/null 2>&1 || true
+rm -f /lib/systemd/system/docker* >/dev/null 2>&1 || true
+rm -f /etc/systemd/system/containerd* >/dev/null 2>&1 || true
+systemctl daemon-reload >/dev/null 2>&1 || true
+
+# Clear memory caches (force kernel to drop caches)
+sync
+echo 3 > /proc/sys/vm/drop_caches 2>/dev/null || true
+
+print_success "All caches and system artifacts purged"
+
+# Phase 6: Script Cleanup
 echo
 print_matrix "$(msg "phase5_title")"
 echo
@@ -689,7 +808,58 @@ rm -f *.sh *.yml *.yaml 2>/dev/null || true
 
 print_success "$(msg "artifacts_purged")"
 
-# Phase 6: Final Verification
+# Phase 6: Script Cleanup
+echo
+print_matrix "$(msg "phase5_title")"
+echo
+
+print_hacker "$(msg "removing_scripts")"
+loading_animation 2 "$(msg "cleaning_artifacts")"
+
+# Remove all installation scripts and artifacts
+rm -f *.sh *.yml *.yaml *.json *.log 2>/dev/null || true
+rm -f /tmp/caixapreta* >/dev/null 2>&1 || true
+rm -f /tmp/docker* >/dev/null 2>&1 || true
+rm -f /tmp/*install* >/dev/null 2>&1 || true
+
+# Remove any downloaded Docker installation files
+rm -f /tmp/get-docker.sh >/dev/null 2>&1 || true
+rm -f get-docker.sh >/dev/null 2>&1 || true
+
+print_success "$(msg "artifacts_purged")"
+
+# Phase 7: Deep System Scan and Cleanup
+echo
+print_matrix "PHASE 7: DEEP SYSTEM SCAN AND FINAL CLEANUP..."
+echo
+
+print_hacker "Performing deep system scan for remaining artifacts..."
+loading_animation 3 "Scanning for hidden remnants"
+
+# Find and remove any remaining Docker-related files
+find /etc -name "*docker*" -type f -delete 2>/dev/null || true
+find /etc -name "*containerd*" -type f -delete 2>/dev/null || true
+find /usr -name "*docker*" -type f -delete 2>/dev/null || true
+find /opt -name "*docker*" -type d -exec rm -rf {} + 2>/dev/null || true
+
+# Remove any Docker-related environment variables from system files
+sed -i '/DOCKER/d' /etc/environment 2>/dev/null || true
+sed -i '/docker/d' /etc/bash.bashrc 2>/dev/null || true
+
+# Clear any Docker-related cron jobs
+crontab -l 2>/dev/null | grep -v docker | crontab - 2>/dev/null || true
+
+# Remove Docker-related users and groups
+userdel docker 2>/dev/null || true
+groupdel docker 2>/dev/null || true
+
+# Final memory and swap cleanup
+swapoff -a 2>/dev/null || true
+swapon -a 2>/dev/null || true
+
+print_success "Deep system scan completed - all remnants eliminated"
+
+# Phase 8: Final Verification
 echo
 print_matrix "$(msg "phase6_title")"
 echo
@@ -732,6 +902,8 @@ echo -e "$(msg "containers_images")"
 echo -e "$(msg "docker_engine")"
 echo -e "$(msg "stack_data")"
 echo -e "$(msg "config_files")"
+echo -e "$(msg "system_caches")"
+echo -e "$(msg "log_files")"
 
 echo
 print_matrix "$(msg "ready_fresh")"
