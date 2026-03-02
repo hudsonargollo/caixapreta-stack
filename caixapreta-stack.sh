@@ -811,34 +811,77 @@ msg() {
     esac
 }
 
-# Network cleanup and creation with verification
+# Enhanced network creation with conflict resolution
 create_networks() {
     log_step "$(msg "creating_networks")"
     
-    # Remove existing networks if they exist
-    docker network rm traefik-public internal-net 2>/dev/null || true
-    sleep 2
+    # Function to check if network exists and is correct type
+    check_network() {
+        local network_name="$1"
+        local expected_driver="overlay"
+        
+        if docker network ls --format "{{.Name}} {{.Driver}}" | grep -q "^$network_name $expected_driver$"; then
+            return 0  # Network exists and is correct type
+        elif docker network ls --format "{{.Name}}" | grep -q "^$network_name$"; then
+            return 1  # Network exists but wrong type
+        else
+            return 2  # Network doesn't exist
+        fi
+    }
     
-    # Create networks with explicit configuration
+    # Handle traefik-public network
     log_info "$(msg "creating_traefik_network")"
-    docker network create \
-        --driver overlay \
-        --attachable \
-        --subnet=10.0.1.0/24 \
-        traefik-public
+    check_network "traefik-public"
+    case $? in
+        0)
+            log_info "traefik-public network already exists (overlay) - using existing"
+            ;;
+        1)
+            log_warning "traefik-public exists but wrong driver - recreating"
+            # Stop services that might be using it
+            docker service rm core_traefik core_portainer 2>/dev/null || true
+            sleep 5
+            docker network rm traefik-public 2>/dev/null || true
+            sleep 2
+            docker network create --driver overlay --attachable --subnet=10.0.1.0/24 traefik-public
+            ;;
+        2)
+            log_info "Creating new traefik-public network"
+            docker network create --driver overlay --attachable --subnet=10.0.1.0/24 traefik-public
+            ;;
+    esac
     
+    # Handle internal-net network
     log_info "$(msg "creating_internal_network")"
-    docker network create \
-        --driver overlay \
-        --attachable \
-        --subnet=10.0.2.0/24 \
-        internal-net
+    check_network "internal-net"
+    case $? in
+        0)
+            log_info "internal-net network already exists (overlay) - using existing"
+            ;;
+        1)
+            log_warning "internal-net exists but wrong driver - recreating"
+            # Stop services that might be using it
+            docker service rm db_postgres db_redis-n8n db_redis-mega 2>/dev/null || true
+            docker service rm automation_n8n automation_evolution automation_n8n-worker 2>/dev/null || true
+            docker service rm apps_mega-rails apps_mega-sidekiq apps_grafana 2>/dev/null || true
+            sleep 5
+            docker network rm internal-net 2>/dev/null || true
+            sleep 2
+            docker network create --driver overlay --attachable --subnet=10.0.2.0/24 internal-net
+            ;;
+        2)
+            log_info "Creating new internal-net network"
+            docker network create --driver overlay --attachable --subnet=10.0.2.0/24 internal-net
+            ;;
+    esac
     
-    # Verify networks exist
-    if docker network ls | grep -q "traefik-public" && docker network ls | grep -q "internal-net"; then
+    # Final verification
+    if docker network ls | grep -q "traefik-public.*overlay" && docker network ls | grep -q "internal-net.*overlay"; then
         log_success "$(msg "networks_created")"
     else
         log_error "$(msg "failed_create_networks")"
+        log_info "Current networks:"
+        docker network ls
         exit 1
     fi
 }
