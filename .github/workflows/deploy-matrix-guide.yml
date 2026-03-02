@@ -3,7 +3,7 @@ name: Deploy Matrix Guide to Cloudflare Pages
 on:
   push:
     branches: [main]
-    paths: ['docs/matrix-index.html']
+    paths: ['docs/**']
   workflow_dispatch:
 
 jobs:
