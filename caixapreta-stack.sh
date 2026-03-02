@@ -1087,9 +1087,13 @@ echo
 if ! docker info | grep -q "Swarm: active"; then
     print_hacker "$(msg "swarm_configuring")"
     
-    # Detect both IPv4 and IPv6 addresses
-    PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null)
-    PUBLIC_IPV6=$(curl -s -6 ifconfig.me 2>/dev/null || curl -s -6 ipinfo.io/ip 2>/dev/null)
+    print_info "Detecting server IP addresses..."
+    
+    # Detect both IPv4 and IPv6 addresses with timeout
+    PUBLIC_IP=$(timeout 10 curl -s ifconfig.me 2>/dev/null || timeout 10 curl -s ipinfo.io/ip 2>/dev/null || echo "")
+    PUBLIC_IPV6=$(timeout 10 curl -s -6 ifconfig.me 2>/dev/null || timeout 10 curl -s -6 ipinfo.io/ip 2>/dev/null || echo "")
+    
+    print_info "IP detection completed"
     
     # Try IPv4 first, then IPv6, then default
     if [ -n "$PUBLIC_IP" ] && [[ "$PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -1099,7 +1103,7 @@ if ! docker info | grep -q "Swarm: active"; then
         print_info "$(msg "swarm_ip_detected") $PUBLIC_IPV6 (IPv6)"
         # For IPv6, we need to use the interface IP instead of public IP
         # Get the main network interface IPv6 address
-        LOCAL_IPV6=$(ip -6 addr show | grep 'inet6.*global' | head -1 | awk '{print $2}' | cut -d'/' -f1)
+        LOCAL_IPV6=$(ip -6 addr show | grep 'inet6.*global' | head -1 | awk '{print $2}' | cut -d'/' -f1 2>/dev/null || echo "")
         if [ -n "$LOCAL_IPV6" ]; then
             ADVERTISE_ADDR="[$LOCAL_IPV6]"
             print_info "$(msg "ipv6_local_use") $LOCAL_IPV6"
@@ -1108,7 +1112,7 @@ if ! docker info | grep -q "Swarm: active"; then
             print_warning "$(msg "ipv6_detected")"
         fi
     else
-        print_warning "$(msg "ipv6_detected")"
+        print_warning "Could not detect any IP address, using default Docker Swarm configuration"
         ADVERTISE_ADDR=""
     fi
     
@@ -1835,8 +1839,8 @@ print_warning "DNS Configuration Required:"
 print_info "  → Create DNS records for all subdomains pointing to this server"
 
 # Show both IPv4 and IPv6 if available
-PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null)
-PUBLIC_IPV6=$(curl -s -6 ifconfig.me 2>/dev/null || curl -s -6 ipinfo.io/ip 2>/dev/null)
+PUBLIC_IP=$(timeout 10 curl -s ifconfig.me 2>/dev/null || timeout 10 curl -s ipinfo.io/ip 2>/dev/null || echo "")
+PUBLIC_IPV6=$(timeout 10 curl -s -6 ifconfig.me 2>/dev/null || timeout 10 curl -s -6 ipinfo.io/ip 2>/dev/null || echo "")
 
 if [ -n "$PUBLIC_IP" ]; then
     print_info "  → Server IPv4: $PUBLIC_IP (create A records)"
