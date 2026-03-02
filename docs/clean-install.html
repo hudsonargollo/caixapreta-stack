@@ -21,9 +21,283 @@
             overflow-x: hidden;
         }
         
+        /* Welcome Splash Screen */
+        .welcome-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: grain 0.1s infinite;
+        }
+        
+        .welcome-splash::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
+            animation: dynamicBlur 4s ease-in-out infinite;
+        }
+        
+        @keyframes grain {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.98; }
+        }
+        
+        @keyframes dynamicBlur {
+            0%, 100% { 
+                filter: blur(0px);
+                transform: scale(1);
+            }
+            50% { 
+                filter: blur(1px);
+                transform: scale(1.02);
+            }
+        }
+        
+        .ascii-container {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .ascii-art {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1;
+            color: #0099ff;
+            text-shadow: 
+                0 0 5px #0099ff,
+                0 0 10px #0099ff,
+                0 0 15px #0099ff,
+                0 0 20px #0099ff;
+            white-space: pre;
+            animation: glitchPulse 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .ascii-art::before,
+        .ascii-art::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        
+        .ascii-art::before {
+            animation: glitch1 2s infinite;
+            color: #ff0080;
+            text-shadow: 
+                0 0 5px #ff0080,
+                0 0 10px #ff0080;
+            z-index: -1;
+        }
+        
+        .ascii-art::after {
+            animation: glitch2 2s infinite;
+            color: #00ffff;
+            text-shadow: 
+                0 0 5px #00ffff,
+                0 0 10px #00ffff;
+            z-index: -2;
+        }
+        
+        @keyframes glitchPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.02);
+                filter: brightness(1.2);
+            }
+        }
+        
+        @keyframes glitch1 {
+            0%, 100% { 
+                transform: translate(0);
+                opacity: 0;
+            }
+            10% { 
+                transform: translate(-2px, 1px);
+                opacity: 0.8;
+            }
+            20% { 
+                transform: translate(0);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes glitch2 {
+            0%, 100% { 
+                transform: translate(0);
+                opacity: 0;
+            }
+            15% { 
+                transform: translate(2px, -1px);
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translate(0);
+                opacity: 0;
+            }
+        }
+        
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0099ff;
+            text-shadow: 
+                0 0 10px #0099ff,
+                0 0 20px #0099ff;
+            margin-bottom: 10px;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .welcome-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes titleGlow {
+            0% { 
+                text-shadow: 
+                    0 0 10px #0099ff,
+                    0 0 20px #0099ff;
+            }
+            100% { 
+                text-shadow: 
+                    0 0 15px #0099ff,
+                    0 0 30px #0099ff,
+                    0 0 40px #0099ff;
+            }
+        }
+        
+        .language-selection {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .lang-option {
+            background: rgba(0, 153, 255, 0.1);
+            border: 2px solid #0099ff;
+            border-radius: 8px;
+            padding: 20px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lang-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 153, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .lang-option:hover::before {
+            left: 100%;
+        }
+        
+        .lang-option:hover {
+            background: rgba(0, 153, 255, 0.2);
+            box-shadow: 
+                0 0 20px rgba(0, 153, 255, 0.5),
+                inset 0 0 20px rgba(0, 153, 255, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .lang-flag {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .lang-name {
+            color: #0099ff;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .lang-code {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .welcome-footer {
+            position: absolute;
+            bottom: 30px;
+            color: #333;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Fade out animation */
+        .welcome-splash.fade-out {
+            animation: fadeOut 1s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            0% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(1.1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ascii-art {
+                font-size: 0.4rem;
+            }
+            
+            .language-selection {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .lang-option {
+                padding: 15px 25px;
+            }
+            
+            .welcome-title {
+                font-size: 20px;
+            }
+        }
+        
         /* Login Screen */
         .login-container {
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
@@ -117,6 +391,15 @@
             display: none;
             min-height: 100vh;
             background: #0a0a0a;
+        }
+        
+        /* Language-specific content */
+        .lang-content {
+            display: none;
+        }
+        
+        .lang-content.active {
+            display: block;
         }
         
         .header {
@@ -322,31 +605,107 @@
     </style>
 </head>
 <body>
+    <!-- Welcome Splash Screen -->
+    <div id="welcomeSplash" class="welcome-splash">
+        <div class="ascii-container">
+            <div class="ascii-art" data-text="
+ ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
+██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
+██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
+██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
+╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
+ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
+                                                                                  
+███████╗████████╗ █████╗  ██████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
+██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║   ██║╚════██╗   ██╔═████╗
+███████╗   ██║   ███████║██║     █████╔╝     ██║   ██║ █████╔╝   ██║██╔██║
+╚════██║   ██║   ██╔══██║██║     ██╔═██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
+███████║   ██║   ██║  ██║╚██████╗██║  ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝
+╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═══╝  ╚══════╝╚═╝ ╚═════╝ 
+">
+ ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
+██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
+██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
+██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
+╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
+ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
+                                                                                  
+███████╗████████╗ █████╗  ██████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
+██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║   ██║╚════██╗   ██╔═████╗
+███████╗   ██║   ███████║██║     █████╔╝     ██║   ██║ █████╔╝   ██║██╔██║
+╚════██║   ██║   ██╔══██║██║     ██╔═██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
+███████║   ██║   ██║  ██║╚██████╗██║  ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝
+╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═══╝  ╚══════╝╚═╝ ╚═════╝ 
+            </div>
+        </div>
+        
+        <div class="welcome-title">AUTOMATED INFRASTRUCTURE DEPLOYMENT</div>
+        <div class="welcome-subtitle">Select Your Language / Selecione Seu Idioma</div>
+        
+        <div class="language-selection">
+            <div class="lang-option" onclick="selectLanguage('en')">
+                <div class="lang-flag">🇺🇸</div>
+                <div class="lang-name">English</div>
+                <div class="lang-code">EN</div>
+            </div>
+            <div class="lang-option" onclick="selectLanguage('pt')">
+                <div class="lang-flag">🇧🇷</div>
+                <div class="lang-name">Português</div>
+                <div class="lang-code">PT-BR</div>
+            </div>
+        </div>
+        
+        <div class="welcome-footer">
+            CaixaPreta Stack v2.0 | Installation Protocol
+        </div>
+    </div>
+
     <!-- Login Screen -->
     <div id="loginScreen" class="login-container">
         <div class="login-box">
             <div class="logo">CAIXAPRETA_STACK</div>
-            <div class="subtitle">Installation Protocol v2.0</div>
             
-            <div class="input-group">
-                <label for="accessCode">Access Code</label>
-                <input type="password" id="accessCode" placeholder="Enter access code">
+            <!-- English Content -->
+            <div class="lang-content" id="login-en">
+                <div class="subtitle">Installation Protocol v2.0</div>
+                <div class="input-group">
+                    <label for="accessCode">Access Code</label>
+                    <input type="password" id="accessCode" placeholder="Enter access code">
+                </div>
+                <button class="btn" onclick="authenticate()">Initialize</button>
+                <div class="error" id="errorMsg">Access denied. Invalid credentials.</div>
             </div>
             
-            <button class="btn" onclick="authenticate()">Initialize</button>
-            <div class="error" id="errorMsg">Access denied. Invalid credentials.</div>
+            <!-- Portuguese Content -->
+            <div class="lang-content" id="login-pt">
+                <div class="subtitle">Protocolo de Instalação v2.0</div>
+                <div class="input-group">
+                    <label for="accessCodePt">Código de Acesso</label>
+                    <input type="password" id="accessCodePt" placeholder="Digite o código de acesso">
+                </div>
+                <button class="btn" onclick="authenticate()">Inicializar</button>
+                <div class="error" id="errorMsgPt">Acesso negado. Credenciais inválidas.</div>
+            </div>
         </div>
     </div>
     
     <!-- Main Interface -->
     <div id="mainInterface" class="main-container">
-        <div class="header">
+        <!-- English Header -->
+        <div class="header lang-content" id="header-en">
             <h1>CAIXAPRETA STACK DEPLOYMENT PROTOCOL</h1>
         </div>
         
+        <!-- Portuguese Header -->
+        <div class="header lang-content" id="header-pt">
+            <h1>PROTOCOLO DE IMPLANTAÇÃO CAIXAPRETA STACK</h1>
+        </div>
+        
         <div class="content">
-            <!-- Step 1 -->
-            <div class="terminal-window">
+            <!-- English Content -->
+            <div class="lang-content" id="content-en">
+                <!-- Step 1 -->
+                <div class="terminal-window">
                 <div class="terminal-header">
                     <div class="terminal-dots">
                         <div class="dot red"></div>
@@ -489,17 +848,53 @@
     </div>
 
     <script>
+        let selectedLanguage = 'en';
+        
+        function selectLanguage(lang) {
+            selectedLanguage = lang;
+            
+            // Add fade out animation to splash
+            document.getElementById('welcomeSplash').classList.add('fade-out');
+            
+            // Show login screen after animation
+            setTimeout(() => {
+                document.getElementById('welcomeSplash').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                
+                // Show appropriate language content
+                showLanguageContent(lang);
+            }, 1000);
+        }
+        
+        function showLanguageContent(lang) {
+            // Hide all language content
+            document.querySelectorAll('.lang-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected language content
+            document.querySelectorAll(`#login-${lang}, #header-${lang}, #content-${lang}`).forEach(el => {
+                el.classList.add('active');
+            });
+        }
+        
         function authenticate() {
-            const code = document.getElementById('accessCode').value;
-            const errorMsg = document.getElementById('errorMsg');
+            const codeInput = selectedLanguage === 'en' ? 'accessCode' : 'accessCodePt';
+            const errorElement = selectedLanguage === 'en' ? 'errorMsg' : 'errorMsgPt';
+            
+            const code = document.getElementById(codeInput).value;
+            const errorMsg = document.getElementById(errorElement);
             
             if (code === 'caixapretastack2626') {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainInterface').style.display = 'block';
                 errorMsg.style.display = 'none';
+                
+                // Show appropriate language content in main interface
+                showLanguageContent(selectedLanguage);
             } else {
                 errorMsg.style.display = 'block';
-                document.getElementById('accessCode').value = '';
+                document.getElementById(codeInput).value = '';
             }
         }
         
@@ -515,11 +910,19 @@
             });
         }
         
-        // Enter key support
-        document.getElementById('accessCode').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                authenticate();
-            }
+        // Enter key support for both language inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('accessCode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    authenticate();
+                }
+            });
+            
+            document.getElementById('accessCodePt').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    authenticate();
+                }
+            });
         });
     </script>
 </body>
