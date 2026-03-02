@@ -10,6 +10,10 @@
 
 set -e
 
+# Set UTF-8 locale for proper character handling
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
 # Terminal Colors & Effects
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -231,6 +235,252 @@ msg() {
                 echo "Docker Engine already installed"
             fi
             ;;
+        "swarm_init")
+            if [ "$LANG" = "pt" ]; then
+                echo "INICIALIZANDO CLUSTER DOCKER SWARM..."
+            else
+                echo "INITIALIZING DOCKER SWARM CLUSTER..."
+            fi
+            ;;
+        "swarm_configuring")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando orquestração Docker Swarm..."
+            else
+                echo "Configuring Docker Swarm orchestration..."
+            fi
+            ;;
+        "swarm_ip_detected")
+            if [ "$LANG" = "pt" ]; then
+                echo "IP público detectado:"
+            else
+                echo "Public IP detected:"
+            fi
+            ;;
+        "swarm_initializing")
+            if [ "$LANG" = "pt" ]; then
+                echo "Inicializando cluster Swarm"
+            else
+                echo "Initializing Swarm cluster"
+            fi
+            ;;
+        "swarm_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Cluster Docker Swarm inicializado"
+            else
+                echo "Docker Swarm cluster initialized"
+            fi
+            ;;
+        "swarm_active")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker Swarm já ativo"
+            else
+                echo "Docker Swarm already active"
+            fi
+            ;;
+        "docker_security")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando permissões de segurança do Docker..."
+            else
+                echo "Configuring Docker security permissions..."
+            fi
+            ;;
+        "security_applying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Aplicando configurações de segurança"
+            else
+                echo "Applying security configurations"
+            fi
+            ;;
+        "security_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Segurança do Docker configurada"
+            else
+                echo "Docker security configured"
+            fi
+            ;;
+        "network_infra")
+            if [ "$LANG" = "pt" ]; then
+                echo "ESTABELECENDO INFRAESTRUTURA DE REDE..."
+            else
+                echo "ESTABLISHING NETWORK INFRASTRUCTURE..."
+            fi
+            ;;
+        "network_cleaning")
+            if [ "$LANG" = "pt" ]; then
+                echo "Limpando configurações de rede existentes..."
+            else
+                echo "Cleaning existing network configurations..."
+            fi
+            ;;
+        "network_creating")
+            if [ "$LANG" = "pt" ]; then
+                echo "Criando topologia de rede overlay..."
+            else
+                echo "Creating overlay network topology..."
+            fi
+            ;;
+        "network_traefik")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando rede traefik-public"
+            else
+                echo "Configuring traefik-public network"
+            fi
+            ;;
+        "network_internal")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando rede internal-net"
+            else
+                echo "Configuring internal-net network"
+            fi
+            ;;
+        "network_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Infraestrutura de rede estabelecida"
+            else
+                echo "Network infrastructure established"
+            fi
+            ;;
+        "data_persistence")
+            if [ "$LANG" = "pt" ]; then
+                echo "PREPARANDO CAMADA DE PERSISTÊNCIA DE DADOS..."
+            else
+                echo "PREPARING DATA PERSISTENCE LAYER..."
+            fi
+            ;;
+        "data_creating")
+            if [ "$LANG" = "pt" ]; then
+                echo "Criando estrutura de diretórios de dados..."
+            else
+                echo "Creating data directory structure..."
+            fi
+            ;;
+        "ssl_config")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configurando armazenamento de certificados SSL..."
+            else
+                echo "Configuring SSL certificate storage..."
+            fi
+            ;;
+        "permissions_setting")
+            if [ "$LANG" = "pt" ]; then
+                echo "Definindo permissões de diretório..."
+            else
+                echo "Setting directory permissions..."
+            fi
+            ;;
+        "permissions_applying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Aplicando permissões de segurança"
+            else
+                echo "Applying security permissions"
+            fi
+            ;;
+        "data_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Camada de persistência de dados configurada"
+            else
+                echo "Data persistence layer configured"
+            fi
+            ;;
+        "traefik_config")
+            if [ "$LANG" = "pt" ]; then
+                echo "CONFIGURANDO PROXY REVERSO E TERMINAÇÃO SSL..."
+            else
+                echo "CONFIGURING REVERSE PROXY & SSL TERMINATION..."
+            fi
+            ;;
+        "traefik_generating")
+            if [ "$LANG" = "pt" ]; then
+                echo "Gerando configuração do Traefik..."
+            else
+                echo "Generating Traefik configuration..."
+            fi
+            ;;
+        "ssl_automation")
+            if [ "$LANG" = "pt" ]; then
+                echo "Criando regras de automação SSL"
+            else
+                echo "Creating SSL automation rules"
+            fi
+            ;;
+        "traefik_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Proxy reverso Traefik configurado"
+            else
+                echo "Traefik reverse proxy configured"
+            fi
+            ;;
+        "deployment_sequence")
+            if [ "$LANG" = "pt" ]; then
+                echo "INICIANDO SEQUÊNCIA DE IMPLANTAÇÃO DE STACKS..."
+            else
+                echo "INITIATING STACK DEPLOYMENT SEQUENCE..."
+            fi
+            ;;
+        "deployment_preparing")
+            if [ "$LANG" = "pt" ]; then
+                echo "Preparando ambiente de implantação"
+            else
+                echo "Preparing deployment environment"
+            fi
+            ;;
+        "core_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando Infraestrutura Principal (Traefik + Portainer)..."
+            else
+                echo "Deploying Core Infrastructure (Traefik + Portainer)..."
+            fi
+            ;;
+        "traefik_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando proxy reverso Traefik"
+            else
+                echo "Deploying Traefik reverse proxy"
+            fi
+            ;;
+        "portainer_deploying")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantando interface de gerenciamento Portainer"
+            else
+                echo "Deploying Portainer management interface"
+            fi
+            ;;
+        "core_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Infraestrutura principal implantada"
+            else
+                echo "Core infrastructure deployed"
+            fi
+            ;;
+        "verifying_core")
+            if [ "$LANG" = "pt" ]; then
+                echo "Verificando status dos serviços principais..."
+            else
+                echo "Verifying core services status..."
+            fi
+            ;;
+        "mission_complete")
+            if [ "$LANG" = "pt" ]; then
+                echo "MISSÃO CUMPRIDA - TODOS OS SISTEMAS OPERACIONAIS"
+            else
+                echo "MISSION ACCOMPLISHED - ALL SYSTEMS OPERATIONAL"
+            fi
+            ;;
+        "deployment_complete")
+            if [ "$LANG" = "pt" ]; then
+                echo "Implantação da infraestrutura concluída com sucesso!"
+            else
+                echo "Infrastructure deployment completed successfully!"
+            fi
+            ;;
+        "access_endpoints")
+            if [ "$LANG" = "pt" ]; then
+                echo "                    PONTOS DE ACESSO                         "
+            else
+                echo "                    ACCESS ENDPOINTS                         "
+            fi
+            ;;
+        *)
             echo "$key"
             ;;
     esac
@@ -418,55 +668,55 @@ fi
 
 # 4. Inicialização do Docker Swarm
 echo
-print_matrix "INITIALIZING DOCKER SWARM CLUSTER..."
+print_matrix "$(msg "swarm_init")"
 echo
 
 if ! docker info | grep -q "Swarm: active"; then
-    print_hacker "Configuring Docker Swarm orchestration..."
+    print_hacker "$(msg "swarm_configuring")"
     PUBLIC_IP=$(curl -s ifconfig.me)
-    print_info "Public IP detected: $PUBLIC_IP"
+    print_info "$(msg "swarm_ip_detected") $PUBLIC_IP"
     
-    loading_animation 2 "Initializing Swarm cluster"
+    loading_animation 2 "$(msg "swarm_initializing")"
     docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1
-    print_success "Docker Swarm cluster initialized"
+    print_success "$(msg "swarm_success")"
 else
-    print_success "Docker Swarm already active"
+    print_success "$(msg "swarm_active")"
 fi
 
 # 4.1. Configuração de permissões do Docker
-print_hacker "Configuring Docker security permissions..."
+print_hacker "$(msg "docker_security")"
 chmod 666 /var/run/docker.sock
 systemctl enable docker >/dev/null 2>&1
 systemctl restart docker >/dev/null 2>&1
 
-loading_animation 3 "Applying security configurations"
-print_success "Docker security configured"
+loading_animation 3 "$(msg "security_applying")"
+print_success "$(msg "security_success")"
 
 # 5. Criação de Redes do Swarm
 echo
-print_matrix "ESTABLISHING NETWORK INFRASTRUCTURE..."
+print_matrix "$(msg "network_infra")"
 echo
 
-print_hacker "Cleaning existing network configurations..."
+print_hacker "$(msg "network_cleaning")"
 # Remove networks if they exist to avoid conflicts
 docker network rm traefik-public internal-net 2>/dev/null || true
 sleep 1
 
-print_hacker "Creating overlay network topology..."
-loading_animation 1 "Configuring traefik-public network"
+print_hacker "$(msg "network_creating")"
+loading_animation 1 "$(msg "network_traefik")"
 docker network create --driver overlay traefik-public >/dev/null 2>&1
 
-loading_animation 1 "Configuring internal-net network"
+loading_animation 1 "$(msg "network_internal")"
 docker network create --driver overlay internal-net >/dev/null 2>&1
 
-print_success "Network infrastructure established"
+print_success "$(msg "network_success")"
 
 # 6. Preparação de Diretórios de Dados
 echo
-print_matrix "PREPARING DATA PERSISTENCE LAYER..."
+print_matrix "$(msg "data_persistence")"
 echo
 
-print_hacker "Creating data directory structure..."
+print_hacker "$(msg "data_creating")"
 directories=("traefik" "portainer" "n8n" "redis_n8n" "redis_mega" "postgres" "minio" "mega" "evolution" "grafana")
 
 for i in "${!directories[@]}"; do
@@ -475,25 +725,25 @@ for i in "${!directories[@]}"; do
     sleep 0.2
 done
 
-print_hacker "Configuring SSL certificate storage..."
+print_hacker "$(msg "ssl_config")"
 touch /data/traefik/acme.json
 chmod 600 /data/traefik/acme.json
 
-print_hacker "Setting directory permissions..."
-loading_animation 1 "Applying security permissions"
+print_hacker "$(msg "permissions_setting")"
+loading_animation 1 "$(msg "permissions_applying")"
 chown -R root:root /data >/dev/null 2>&1
 chmod -R 755 /data >/dev/null 2>&1
 chmod 600 /data/traefik/acme.json
 
-print_success "Data persistence layer configured"
+print_success "$(msg "data_success")"
 
 # 7. Configuração do Traefik (Proxy Reverso com SSL)
 echo
-print_matrix "CONFIGURING REVERSE PROXY & SSL TERMINATION..."
+print_matrix "$(msg "traefik_config")"
 echo
 
-print_hacker "Generating Traefik configuration..."
-loading_animation 2 "Creating SSL automation rules"
+print_hacker "$(msg "traefik_generating")"
+loading_animation 2 "$(msg "ssl_automation")"
 
 cat <<EOF > /data/traefik/traefik.yml
 api:
@@ -523,17 +773,17 @@ certificatesResolvers:
         entryPoint: web
 EOF
 
-print_success "Traefik reverse proxy configured"
+print_success "$(msg "traefik_success")"
 
 # 8. Deploy das Stacks
 echo
-print_matrix "INITIATING STACK DEPLOYMENT SEQUENCE..."
+print_matrix "$(msg "deployment_sequence")"
 echo
 
 # Wait for Docker to be fully ready
-loading_animation 3 "Preparing deployment environment"
+loading_animation 3 "$(msg "deployment_preparing")"
 
-print_hacker "Deploying Core Infrastructure (Traefik + Portainer)..."
+print_hacker "$(msg "core_deploying")"
 cat <<EOF > swarm-core.yml
 version: '3.8'
 services:
@@ -594,13 +844,13 @@ EOF
 
 docker stack deploy -c swarm-core.yml core >/dev/null 2>&1
 
-loading_animation 8 "Deploying Traefik reverse proxy"
-loading_animation 7 "Deploying Portainer management interface"
+loading_animation 8 "$(msg "traefik_deploying")"
+loading_animation 7 "$(msg "portainer_deploying")"
 
-print_success "Core infrastructure deployed"
+print_success "$(msg "core_success")"
 
 # Verificar se os serviços estão rodando
-print_info "Verifying core services status..."
+print_info "$(msg "verifying_core")"
 docker service ls | grep core
 
 # STACK 2: Redis Dedicados e Banco de Dados (Postgres 15 para suporte a V4/pgvector)
