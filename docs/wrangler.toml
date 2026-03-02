@@ -1,17 +1,3 @@
-name = "caixapreta-stack-docs"
+name = "caixapreta-install-guide"
 compatibility_date = "2024-03-01"
-
-[env.production]
-routes = [
-  { pattern = "caixapreta.clubemkt.digital/instalar/*", zone_name = "clubemkt.digital" }
-]
-
-[build]
-command = "npm run build"
-cwd = "docs"
-
-[build.environment_variables]
-NODE_VERSION = "18"
-
-[[pages_build_output_dir]]
-directory = "docs/out"
+pages_build_output_dir = "out"
