@@ -1091,38 +1091,59 @@ EOF
 deploy_databases() {
     log_step "$(msg "deploying_databases")"
     
+    # Check system resources before deploying PostgreSQL
+    MEMORY_AVAILABLE=$(free -m | awk 'NR==2{printf "%.0f", $7}')
+    if [ "$MEMORY_AVAILABLE" -lt 512 ]; then
+        log_warning "Low available memory (${MEMORY_AVAILABLE}MB). Using optimized PostgreSQL configuration."
+        POSTGRES_MEMORY_LIMIT="256M"
+        POSTGRES_MEMORY_RESERVATION="128M"
+    else
+        POSTGRES_MEMORY_LIMIT="512M"
+        POSTGRES_MEMORY_RESERVATION="256M"
+    fi
+    
+    # Stop any conflicting PostgreSQL services
+    systemctl stop postgresql >/dev/null 2>&1 || true
+    systemctl disable postgresql >/dev/null 2>&1 || true
+    
+    # Ensure proper data directory permissions
+    chown -R 999:999 /data/postgres 2>/dev/null || true
+    chmod 755 /data/postgres 2>/dev/null || true
+    
     cat <<EOF > /tmp/database-stack.yml
 version: '3.8'
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:14-alpine
     environment:
       POSTGRES_PASSWORD: caixapretastack2626
       POSTGRES_DB: main_db
       POSTGRES_USER: postgres
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_SHARED_PRELOAD_LIBRARIES: ""
     volumes:
       - /data/postgres:/var/lib/postgresql/data
     networks:
       - internal-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d main_db"]
-      interval: 10s
-      timeout: 5s
+      interval: 15s
+      timeout: 10s
       retries: 5
-      start_period: 30s
+      start_period: 60s
     deploy:
       placement:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
-        delay: 10s
+        delay: 15s
         max_attempts: 5
+        window: 120s
       resources:
         limits:
-          memory: 512M
+          memory: $POSTGRES_MEMORY_LIMIT
         reservations:
-          memory: 256M
+          memory: $POSTGRES_MEMORY_RESERVATION
 
   redis-n8n:
     image: redis:7-alpine
@@ -1182,23 +1203,41 @@ EOF
     verify_service "db_redis-n8n" "1/1"
     verify_service "db_redis-mega" "1/1"
     
-    # Wait for PostgreSQL to be fully ready
+    # Wait for PostgreSQL to be fully ready with extended timeout
     log_info "$(msg "waiting_postgresql")"
-    local max_attempts=60
+    local max_attempts=120  # Increased from 60 to 120 (10 minutes)
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker exec $(docker ps -q -f name=db_postgres) pg_isready -U postgres >/dev/null 2>&1; then
-            log_success "$(msg "postgresql_ready")"
-            break
+        # Check if container exists first
+        POSTGRES_CONTAINER=$(docker ps -q -f name=db_postgres 2>/dev/null)
+        if [ -n "$POSTGRES_CONTAINER" ]; then
+            if docker exec "$POSTGRES_CONTAINER" pg_isready -U postgres >/dev/null 2>&1; then
+                log_success "$(msg "postgresql_ready")"
+                
+                # Additional connection test
+                if docker exec "$POSTGRES_CONTAINER" psql -U postgres -c "SELECT 1;" >/dev/null 2>&1; then
+                    log_success "PostgreSQL connection verified"
+                    break
+                else
+                    log_info "PostgreSQL ready but connection test failed, retrying..."
+                fi
+            fi
+        else
+            log_info "$(msg "attempt") $attempt/$max_attempts: Waiting for PostgreSQL container..."
         fi
         
-        log_info "$(msg "attempt") $attempt/$max_attempts: $(msg "waiting_postgresql_attempt")"
+        # Show progress every 10 attempts
+        if [ $((attempt % 10)) -eq 0 ]; then
+            log_info "$(msg "attempt") $attempt/$max_attempts: $(msg "waiting_postgresql_attempt")"
+        fi
+        
         sleep 5
         ((attempt++))
         
         if [ $attempt -gt $max_attempts ]; then
             log_error "$(msg "postgresql_failed_ready")"
+            log_info "Run diagnostic: ./diagnose-postgres.sh"
             exit 1
         fi
     done
