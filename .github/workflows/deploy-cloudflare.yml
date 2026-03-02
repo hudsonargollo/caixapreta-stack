@@ -1,4 +1,4 @@
-name: Deploy Documentation to Cloudflare Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -42,12 +42,17 @@ jobs:
       - name: Copy static files to build output
         run: |
           cd docs
-          # Copy Matrix installation guide
+          # Ensure out directory exists
+          mkdir -p out
+          # Copy Matrix installation guide as main page
+          cp matrix-index.html out/index.html
+          # Copy both guides with different names
           cp matrix-index.html out/matrix.html
-          # Copy simple installation guide  
           cp simple-index.html out/simple.html
-          # Create index redirect to matrix guide
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/matrix.html"></head><body>Redirecting...</body></html>' > out/index.html
+          # Create install subdirectory
+          mkdir -p out/install
+          cp matrix-index.html out/install/index.html
+          echo "Static files copied successfully"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1

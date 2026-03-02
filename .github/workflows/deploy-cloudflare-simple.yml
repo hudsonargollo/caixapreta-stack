@@ -1,0 +1,59 @@
+name: Deploy Simple to Cloudflare Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Which guide to deploy'
+        required: true
+        default: 'matrix'
+        type: choice
+        options:
+        - matrix
+        - simple
+        - both
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Static Guide to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          cd docs
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "matrix" ] || [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
+            # Matrix guide as main page
+            cp matrix-index.html ../deploy/index.html
+            cp matrix-index.html ../deploy/matrix.html
+            echo "Matrix guide deployed as main page"
+          fi
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "simple" ]; then
+            # Simple guide as main page
+            cp simple-index.html ../deploy/index.html
+            echo "Simple guide deployed as main page"
+          fi
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
+            cp simple-index.html ../deploy/simple.html
+            echo "Both guides deployed"
+          fi
+          
+          # Create install subdirectory
+          mkdir -p ../deploy/install
+          cp matrix-index.html ../deploy/install/index.html
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: caixapreta-stack-docs
+          directory: deploy
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: '3'
