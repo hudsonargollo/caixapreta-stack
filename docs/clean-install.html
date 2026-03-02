@@ -838,11 +838,153 @@
                     </div>
                 </div>
             </div>
+            </div>
+            
+            <!-- Portuguese Content -->
+            <div class="lang-content" id="content-pt">
+                <!-- Passo 1 -->
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">conexao_ssh.sh</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="step">
+                            <div class="step-header">
+                                <div class="step-number">1</div>
+                                <div class="step-title">ESTABELECER CONEXÃO</div>
+                            </div>
+                            <div class="step-description">
+                                Conecte ao seu servidor VPS via SSH como usuário root
+                            </div>
+                            <div class="command-block" onclick="copyCommand(this, 'ssh root@SEU_IP_DO_SERVIDOR')">
+                                <div class="command-text">ssh root@SEU_IP_DO_SERVIDOR</div>
+                                <div class="copy-indicator">clique para copiar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Passo 2 -->
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">download_protocolo.sh</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="step">
+                            <div class="step-header">
+                                <div class="step-number">2</div>
+                                <div class="step-title">BAIXAR SCRIPT DE INSTALAÇÃO</div>
+                            </div>
+                            <div class="step-description">
+                                Baixe o script de implantação automatizada do repositório
+                            </div>
+                            <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
+                                <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
+                                <div class="copy-indicator">clique para copiar</div>
+                            </div>
+                            <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh')">
+                                <div class="command-text">chmod +x caixapreta-stack.sh</div>
+                                <div class="copy-indicator">clique para copiar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Passo 3 -->
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">executar_implantacao.sh</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="step">
+                            <div class="step-header">
+                                <div class="step-number">3</div>
+                                <div class="step-title">EXECUTAR IMPLANTAÇÃO</div>
+                            </div>
+                            <div class="step-description">
+                                Inicialize a implantação automatizada da infraestrutura
+                            </div>
+                            <div class="command-block" onclick="copyCommand(this, 'sudo ./caixapreta-stack.sh')">
+                                <div class="command-text">sudo ./caixapreta-stack.sh</div>
+                                <div class="copy-indicator">clique para copiar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Serviços -->
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">servicos_implantados.log</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="step">
+                            <div class="step-header">
+                                <div class="step-number">4</div>
+                                <div class="step-title">SERVIÇOS IMPLANTADOS</div>
+                            </div>
+                            <div class="step-description">
+                                Após a implantação bem-sucedida, os serviços estarão disponíveis em:
+                            </div>
+                            <div class="services-grid">
+                                <div class="service-card">
+                                    <div class="service-icon">🐳</div>
+                                    <div class="service-name">PORTAINER</div>
+                                    <div class="service-url">portainer.seudominio.com</div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-icon">🔄</div>
+                                    <div class="service-name">N8N</div>
+                                    <div class="service-url">n8n.seudominio.com</div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-icon">💬</div>
+                                    <div class="service-name">MEGA</div>
+                                    <div class="service-url">mega.seudominio.com</div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-icon">📱</div>
+                                    <div class="service-name">EVOLUTION</div>
+                                    <div class="service-url">evolution.seudominio.com</div>
+                                </div>
+                                <div class="service-card">
+                                    <div class="service-icon">📊</div>
+                                    <div class="service-name">GRAFANA</div>
+                                    <div class="service-url">grafana.seudominio.com</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="footer">
-            <div class="footer-text">
+            <div class="footer-text lang-content" id="footer-en">
                 CAIXAPRETA STACK v2.0 | AUTOMATED DEPLOYMENT PROTOCOL
+            </div>
+            <div class="footer-text lang-content" id="footer-pt">
+                CAIXAPRETA STACK v2.0 | PROTOCOLO DE IMPLANTAÇÃO AUTOMATIZADA
             </div>
         </div>
     </div>
@@ -873,7 +1015,7 @@
             });
             
             // Show selected language content
-            document.querySelectorAll(`#login-${lang}, #header-${lang}, #content-${lang}`).forEach(el => {
+            document.querySelectorAll(`#login-${lang}, #header-${lang}, #content-${lang}, #footer-${lang}`).forEach(el => {
                 el.classList.add('active');
             });
         }
@@ -899,13 +1041,16 @@
         }
         
         function copyCommand(element, command) {
+            const copiedText = selectedLanguage === 'en' ? 'copied!' : 'copiado!';
+            const copyText = selectedLanguage === 'en' ? 'click to copy' : 'clique para copiar';
+            
             navigator.clipboard.writeText(command).then(() => {
                 element.classList.add('copied');
-                element.querySelector('.copy-indicator').textContent = 'copied!';
+                element.querySelector('.copy-indicator').textContent = copiedText;
                 
                 setTimeout(() => {
                     element.classList.remove('copied');
-                    element.querySelector('.copy-indicator').textContent = 'click to copy';
+                    element.querySelector('.copy-indicator').textContent = copyText;
                 }, 2000);
             });
         }
