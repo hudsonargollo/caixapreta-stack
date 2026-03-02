@@ -844,6 +844,13 @@ msg() {
                 echo "Could not detect public IP, using default configuration"
             fi
             ;;
+        "ipv6_local_use")
+            if [ "$LANG" = "pt" ]; then
+                echo "Usando endereço IPv6 local:"
+            else
+                echo "Using local IPv6 address:"
+            fi
+            ;;
         *)
             echo "$key"
             ;;
@@ -1084,12 +1091,22 @@ if ! docker info | grep -q "Swarm: active"; then
     PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null)
     PUBLIC_IPV6=$(curl -s -6 ifconfig.me 2>/dev/null || curl -s -6 ipinfo.io/ip 2>/dev/null)
     
-    if [ -n "$PUBLIC_IPV6" ]; then
-        print_info "$(msg "swarm_ip_detected") $PUBLIC_IPV6 (IPv6)"
-        ADVERTISE_ADDR="[$PUBLIC_IPV6]"
-    elif [ -n "$PUBLIC_IP" ]; then
+    # Try IPv4 first, then IPv6, then default
+    if [ -n "$PUBLIC_IP" ] && [[ "$PUBLIC_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         print_info "$(msg "swarm_ip_detected") $PUBLIC_IP (IPv4)"
         ADVERTISE_ADDR="$PUBLIC_IP"
+    elif [ -n "$PUBLIC_IPV6" ]; then
+        print_info "$(msg "swarm_ip_detected") $PUBLIC_IPV6 (IPv6)"
+        # For IPv6, we need to use the interface IP instead of public IP
+        # Get the main network interface IPv6 address
+        LOCAL_IPV6=$(ip -6 addr show | grep 'inet6.*global' | head -1 | awk '{print $2}' | cut -d'/' -f1)
+        if [ -n "$LOCAL_IPV6" ]; then
+            ADVERTISE_ADDR="[$LOCAL_IPV6]"
+            print_info "$(msg "ipv6_local_use") $LOCAL_IPV6"
+        else
+            ADVERTISE_ADDR=""
+            print_warning "$(msg "ipv6_detected")"
+        fi
     else
         print_warning "$(msg "ipv6_detected")"
         ADVERTISE_ADDR=""
