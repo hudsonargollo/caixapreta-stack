@@ -73,7 +73,7 @@ sudo ./validate-installation.sh
 ### 📖 Guia Completo de Instalação
 
 Para um guia detalhado com interface visual, acesse:
-**[instalar.caixapreta.clubemkt.digital](https://instalar.caixapreta.clubemkt.digital)**
+**[instalar.caixapreta.clubemkt.digital]( https://instalar.caixapreta.clubemkt.digital )**
 
 - 🎭 **Interface profissional**: Guia com tema cyberpunk e animações
 - 🔐 **Acesso restrito**: Solicite a senha via WhatsApp
@@ -81,7 +81,7 @@ Para um guia detalhado com interface visual, acesse:
 - 🛠️ **Seção de troubleshooting**: Inclui todos os scripts de diagnóstico
 - 💀 **Utilitário de limpeza**: Script para limpar VPS com falhas
 
-**📱 Para obter acesso ao guia:** [WhatsApp +55 73 98808-3318](https://wa.me/5573988083318?text=Olá! Gostaria de solicitar acesso ao guia de instalação do CaixaPreta Stack.)
+**📱 Para obter acesso ao guia:** [WhatsApp +557398803-3318] https://wa.me/5573988083318
 
 ## 💡 Parte do Ecossistema CaixaPreta
 
@@ -94,7 +94,97 @@ Este produto faz parte do **bundle completo CaixaPreta** que inclui:
 
 [**🔗 Conheça todos os produtos e ofertas**](https://caixapreta.clubemkt.digital/)
 
-## 🛠️ Scripts Auxiliares
+## 🛠️ Scripts de Diagnóstico e Correção
+
+### 🔍 Scripts de Diagnóstico (Análise de Problemas)
+
+```bash
+# Redis - Analisa problemas nos serviços Redis (n8n e MEGA)
+./diagnose-redis.sh
+
+# PostgreSQL - Analisa problemas no banco de dados
+./diagnose-postgres.sh
+
+# MEGA - Analisa problemas no sistema de atendimento
+./diagnose-mega.sh
+
+# Traefik - Analisa problemas de SSL e proxy reverso
+./diagnose-traefik.sh
+
+# Portainer - Analisa problemas de acesso ao gerenciador
+./diagnose-portainer.sh
+
+# Conectividade - Testa conectividade geral dos serviços
+./diagnose-connectivity.sh
+
+# SSL/DNS - Verifica configuração de SSL e DNS
+./diagnose-ssl-dns.sh
+
+# Docker Swarm - Analisa problemas do cluster
+./diagnose-swarm.sh
+```
+
+### 🔧 Scripts de Correção Automática
+
+```bash
+# Redis - Corrige automaticamente problemas do Redis
+sudo ./fix-redis-deployment.sh
+
+# PostgreSQL - Corrige automaticamente problemas do banco
+sudo ./fix-postgres-deployment.sh
+
+# MEGA - Corrige erro 404 e problemas do MEGA
+sudo ./fix-mega.sh
+
+# Traefik - Corrige problemas de SSL e proxy
+sudo ./fix-traefik-deployment.sh
+
+# Rede - Corrige conflitos de rede
+sudo ./fix-network-conflict.sh
+
+# Portainer - Corrige problemas de acesso
+sudo ./fix-portainer.sh
+
+# Correção Completa - Tenta corrigir todos os problemas
+sudo ./fix-and-redeploy.sh
+```
+
+### 📥 Como Baixar os Scripts
+
+**Opção 1: Baixar todos de uma vez**
+```bash
+# Clone o repositório completo
+git clone https://github.com/hudsonargollo/caixapreta-stack.git
+cd caixapreta-stack
+chmod +x *.sh
+```
+
+**Opção 2: Baixar scripts individuais**
+```bash
+# Exemplo: Baixar script de diagnóstico do Redis
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh
+chmod +x diagnose-redis.sh
+
+# Exemplo: Baixar script de correção do PostgreSQL
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh
+chmod +x fix-postgres-deployment.sh
+```
+
+### 🚨 Fluxo de Resolução de Problemas
+
+1. **Identifique o problema**: Use os scripts de diagnóstico
+2. **Execute a correção**: Use o script de correção correspondente
+3. **Verifique o resultado**: Execute novamente o diagnóstico
+4. **Se persistir**: Use o script de correção completa
+
+```bash
+# Exemplo: Problema com Redis
+./diagnose-redis.sh          # 1. Diagnosticar
+sudo ./fix-redis-deployment.sh  # 2. Corrigir
+./diagnose-redis.sh          # 3. Verificar
+```
+
+## 🛠️ Scripts Auxiliares Legados
 
 ### Validação da Instalação
 ```bash
@@ -172,50 +262,94 @@ sudo ./fix-mega.sh
 
 ## ⚠️ Resolução de Problemas Comuns
 
-### MEGA (Chatwoot) retorna 404
-Se o MEGA estiver retornando erro 404:
+### 🔴 Redis não funciona (0/1 replicas)
+**Sintomas:** n8n e MEGA não funcionam, Redis mostra 0/1 replicas
 
-1. **Execute o script de correção:**
+**Solução Rápida:**
 ```bash
-wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh
-chmod +x fix-mega.sh
+sudo ./fix-redis-deployment.sh
+```
+
+**Diagnóstico Detalhado:**
+```bash
+./diagnose-redis.sh
+```
+
+### 🔵 PostgreSQL não inicia (0/1 replicas)
+**Sintomas:** Banco não conecta, serviços dependentes falham
+
+**Solução Rápida:**
+```bash
+sudo ./fix-postgres-deployment.sh
+```
+
+**Diagnóstico Detalhado:**
+```bash
+./diagnose-postgres.sh
+```
+
+### 🟣 MEGA retorna erro 404
+**Sintomas:** mega.seudominio.com mostra página 404
+
+**Solução Rápida:**
+```bash
 sudo ./fix-mega.sh
 ```
 
-2. **Ou inicialize manualmente o banco:**
+**Solução Manual:**
 ```bash
-docker run --rm --network db_internal-net \
-  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
+docker run --rm --network internal-net \
+  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db \
   -e RAILS_ENV=production \
   sendingtk/chatwoot:v4.11.2 \
   bundle exec rails db:chatwoot_prepare
 ```
 
-### Portainer não acessível
-Se não conseguir acessar o Portainer:
+### 🔒 Certificados SSL não funcionam
+**Causa:** DNS não propagado ou configurado incorretamente
 
-1. **Execute o diagnóstico:**
+**Diagnóstico:**
 ```bash
-wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-portainer.sh
-chmod +x diagnose-portainer.sh
-sudo ./diagnose-portainer.sh
+./diagnose-ssl-dns.sh
 ```
 
-2. **Verifique se os serviços estão rodando:**
+**Soluções:**
+1. Verifique DNS: `nslookup n8n.seudominio.com`
+2. Aguarde propagação (até 24h)
+3. Reinicie Traefik: `docker service update --force core_traefik`
+
+### 🌐 Portainer não acessível
+**Diagnóstico:**
 ```bash
-docker service ls
-docker service ps core_portainer
+./diagnose-portainer.sh
 ```
 
-### Serviços não iniciam (0/1 replicas)
-Se os serviços mostram 0/1 replicas:
+**Soluções:**
+1. Verifique serviços: `docker service ls`
+2. Verifique logs: `docker service logs core_portainer`
+3. Reinicie: `docker service update --force core_portainer`
 
-1. **Execute o script de correção completa:**
+### ⚡ Servidor lento ou travando
+**Causa:** Falta de recursos (RAM/CPU)
+
+**Diagnóstico:**
 ```bash
-wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-and-redeploy.sh
-chmod +x fix-and-redeploy.sh
+free -h && df -h && docker stats --no-stream
+```
+
+**Soluções:**
+1. Monitore recursos: `htop`
+2. Configure swap: `fallocate -l 2G /swapfile`
+3. Aumente RAM do servidor se necessário
+
+### 🔧 Correção Completa (Todos os Problemas)
+Se múltiplos serviços estão falhando:
+
+```bash
 sudo ./fix-and-redeploy.sh
 ```
+
+Este script tenta corrigir automaticamente todos os problemas conhecidos.
 
 ## 🚨 Pós-Instalação
 

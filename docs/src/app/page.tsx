@@ -374,64 +374,214 @@ chmod +x caixapreta-stack.sh`
           </TabsContent>
           <TabsContent value="troubleshooting" className="mt-8">
             <div className="space-y-6">
+              {/* Quick Fix Scripts Section */}
+              <Card className="border-green-500/20 bg-green-900/20 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <Terminal className="w-5 h-5 mr-2 text-green-500" />
+                    Scripts de Diagnóstico e Correção Automática
+                  </CardTitle>
+                  <CardDescription className="text-green-200">
+                    Use estes scripts para diagnosticar e corrigir problemas automaticamente
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      {
+                        title: 'Redis - Diagnóstico',
+                        desc: 'Analisa problemas nos serviços Redis (n8n e MEGA)',
+                        script: './diagnose-redis.sh',
+                        color: 'from-red-500 to-red-600'
+                      },
+                      {
+                        title: 'Redis - Correção',
+                        desc: 'Corrige automaticamente problemas do Redis',
+                        script: 'sudo ./fix-redis-deployment.sh',
+                        color: 'from-red-600 to-red-700'
+                      },
+                      {
+                        title: 'PostgreSQL - Diagnóstico',
+                        desc: 'Analisa problemas no banco de dados PostgreSQL',
+                        script: './diagnose-postgres.sh',
+                        color: 'from-blue-500 to-blue-600'
+                      },
+                      {
+                        title: 'PostgreSQL - Correção',
+                        desc: 'Corrige automaticamente problemas do PostgreSQL',
+                        script: 'sudo ./fix-postgres-deployment.sh',
+                        color: 'from-blue-600 to-blue-700'
+                      },
+                      {
+                        title: 'MEGA - Diagnóstico',
+                        desc: 'Analisa problemas no sistema de atendimento MEGA',
+                        script: './diagnose-mega.sh',
+                        color: 'from-purple-500 to-purple-600'
+                      },
+                      {
+                        title: 'MEGA - Correção',
+                        desc: 'Corrige erro 404 e problemas do MEGA',
+                        script: 'sudo ./fix-mega.sh',
+                        color: 'from-purple-600 to-purple-700'
+                      },
+                      {
+                        title: 'Traefik - Diagnóstico',
+                        desc: 'Analisa problemas de SSL e proxy reverso',
+                        script: './diagnose-traefik.sh',
+                        color: 'from-orange-500 to-orange-600'
+                      },
+                      {
+                        title: 'Portainer - Diagnóstico',
+                        desc: 'Analisa problemas de acesso ao Portainer',
+                        script: './diagnose-portainer.sh',
+                        color: 'from-cyan-500 to-cyan-600'
+                      }
+                    ].map((item, index) => (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="border border-green-500/20 rounded-lg p-4 bg-slate-700/30 hover:bg-slate-700/50 transition-all"
+                      >
+                        <div className={`w-full h-2 rounded-full bg-gradient-to-r ${item.color} mb-3`}></div>
+                        <h4 className="font-semibold text-white mb-2">{item.title}</h4>
+                        <p className="text-green-200 text-sm mb-3">{item.desc}</p>
+                        <div className="bg-slate-900 rounded p-2 font-mono text-sm text-green-400">
+                          <code>{item.script}</code>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-500/20 rounded-lg">
+                    <h4 className="font-semibold text-yellow-300 mb-2">📥 Como baixar os scripts:</h4>
+                    <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 overflow-x-auto">
+                      <pre>{`# Baixar todos os scripts de uma vez
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-redis.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-redis-deployment.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-postgres.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-postgres-deployment.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-mega.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh
+
+# Tornar executáveis
+chmod +x *.sh`}</pre>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card className="border-purple-500/20 bg-slate-800/50 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-white">Problemas Comuns e Soluções</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="redis-issues">
+                      <AccordionTrigger className="text-white">🔴 Redis não funciona (0/1 replicas)</AccordionTrigger>
+                      <AccordionContent className="text-purple-200 space-y-2">
+                        <p><strong>Sintomas:</strong> n8n e MEGA não funcionam, Redis mostra 0/1 replicas</p>
+                        <p><strong>Solução Rápida:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>sudo ./fix-redis-deployment.sh</pre>
+                        </div>
+                        <p><strong>Solução Manual:</strong></p>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li>Verificar permissões: <code>ls -la /data/redis_*</code></li>
+                          <li>Corrigir permissões: <code>chown -R 999:999 /data/redis_*</code></li>
+                          <li>Reiniciar serviços: <code>docker service update --force db_redis-n8n</code></li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="postgres-issues">
+                      <AccordionTrigger className="text-white">🔵 PostgreSQL não inicia (0/1 replicas)</AccordionTrigger>
+                      <AccordionContent className="text-purple-200 space-y-2">
+                        <p><strong>Sintomas:</strong> Banco não conecta, serviços dependentes falham</p>
+                        <p><strong>Solução Rápida:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>sudo ./fix-postgres-deployment.sh</pre>
+                        </div>
+                        <p><strong>Causas Comuns:</strong></p>
+                        <ul className="list-disc list-inside space-y-1 ml-4">
+                          <li>PostgreSQL do sistema conflitando na porta 5432</li>
+                          <li>Permissões incorretas em /data/postgres (precisa UID 999)</li>
+                          <li>Memória insuficiente (mínimo 512MB disponível)</li>
+                          <li>Diretório de dados corrompido</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="mega-404">
+                      <AccordionTrigger className="text-white">🟣 MEGA retorna erro 404</AccordionTrigger>
+                      <AccordionContent className="text-purple-200 space-y-2">
+                        <p><strong>Sintomas:</strong> mega.seudominio.com mostra página 404</p>
+                        <p><strong>Solução Rápida:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>sudo ./fix-mega.sh</pre>
+                        </div>
+                        <p><strong>Causa:</strong> Banco de dados não inicializado corretamente</p>
+                        <p><strong>Solução Manual:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400">
+                          <pre>{`docker run --rm --network internal-net \\
+  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db \\
+  -e RAILS_ENV=production \\
+  sendingtk/chatwoot:v4.11.2 \\
+  bundle exec rails db:chatwoot_prepare`}</pre>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
                     <AccordionItem value="ssl">
-                      <AccordionTrigger className="text-white">Certificados SSL não funcionam</AccordionTrigger>
+                      <AccordionTrigger className="text-white">🔒 Certificados SSL não funcionam</AccordionTrigger>
                       <AccordionContent className="text-purple-200 space-y-2">
                         <p><strong>Causa:</strong> DNS não propagado ou configurado incorretamente</p>
-                        <p><strong>Solução:</strong></p>
+                        <p><strong>Diagnóstico:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>./diagnose-ssl-dns.sh</pre>
+                        </div>
+                        <p><strong>Soluções:</strong></p>
                         <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li>Verifique se os registros A apontam para o IP correto</li>
-                          <li>Aguarde até 24h para propagação completa</li>
-                          <li>Teste com: <code>nslookup n8n.seudominio.com</code></li>
-                          <li>Reinicie o Traefik: <code>docker service update core_traefik --force</code></li>
+                          <li>Verifique DNS: <code>nslookup n8n.seudominio.com</code></li>
+                          <li>Aguarde propagação (até 24h)</li>
+                          <li>Reinicie Traefik: <code>docker service update --force core_traefik</code></li>
+                          <li>Verifique logs: <code>docker service logs core_traefik</code></li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
-                    
+
                     <AccordionItem value="memory">
-                      <AccordionTrigger className="text-white">Servidor lento ou travando</AccordionTrigger>
+                      <AccordionTrigger className="text-white">⚡ Servidor lento ou travando</AccordionTrigger>
                       <AccordionContent className="text-purple-200 space-y-2">
                         <p><strong>Causa:</strong> Falta de recursos (RAM/CPU)</p>
-                        <p><strong>Solução:</strong></p>
+                        <p><strong>Diagnóstico:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>free -h && df -h && docker stats --no-stream</pre>
+                        </div>
+                        <p><strong>Soluções:</strong></p>
                         <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li>Monitore recursos: <code>htop</code> ou <code>docker stats</code></li>
+                          <li>Monitore recursos: <code>htop</code></li>
                           <li>Aumente RAM do servidor se necessário</li>
-                          <li>Reduza replicas do n8n-worker se pouca RAM</li>
                           <li>Configure swap: <code>fallocate -l 2G /swapfile</code></li>
+                          <li>Reduza workers do n8n se pouca RAM</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
 
-                    <AccordionItem value="database">
-                      <AccordionTrigger className="text-white">Erro de conexão com banco</AccordionTrigger>
+                    <AccordionItem value="network">
+                      <AccordionTrigger className="text-white">🌐 Problemas de conectividade interna</AccordionTrigger>
                       <AccordionContent className="text-purple-200 space-y-2">
-                        <p><strong>Causa:</strong> PostgreSQL não iniciado ou rede interna</p>
-                        <p><strong>Solução:</strong></p>
+                        <p><strong>Sintomas:</strong> Serviços não se comunicam entre si</p>
+                        <p><strong>Diagnóstico:</strong></p>
+                        <div className="bg-slate-900 rounded p-3 font-mono text-sm text-green-400 mb-2">
+                          <pre>docker network ls && docker network inspect internal-net</pre>
+                        </div>
+                        <p><strong>Soluções:</strong></p>
                         <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li>Verifique status: <code>docker service ls</code></li>
-                          <li>Reinicie stack DB: <code>docker stack rm db && docker stack deploy -c swarm-db.yml db</code></li>
-                          <li>Verifique logs: <code>docker service logs db_postgres</code></li>
-                          <li>Teste conexão: <code>docker exec -it $(docker ps -q -f name=postgres) psql -U postgres</code></li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="n8n">
-                      <AccordionTrigger className="text-white">n8n não carrega ou erro 502</AccordionTrigger>
-                      <AccordionContent className="text-purple-200 space-y-2">
-                        <p><strong>Causa:</strong> Serviço não iniciado ou problema de rede</p>
-                        <p><strong>Solução:</strong></p>
-                        <ul className="list-disc list-inside space-y-1 ml-4">
-                          <li>Verifique status: <code>docker service logs automation_n8n</code></li>
-                          <li>Reinicie serviço: <code>docker service update automation_n8n --force</code></li>
-                          <li>Verifique se PostgreSQL está rodando</li>
-                          <li>Teste conectividade interna: <code>docker exec -it $(docker ps -q -f name=n8n) ping postgres</code></li>
+                          <li>Recriar rede: <code>docker network rm internal-net</code></li>
+                          <li>Recriar com overlay: <code>docker network create --driver overlay --attachable internal-net</code></li>
+                          <li>Reiniciar stack: <code>docker stack rm db && docker stack deploy -c swarm-db.yml db</code></li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
