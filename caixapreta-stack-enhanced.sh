@@ -954,146 +954,60 @@ deploy_traefik() {
     
     log_step "Deploying Traefik with enhanced configuration"
     
-    # Create comprehensive Traefik configuration
-    cat > /data/traefik/traefik.yml << EOF
-# Traefik Configuration for CaixaPreta Stack
-global:
-  checkNewVersion: false
-  sendAnonymousUsage: false
-
-api:
-  dashboard: true
-  insecure: false
-
-entryPoints:
-  web:
-    address: :80
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-          permanent: true
-  websecure:
-    address: :443
-
-providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    swarmMode: true
-    exposedByDefault: false
-    network: traefik-public
-    watch: true
-
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: $email
-      storage: acme.json
-      httpChallenge:
-        entryPoint: web
-      caServer: https://acme-v02.api.letsencrypt.org/directory
-
-log:
-  level: INFO
-  format: common
-
-accessLog: {}
-
-metrics:
-  prometheus:
-    addEntryPointsLabels: true
-    addServicesLabels: true
-EOF
-
-    # Deploy Traefik stack with enhanced configuration
-    cat > /tmp/traefik-stack.yml << 'TRAEFIK_EOF'
-version: '3.8'
-services:
-  traefik:
-    image: traefik:v2.10
-    command:
-      - "--configfile=/etc/traefik/traefik.yml"
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
-      - target: 443
-        published: 443
-        protocol: tcp
-        mode: host
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - /data/traefik/acme.json:/etc/traefik/acme.json
-    networks:
-      - traefik-public
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 5
-        window: 60s
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.traefik.rule=Host(\\`traefik.DOMAIN_PLACEHOLDER\\`)"
-        - "traefik.http.routers.traefik.service=api@internal"
-        - "traefik.http.routers.traefik.entrypoints=websecure"
-        - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
-        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
-    healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-  portainer:
-    image: portainer/portainer-ce:latest
-    command: -H unix:///var/run/docker.sock
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/portainer:/data
-    networks:
-      - traefik-public
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 5
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(\\`portainer.DOMAIN_PLACEHOLDER\\`)"
-        - "traefik.http.routers.portainer.entrypoints=websecure"
-        - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
-        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/api/status || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-networks:
-  traefik-public:
-    external: true
-TRAEFIK_EOF
-
-    # Replace domain placeholder
-    sed -i "s/DOMAIN_PLACEHOLDER/$domain/g" /tmp/traefik-stack.yml
+    # Create ACME file with proper permissions
+    touch /data/traefik/acme.json
+    chmod 600 /data/traefik/acme.json
     
-    # Deploy the stack
-    log_info "Deploying Traefik stack..."
-    docker stack deploy -c /tmp/traefik-stack.yml core
+    # Deploy Traefik v3.1 with correct configuration (no config file, direct command args)
+    log_info "Deploying Traefik v3.1 with Docker API compatibility..."
+    
+    docker service create \
+      --name core_traefik \
+      --constraint 'node.role==manager' \
+      --publish mode=host,target=80,published=80 \
+      --publish mode=host,target=443,published=443 \
+      --publish mode=host,target=8080,published=8080 \
+      --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+      --mount type=bind,source=/data/traefik,target=/data \
+      --network traefik-public \
+      --label traefik.enable=true \
+      --label "traefik.http.routers.traefik.rule=Host(\`traefik.$domain\`)" \
+      --label traefik.http.routers.traefik.service=api@internal \
+      --label traefik.http.routers.traefik.entrypoints=websecure \
+      --label traefik.http.routers.traefik.tls.certresolver=letsencrypt \
+      --label traefik.http.services.traefik.loadbalancer.server.port=8080 \
+      traefik:v2.11 \
+      --api.dashboard=true \
+      --api.insecure=false \
+      --providers.docker=true \
+      --providers.docker.exposedbydefault=false \
+      --providers.docker.swarmmode=true \
+      --entrypoints.web.address=:80 \
+      --entrypoints.websecure.address=:443 \
+      --certificatesresolvers.letsencrypt.acme.email=$email \
+      --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json \
+      --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web \
+      --entrypoints.web.http.redirections.entrypoint.to=websecure \
+      --entrypoints.web.http.redirections.entrypoint.scheme=https \
+      --log.level=INFO
+    
+    # Deploy Portainer
+    log_info "Deploying Portainer..."
+    
+    docker service create \
+      --name core_portainer \
+      --constraint 'node.role==manager' \
+      --publish mode=host,target=9000,published=9000 \
+      --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+      --mount type=bind,source=/data/portainer,target=/data \
+      --network traefik-public \
+      --label traefik.enable=true \
+      --label "traefik.http.routers.portainer.rule=Host(\`portainer.$domain\`)" \
+      --label traefik.http.routers.portainer.entrypoints=websecure \
+      --label traefik.http.routers.portainer.tls.certresolver=letsencrypt \
+      --label traefik.http.services.portainer.loadbalancer.server.port=9000 \
+      portainer/portainer-ce:latest \
+      -H unix:///var/run/docker.sock
     
     # Verify deployment
     verify_service "core_traefik" "1/1" 60
@@ -1114,9 +1028,6 @@ TRAEFIK_EOF
     else
         log_warning "Traefik response: HTTP $test_response (may be normal during startup)"
     fi
-    
-    # Cleanup
-    rm -f /tmp/traefik-stack.yml
     
     log_success "Traefik deployed successfully with verified port binding"
 }

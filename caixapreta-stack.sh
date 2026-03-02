@@ -996,14 +996,13 @@ deploy_traefik() {
 version: '3.8'
 services:
   traefik:
-    image: traefik:v3.1
+    image: traefik:v2.11
     command:
       - "--api.dashboard=true"
       - "--api.insecure=false"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.swarm=true"
-      - "--providers.swarm.exposedbydefault=false"
+      - "--providers.docker.swarmmode=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.letsencrypt.acme.email=$email"
