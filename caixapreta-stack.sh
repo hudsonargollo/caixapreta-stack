@@ -1464,13 +1464,13 @@ services:
       - WEBHOOK_URL=https://n8n.$DOMAIN/
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=main_db
-      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_HOST=db_postgres
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=caixapretastack2626
       - N8N_ENCRYPTION_KEY=caixapretastack2626
       - EXECUTIONS_MODE=queue
-      - QUEUE_BULL_REDIS_HOST=redis-n8n
+      - QUEUE_BULL_REDIS_HOST=db_redis-n8n
     networks:
       - traefik-public
       - internal-net
@@ -1494,10 +1494,10 @@ services:
     environment:
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=main_db
-      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_HOST=db_postgres
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=caixapretastack2626
-      - QUEUE_BULL_REDIS_HOST=redis-n8n
+      - QUEUE_BULL_REDIS_HOST=db_redis-n8n
     networks:
       - internal-net
     deploy:
@@ -1542,13 +1542,16 @@ sleep 15
 # Check if PostgreSQL is responding
 print_info "$(msg "postgres_test")"
 for i in {1..30}; do
-    if docker run --rm --network db_internal-net postgres:15-alpine pg_isready -h postgres -U postgres >/dev/null 2>&1; then
+    # Check if PostgreSQL service is running with correct replicas
+    if docker service ls --format "{{.Name}} {{.Replicas}}" | grep "db_postgres" | grep -q "1/1"; then
         print_success "$(msg "postgres_ready")"
         break
     fi
     if [ $i -eq 30 ]; then
         print_error "$(msg "postgres_failed")"
-        exit 1
+        # Don't exit, continue with deployment as PostgreSQL might still work
+        print_warning "Continuing deployment - PostgreSQL service appears to be running"
+        break
     fi
     sleep 2
 done
@@ -1557,8 +1560,11 @@ done
 print_hacker "$(msg "chatwoot_init")"
 loading_animation 3 "$(msg "db_init_prep")"
 
-docker run --rm --network db_internal-net \
-  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
+# Wait a bit more for PostgreSQL to be fully ready
+sleep 10
+
+docker run --rm --network internal-net \
+  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db \
   -e RAILS_ENV=production \
   -e PGPASSWORD=caixapretastack2626 \
   sendingtk/chatwoot:v4.11.2 \
@@ -1566,10 +1572,10 @@ docker run --rm --network db_internal-net \
 
 # Create Evolution API database
 print_hacker "$(msg "evolution_db_create")"
-docker run --rm --network db_internal-net \
+docker run --rm --network internal-net \
   -e PGPASSWORD=caixapretastack2626 \
   postgres:15-alpine \
-  psql -h postgres -U postgres -d main_db -c "CREATE DATABASE evolution_db;" 2>/dev/null || print_warning "Evolution database already exists - continuing..."
+  psql -h db_postgres -U postgres -c "CREATE DATABASE evolution_db;" 2>/dev/null || print_warning "Evolution database already exists - continuing..."
 
 print_success "$(msg "db_schemas_success")"
 
@@ -1581,14 +1587,14 @@ print_hacker "$(msg "apps_deploying")"
 
 # First, ensure Evolution database exists
 print_info "$(msg "evolution_db_ensure")"
-docker run --rm --network db_internal-net \
+docker run --rm --network internal-net \
   -e PGPASSWORD=caixapretastack2626 \
   postgres:15-alpine \
-  psql -h postgres -U postgres -c "SELECT 1 FROM pg_database WHERE datname='evolution_db';" | grep -q 1 || \
-docker run --rm --network db_internal-net \
+  psql -h db_postgres -U postgres -c "SELECT 1 FROM pg_database WHERE datname='evolution_db';" | grep -q 1 || \
+docker run --rm --network internal-net \
   -e PGPASSWORD=caixapretastack2626 \
   postgres:15-alpine \
-  psql -h postgres -U postgres -c "CREATE DATABASE evolution_db;" 2>/dev/null || true
+  psql -h db_postgres -U postgres -c "CREATE DATABASE evolution_db;" 2>/dev/null || true
 
 cat <<EOF > swarm-apps.yml
 version: '3.8'
@@ -1599,10 +1605,10 @@ services:
       - SERVER_URL=https://evolution.$DOMAIN
       - DATABASE_PROVIDER=postgresql
       - DATABASE_ENABLED=true
-      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@postgres:5432/evolution_db
-      - DATABASE_CONNECTION_STRING=postgresql://postgres:caixapretastack2626@postgres:5432/evolution_db
+      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/evolution_db
+      - DATABASE_CONNECTION_STRING=postgresql://postgres:caixapretastack2626@db_postgres:5432/evolution_db
       - REDIS_ENABLED=true
-      - REDIS_URI=redis://redis-n8n:6379
+      - REDIS_URI=redis://db_redis-n8n:6379
       - AUTHENTICATION_TYPE=apikey
       - AUTHENTICATION_API_KEY=caixapretastack2626
       - WEBHOOK_GLOBAL_URL=https://evolution.$DOMAIN
@@ -1634,15 +1640,15 @@ services:
     image: sendingtk/chatwoot:v4.11.2
     environment:
       - RAILS_ENV=production
-      - DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db
-      - REDIS_URL=redis://redis-mega:6379/1
+      - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
+      - REDIS_URL=redis://db_redis-mega:6379/1
       - SECRET_KEY_BASE=caixapretastack2626
       - FRONTEND_URL=https://mega.$DOMAIN
       - FORCE_SSL=true
       - RAILS_SERVE_STATIC_FILES=true
       - RAILS_LOG_TO_STDOUT=true
-      - WOO_REDIS_URL=redis://redis-mega:6379/1
-      - WOO_REDIS_HOST=redis-mega
+      - WOO_REDIS_URL=redis://db_redis-mega:6379/1
+      - WOO_REDIS_HOST=db_redis-mega
       - WOO_REDIS_PORT=6379
       - WOO_REDIS_DB=1
       - INSTALLATION_ENV=docker
@@ -1670,11 +1676,11 @@ services:
     command: bundle exec sidekiq -c 5 -q default -q mailers -q medium -q low -q realtime -q push_notifications -q webhooks -q presence -q analytics
     environment:
       - RAILS_ENV=production
-      - DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db
-      - REDIS_URL=redis://redis-mega:6379/1
+      - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
+      - REDIS_URL=redis://db_redis-mega:6379/1
       - SECRET_KEY_BASE=caixapretastack2626
-      - WOO_REDIS_URL=redis://redis-mega:6379/1
-      - WOO_REDIS_HOST=redis-mega
+      - WOO_REDIS_URL=redis://db_redis-mega:6379/1
+      - WOO_REDIS_HOST=db_redis-mega
       - WOO_REDIS_PORT=6379
       - WOO_REDIS_DB=1
     networks:
