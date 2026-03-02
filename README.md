@@ -66,9 +66,9 @@ sudo ./caixapreta-stack.sh
 ### 📖 Guia Completo de Instalação
 
 Para um guia detalhado com interface visual, acesse:
-**[caixapreta.clubemkt.digital/instalar](https://caixapreta.clubemkt.digital/instalar)**
+**[instalar.caixapreta.clubemkt.digital](https://instalar.caixapreta.clubemkt.digital)**
 
-- Senha de acesso: VOCÊ RECEBERÁ EM SEU WHATSAPP
+- Senha de acesso: `caixapretastack2626`
 - Interface interativa com troubleshooting
 - Passo a passo detalhado com screenshots
 - Seção de suporte e resolução de problemas

@@ -34,7 +34,7 @@ wrangler pages deploy out --project-name=caixapreta-stack-docs
 - **Build Command:** `npm run build`
 - **Build Output Directory:** `out`
 - **Root Directory:** `docs`
-- **Custom Domain:** `caixapreta.clubemkt.digital/instalar`
+- **Custom Domain:** `instalar.caixapreta.clubemkt.digital`
 
 ### Environment Variables Needed
 
@@ -45,7 +45,7 @@ For GitHub Actions deployment, add these secrets to your repository:
 
 ### Access Information
 
-- **URL:** https://caixapreta.clubemkt.digital/instalar
+- **URL:** https://instalar.caixapreta.clubemkt.digital
 - **Password:** `caixapretastack2626`
 
 The guide includes:
