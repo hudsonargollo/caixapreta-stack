@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK v3.0 - ENHANCED FRESH INSTALL
+# INFRA CAIXA PRETA v2 - ENHANCED FRESH INSTALL
 # Ultra-robust Docker Swarm deployment with comprehensive error handling
 # Author: Hudson Argollo
 # System: Debian/Ubuntu
@@ -85,6 +85,443 @@ handle_error() {
 }
 
 trap 'handle_error $LINENO' ERR
+
+# Language-specific messages
+msg() {
+    local key="$1"
+    case "$key" in
+        "welcome_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "BEM-VINDOS AO INFRA CAIXA PRETA v2"
+            else
+                echo "WELCOME TO INFRA CAIXA PRETA v2"
+            fi
+            ;;
+        "enhanced_version")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Sistema de infraestrutura aprimorado com verificacoes robustas"
+            else
+                echo "Enhanced infrastructure system with robust checks"
+            fi
+            ;;
+        "root_check")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando privilegios do sistema..."
+            else
+                echo "Checking system privileges..."
+            fi
+            ;;
+        "root_error")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Acesso root necessario. Execute como root ou com sudo."
+            else
+                echo "Root access required. Please run as root or with sudo."
+            fi
+            ;;
+        "root_confirmed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Privilegios root confirmados"
+            else
+                echo "Root privileges confirmed"
+            fi
+            ;;
+        "system_requirements")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "VERIFICACAO DE REQUISITOS DO SISTEMA"
+            else
+                echo "SYSTEM REQUIREMENTS CHECK"
+            fi
+            ;;
+        "checking_memory")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando memoria disponivel..."
+            else
+                echo "Checking available memory..."
+            fi
+            ;;
+        "checking_disk")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando espaco em disco..."
+            else
+                echo "Checking disk space..."
+            fi
+            ;;
+        "checking_os")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando compatibilidade do sistema operacional..."
+            else
+                echo "Checking operating system compatibility..."
+            fi
+            ;;
+        "system_prep")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PREPARACAO DO SISTEMA"
+            else
+                echo "SYSTEM PREPARATION"
+            fi
+            ;;
+        "updating_system")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Atualizando pacotes do sistema..."
+            else
+                echo "Updating system packages..."
+            fi
+            ;;
+        "installing_deps")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Instalando dependencias..."
+            else
+                echo "Installing dependencies..."
+            fi
+            ;;
+        "docker_installing")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Instalando e configurando Docker..."
+            else
+                echo "Installing and configuring Docker..."
+            fi
+            ;;
+        "config_setup")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CONFIGURACAO DO SISTEMA"
+            else
+                echo "CONFIGURATION SETUP"
+            fi
+            ;;
+        "domain_config")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CONFIGURACAO DE DOMINIO"
+            else
+                echo "DOMAIN CONFIGURATION"
+            fi
+            ;;
+        "enter_domain")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Digite seu dominio (ex: meudominio.com): "
+            else
+                echo "Enter your domain (e.g., mydomain.com): "
+            fi
+            ;;
+        "enter_email")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Digite seu email para SSL: "
+            else
+                echo "Enter your email for SSL: "
+            fi
+            ;;
+        "config_accepted")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Configuracao aceita"
+            else
+                echo "Configuration accepted"
+            fi
+            ;;
+        "domain_email_required")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Dominio e email sao obrigatorios"
+            else
+                echo "Domain and email are required"
+            fi
+            ;;
+        "setup_dirs")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Configurando diretorios de dados..."
+            else
+                echo "Setting up data directories..."
+            fi
+            ;;
+        "directories_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Diretorios de dados configurados"
+            else
+                echo "Data directories configured"
+            fi
+            ;;
+        "docker_verification")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "VERIFICACAO DO DOCKER"
+            else
+                echo "DOCKER VERIFICATION"
+            fi
+            ;;
+        "docker_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker daemon esta pronto"
+            else
+                echo "Docker daemon is ready"
+            fi
+            ;;
+        "swarm_cluster")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CLUSTER SWARM"
+            else
+                echo "SWARM CLUSTER"
+            fi
+            ;;
+        "swarm_initializing")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializando Docker Swarm..."
+            else
+                echo "Initializing Docker Swarm..."
+            fi
+            ;;
+        "swarm_active")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Swarm ja ativo"
+            else
+                echo "Docker Swarm already active"
+            fi
+            ;;
+        "detecting_ip")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Detectando enderecos IP do servidor..."
+            else
+                echo "Detecting server IP addresses..."
+            fi
+            ;;
+        "using_ipv4")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Usando IPv4:"
+            else
+                echo "Using IPv4:"
+            fi
+            ;;
+        "swarm_initialized")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Swarm inicializado com IP:"
+            else
+                echo "Docker Swarm initialized with IP:"
+            fi
+            ;;
+        "network_setup")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CONFIGURACAO DE REDE"
+            else
+                echo "NETWORK SETUP"
+            fi
+            ;;
+        "creating_networks")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Criando redes Docker com verificacao..."
+            else
+                echo "Creating Docker networks with verification..."
+            fi
+            ;;
+        "networks_created")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Redes criadas com sucesso"
+            else
+                echo "Networks created successfully"
+            fi
+            ;;
+        "core_services")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "SERVICOS PRINCIPAIS"
+            else
+                echo "CORE SERVICES"
+            fi
+            ;;
+        "deploying_traefik")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando Traefik com configuracao aprimorada..."
+            else
+                echo "Deploying Traefik with enhanced configuration..."
+            fi
+            ;;
+        "traefik_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Traefik implantado com sucesso"
+            else
+                echo "Traefik deployed successfully"
+            fi
+            ;;
+        "database_layer")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CAMADA DE BANCO DE DADOS"
+            else
+                echo "DATABASE LAYER"
+            fi
+            ;;
+        "deploying_databases")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando servicos de banco de dados..."
+            else
+                echo "Deploying database services..."
+            fi
+            ;;
+        "databases_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Servicos de banco de dados implantados"
+            else
+                echo "Database services deployed"
+            fi
+            ;;
+        "waiting_postgresql")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando PostgreSQL ficar pronto para conexoes..."
+            else
+                echo "Waiting for PostgreSQL to be ready for connections..."
+            fi
+            ;;
+        "postgresql_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PostgreSQL esta pronto para conexoes"
+            else
+                echo "PostgreSQL is ready for connections"
+            fi
+            ;;
+        "initializing_databases")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializando bancos de dados da aplicacao..."
+            else
+                echo "Initializing application databases..."
+            fi
+            ;;
+        "databases_initialized")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializacao do banco de dados concluida"
+            else
+                echo "Database initialization completed"
+            fi
+            ;;
+        "automation_layer")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CAMADA DE AUTOMACAO"
+            else
+                echo "AUTOMATION LAYER"
+            fi
+            ;;
+        "deploying_apps")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando servicos de aplicacao..."
+            else
+                echo "Deploying application services..."
+            fi
+            ;;
+        "apps_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Servicos de automacao implantados"
+            else
+                echo "Automation services deployed"
+            fi
+            ;;
+        "application_layer")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "CAMADA DE APLICACAO"
+            else
+                echo "APPLICATION LAYER"
+            fi
+            ;;
+        "deploying_mega")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantando MEGA e servicos adicionais..."
+            else
+                echo "Deploying MEGA and additional services..."
+            fi
+            ;;
+        "mega_deployed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "MEGA e servicos adicionais implantados"
+            else
+                echo "MEGA and additional services deployed"
+            fi
+            ;;
+        "final_verification")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "VERIFICACAO FINAL DO SISTEMA"
+            else
+                echo "FINAL SYSTEM VERIFICATION"
+            fi
+            ;;
+        "deployment_success")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantacao do Infra Caixa Preta concluida com sucesso!"
+            else
+                echo "Infra Caixa Preta deployment completed successfully!"
+            fi
+            ;;
+        "deployment_complete")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Implantacao concluida! Seu Infra Caixa Preta esta pronto!"
+            else
+                echo "Deployment completed! Your Infra Caixa Preta is ready!"
+            fi
+            ;;
+        "access_endpoints")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PONTOS DE ACESSO"
+            else
+                echo "ACCESS ENDPOINTS"
+            fi
+            ;;
+        "important_notes")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "NOTAS IMPORTANTES"
+            else
+                echo "IMPORTANT NOTES"
+            fi
+            ;;
+        "dns_config_required")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Configuracao DNS Necessaria:"
+            else
+                echo "DNS Configuration Required:"
+            fi
+            ;;
+        "dns_instructions")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Crie registros AAAA para todos os subdominios apontando para o IPv6 do servidor"
+            else
+                echo "Create AAAA records for all subdomains pointing to your server IPv6"
+            fi
+            ;;
+        "ssl_certificates")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Certificados SSL:"
+            else
+                echo "SSL Certificates:"
+            fi
+            ;;
+        "ssl_auto_generate")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Certificados Let's Encrypt serao gerados automaticamente (5-15 minutos)"
+            else
+                echo "Let's Encrypt certificates will generate automatically (5-15 minutes)"
+            fi
+            ;;
+        "monitor_progress")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Monitorar progresso: docker service logs core_traefik"
+            else
+                echo "Monitor progress: docker service logs core_traefik"
+            fi
+            ;;
+        "default_credentials")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Credenciais Padrao:"
+            else
+                echo "Default Credentials:"
+            fi
+            ;;
+        "password_info")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os servicos usam senha: caixapretastack2626"
+            else
+                echo "All services use password: caixapretastack2626"
+            fi
+            ;;
+        "change_passwords")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Altere as senhas apos o primeiro login para seguranca"
+            else
+                echo "Change passwords after first login for security"
+            fi
+            ;;
+        *)
+            echo "$key"
+            ;;
+    esac
+}
 
 # Save installation state for recovery
 save_installation_state() {
@@ -1391,24 +1828,24 @@ main() {
     
     echo -e "${GREEN}${BOLD}"
     cat << "EOF"
- ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
-██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
-██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
-██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
-╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
- ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
-                                                                                  
-███████╗████████╗ █████╗  ██████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
-██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║   ██║╚════██╗   ██╔═████╗
-███████╗   ██║   ███████║██║     █████╔╝     ██║   ██║ █████╔╝   ██║██╔██║
-╚════██║   ██║   ██╔══██║██║     ██╔═██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
-███████║   ██║   ██║  ██║╚██████╗██║  ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝
-╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═══╝  ╚══════╝╚═╝ ╚═════╝ 
+██╗███╗   ██╗███████╗██████╗  █████╗      ██████╗ █████╗ ██╗██╗  ██╗ █████╗ 
+██║████╗  ██║██╔════╝██╔══██╗██╔══██╗    ██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗
+██║██╔██╗ ██║█████╗  ██████╔╝███████║    ██║     ███████║██║ ╚███╔╝ ███████║
+██║██║╚██╗██║██╔══╝  ██╔══██╗██╔══██║    ██║     ██╔══██║██║ ██╔██╗ ██╔══██║
+██║██║ ╚████║██║     ██║  ██║██║  ██║    ╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║
+╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                                              
+██████╗ ██████╗ ███████╗████████╗ █████╗     ██╗   ██╗██████╗ 
+██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗    ██║   ██║╚════██╗
+██████╔╝██████╔╝█████╗     ██║   ███████║    ██║   ██║ █████╔╝
+██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║    ╚██╗ ██╔╝██╔═══╝ 
+██║     ██║  ██║███████╗   ██║   ██║  ██║     ╚████╔╝ ███████╗
+╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝      ╚═══╝  ╚══════╝
 EOF
     echo -e "${NC}"
     
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}${BOLD}                    ENHANCED FRESH INSTALL SYSTEM v3.0${NC}"
+    echo -e "${CYAN}${BOLD}                    ENHANCED FRESH INSTALL SYSTEM v2${NC}"
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo
     
@@ -1434,39 +1871,44 @@ EOF
     fi
     
     echo
-    log_step "CaixaPreta Stack Enhanced Installation v3.0"
-    log_info "Ultra-robust deployment with comprehensive error handling"
+    log_step "$(msg "welcome_title")"
+    log_info "$(msg "enhanced_version")"
     
     # Root check
+    log_info "$(msg "root_check")"
     if [ "$EUID" -ne 0 ]; then 
-        log_error "Root access required. Please run as root or with sudo."
+        log_error "$(msg "root_error")"
         exit 1
     fi
-    log_success "Root privileges confirmed"
+    log_success "$(msg "root_confirmed")"
     # System requirements check
     check_system_requirements
     
     # Configuration
     echo
-    log_step "Configuration Setup"
+    log_step "$(msg "config_setup")"
     echo
     echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${CYAN}${BOLD}│                 CONFIGURACAO DE DOMINIO                     │${NC}"
+    else
+        echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+    fi
     echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
-    echo -ne "${GREEN}${BOLD}Enter your domain (e.g., mydomain.com): ${NC}"
+    echo -ne "${GREEN}${BOLD}$(msg "enter_domain")${NC}"
     read DOMAIN
     
-    echo -ne "${GREEN}${BOLD}Enter your email for SSL certificates: ${NC}"
+    echo -ne "${GREEN}${BOLD}$(msg "enter_email")${NC}"
     read EMAIL
     
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
-        log_error "Domain and email are required"
+        log_error "$(msg "domain_email_required")"
         exit 1
     fi
     
-    log_success "Configuration accepted"
+    log_success "$(msg "config_accepted")"
     log_info "Domain: $DOMAIN"
     log_info "Email: $EMAIL"
     
@@ -1475,14 +1917,14 @@ EOF
     
     # System preparation
     echo
-    log_step "System Preparation"
+    log_step "$(msg "system_prep")"
     
     # Update system
-    log_info "Updating system packages..."
+    log_info "$(msg "updating_system")"
     apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1
     
     # Install dependencies
-    log_info "Installing system dependencies..."
+    log_info "$(msg "installing_deps")"
     apt install -y curl wget git jq ufw unzip net-tools htop >/dev/null 2>&1
     
     log_success "System preparation completed"
@@ -1502,14 +1944,22 @@ EOF
     # Deploy core services (Traefik + Portainer)
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    CORE SERVICES                            │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    SERVICOS PRINCIPAIS                      │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    CORE SERVICES                            │${NC}"
+    fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_traefik "$DOMAIN" "$EMAIL"
     
     # Deploy databases
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    DATABASE LAYER                           │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    CAMADA DE BANCO DE DADOS                 │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    DATABASE LAYER                           │${NC}"
+    fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_databases
     
@@ -1519,29 +1969,45 @@ EOF
     # Deploy automation services
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    CAMADA DE AUTOMACAO                      │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
+    fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_applications "$DOMAIN"
     
     # Deploy MEGA and additional services
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    APPLICATION LAYER                        │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    CAMADA DE APLICACAO                      │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    APPLICATION LAYER                        │${NC}"
+    fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_mega_services "$DOMAIN"
     
     # Final verification
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    FINAL VERIFICATION                       │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    VERIFICACAO FINAL                        │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    FINAL VERIFICATION                       │${NC}"
+    fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     
     if final_verification; then
         # Success message
         echo
-        echo -e "${GREEN}${BOLD}🎉 DEPLOYMENT COMPLETED SUCCESSFULLY! 🎉${NC}"
+        if [ "$LANG_MODE" = "pt" ]; then
+            echo -e "${GREEN}${BOLD}🎉 IMPLANTACAO CONCLUIDA COM SUCESSO! 🎉${NC}"
+        else
+            echo -e "${GREEN}${BOLD}🎉 DEPLOYMENT COMPLETED SUCCESSFULLY! 🎉${NC}"
+        fi
         echo
-        echo -e "${CYAN}${BOLD}ACCESS ENDPOINTS:${NC}"
+        echo -e "${CYAN}${BOLD}$(msg "access_endpoints"):${NC}"
         echo -e "${GREEN}• n8n Automation:     ${WHITE}https://n8n.$DOMAIN${NC}"
         echo -e "${GREEN}• MEGA Chatwoot:      ${WHITE}https://mega.$DOMAIN${NC}"
         echo -e "${GREEN}• Evolution API:      ${WHITE}https://evolution.$DOMAIN${NC}"
@@ -1550,19 +2016,34 @@ EOF
         echo -e "${GREEN}• MinIO Console:      ${WHITE}https://minio.$DOMAIN${NC}"
         echo -e "${GREEN}• Grafana:            ${WHITE}https://grafana.$DOMAIN${NC}"
         echo
-        echo -e "${YELLOW}${BOLD}IMPORTANT NOTES:${NC}"
-        echo -e "${YELLOW}• Configure DNS records for all subdomains${NC}"
-        echo -e "${YELLOW}• SSL certificates will generate automatically (5-15 minutes)${NC}"
-        echo -e "${YELLOW}• Default password for all services: caixapretastack2626${NC}"
-        echo -e "${YELLOW}• Change passwords after first login for security${NC}"
+        echo -e "${YELLOW}${BOLD}$(msg "important_notes"):${NC}"
+        if [ "$LANG_MODE" = "pt" ]; then
+        if [ "$LANG_MODE" = "pt" ]; then
+            echo -e "${YELLOW}• Configure registros DNS para todos os subdominios${NC}"
+            echo -e "${YELLOW}• Certificados SSL serao gerados automaticamente (5-15 minutos)${NC}"
+            echo -e "${YELLOW}• Senha padrao para todos os servicos: caixapretastack2626${NC}"
+            echo -e "${YELLOW}• Altere as senhas apos o primeiro login para seguranca${NC}"
+        else
+            echo -e "${YELLOW}• Configure DNS records for all subdomains${NC}"
+            echo -e "${YELLOW}• SSL certificates will generate automatically (5-15 minutes)${NC}"
+            echo -e "${YELLOW}• Default password for all services: caixapretastack2626${NC}"
+            echo -e "${YELLOW}• Change passwords after first login for security${NC}"
+        fi
         echo
-        log_success "Installation completed successfully!"
+        log_success "$(msg "deployment_complete")"
     else
         echo
-        echo -e "${RED}${BOLD}⚠️  DEPLOYMENT COMPLETED WITH ISSUES ⚠️${NC}"
-        echo
-        echo -e "${YELLOW}Some services may need additional time to start or have issues.${NC}"
-        echo -e "${YELLOW}Run the following commands to diagnose and fix:${NC}"
+        if [ "$LANG_MODE" = "pt" ]; then
+            echo -e "${RED}${BOLD}⚠️  IMPLANTACAO CONCLUIDA COM PROBLEMAS ⚠️${NC}"
+            echo
+            echo -e "${YELLOW}Alguns servicos podem precisar de tempo adicional para iniciar ou ter problemas.${NC}"
+            echo -e "${YELLOW}Execute os seguintes comandos para diagnosticar e corrigir:${NC}"
+        else
+            echo -e "${RED}${BOLD}⚠️  DEPLOYMENT COMPLETED WITH ISSUES ⚠️${NC}"
+            echo
+            echo -e "${YELLOW}Some services may need additional time to start or have issues.${NC}"
+            echo -e "${YELLOW}Run the following commands to diagnose and fix:${NC}"
+        fi
         echo
         echo -e "${CYAN}• Full diagnostic: ${WHITE}./diagnose-all-services.sh${NC}"
         echo -e "${CYAN}• Fix all issues:  ${WHITE}sudo ./fix-and-redeploy.sh${NC}"
