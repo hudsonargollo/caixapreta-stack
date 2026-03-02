@@ -570,7 +570,7 @@ metrics:
 EOF
 
     # Deploy Traefik stack with enhanced configuration
-    cat > /tmp/traefik-stack.yml << 'EOF'
+    cat > /tmp/traefik-stack.yml << 'TRAEFIK_EOF'
 version: '3.8'
 services:
   traefik:
@@ -606,7 +606,7 @@ services:
         failure_action: rollback
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.traefik.rule=Host(\`traefik.${DOMAIN}\`)"
+        - "traefik.http.routers.traefik.rule=Host(\`traefik.DOMAIN_PLACEHOLDER\`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.routers.traefik.entrypoints=websecure"
         - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
@@ -635,7 +635,7 @@ services:
         max_attempts: 5
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.portainer.rule=Host(\`portainer.${DOMAIN}\`)"
+        - "traefik.http.routers.portainer.rule=Host(\`portainer.DOMAIN_PLACEHOLDER\`)"
         - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
@@ -649,10 +649,10 @@ services:
 networks:
   traefik-public:
     external: true
-EOF
+TRAEFIK_EOF
 
     # Replace domain placeholder
-    sed -i "s/\${DOMAIN}/$domain/g" /tmp/traefik-stack.yml
+    sed -i "s/DOMAIN_PLACEHOLDER/$domain/g" /tmp/traefik-stack.yml
     
     # Deploy the stack
     log_info "Deploying Traefik stack..."
