@@ -61,7 +61,14 @@ sudo ./caixapreta-stack.sh
    - Aponte os subdomínios para o IP do seu servidor
    - Aguarde propagação (5-15 minutos)
 
-5. **Pronto!** Acesse seus serviços com SSL automático
+5. **Valide a instalação (opcional):**
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh
+chmod +x validate-installation.sh
+sudo ./validate-installation.sh
+```
+
+6. **Pronto!** Acesse seus serviços com SSL automático
 
 ### 📖 Guia Completo de Instalação
 
@@ -83,6 +90,29 @@ Este produto faz parte do **bundle completo CaixaPreta** que inclui:
 - ✅ **CaixaPreta Stack** (este produto) - Infraestrutura automatizada
 
 [**🔗 Conheça todos os produtos e ofertas**](https://caixapreta.clubemkt.digital/)
+
+## 🛠️ Scripts Auxiliares
+
+### Validação da Instalação
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh
+chmod +x validate-installation.sh
+sudo ./validate-installation.sh
+```
+
+### Correção de Problemas (Para instalações existentes)
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-and-redeploy.sh
+chmod +x fix-and-redeploy.sh
+sudo ./fix-and-redeploy.sh
+```
+
+### Diagnóstico do Portainer
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-portainer.sh
+chmod +x diagnose-portainer.sh
+sudo ./diagnose-portainer.sh
+```
 
 ## 🛠️ Tecnologias Utilizadas
 
