@@ -48,7 +48,7 @@ O **CaixaPreta Stack** é uma solução completa de infraestrutura automatizada 
 1. **Conecte no seu servidor via SSH**
 2. **Baixe e execute o script:**
 ```bash
-wget https://raw.githubusercontent.com/[seu-usuario]/caixapreta-stack/main/caixapreta-stack.sh
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh
 chmod +x caixapreta-stack.sh
 sudo ./caixapreta-stack.sh
 ```
@@ -62,6 +62,16 @@ sudo ./caixapreta-stack.sh
    - Aguarde propagação (5-15 minutos)
 
 5. **Pronto!** Acesse seus serviços com SSL automático
+
+### 📖 Guia Completo de Instalação
+
+Para um guia detalhado com interface visual, acesse:
+**[caixapreta.clubemkt.digital/instalar](https://caixapreta.clubemkt.digital/instalar)**
+
+- Senha de acesso: VOCÊ RECEBERÁ EM SEU WHATSAPP
+- Interface interativa com troubleshooting
+- Passo a passo detalhado com screenshots
+- Seção de suporte e resolução de problemas
 
 ## 💡 Parte do Ecossistema CaixaPreta
 
@@ -145,4 +155,4 @@ O Grafana vem pré-configurado para monitorar:
 
 **⚡ Transforme sua infraestrutura em minutos, não em semanas!**
 
-*Este produto é parte do bundle CaixaPreta - A solução mais completa de automação do mercado brasileiro.*
+*Este produto é parte da Comunidade CaixaPreta - A solução mais completa de automação do mercado brasileiro.*
