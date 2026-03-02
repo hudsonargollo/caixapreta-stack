@@ -1,2 +1,4 @@
-/instalar/* /instalar/index.html 200
-/* /index.html 200
+# Cloudflare Pages redirects
+/matrix /matrix.html 200
+/simple /simple.html 200
+/ /matrix.html 200

@@ -1,0 +1,53 @@
+name: Deploy Static Installation Guide
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Which guide to deploy'
+        required: true
+        default: 'matrix'
+        type: choice
+        options:
+        - matrix
+        - simple
+        - both
+
+jobs:
+  deploy-static:
+    runs-on: ubuntu-latest
+    name: Deploy Static Guide to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          cd docs
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "matrix" ] || [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
+            cp matrix-index.html ../deploy/index.html
+            echo "Matrix guide set as main page"
+          fi
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "simple" ]; then
+            cp simple-index.html ../deploy/index.html
+            echo "Simple guide set as main page"
+          fi
+          
+          if [ "${{ github.event.inputs.deploy_type }}" = "both" ]; then
+            cp simple-index.html ../deploy/simple.html
+            cp matrix-index.html ../deploy/matrix.html
+            echo "Both guides deployed"
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: caixapreta-stack-docs
+          directory: deploy
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: '3'

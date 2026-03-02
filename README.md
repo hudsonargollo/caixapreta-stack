@@ -75,10 +75,11 @@ sudo ./validate-installation.sh
 Para um guia detalhado com interface visual, acesse:
 **[instalar.caixapreta.clubemkt.digital](https://instalar.caixapreta.clubemkt.digital)**
 
-- Senha de acesso: `caixapretastack2626`
-- Interface interativa com troubleshooting
-- Passo a passo detalhado com screenshots
-- Seção de suporte e resolução de problemas
+- 🎭 **Interface Matrix**: Guia com tema cyberpunk e animações
+- 🔐 **Senha de acesso**: `caixapretastack2626`
+- 📱 **Interface responsiva**: Funciona em desktop e mobile
+- 🛠️ **Seção de troubleshooting**: Inclui todos os scripts de diagnóstico
+- 💀 **Utilitário de limpeza**: Script para limpar VPS com falhas
 
 ## 💡 Parte do Ecossistema CaixaPreta
 
@@ -149,9 +150,9 @@ sudo ./fix-mega.sh
 
 **Importante**: Altere as senhas após a instalação!
 
-- **PostgreSQL**: `postgres` / `caixapretastack2626`
-- **MinIO**: `admin` / `caixapretastack2626`
-- **Evolution API Key**: `caixapretastack2626`
+- **PostgreSQL**: `postgres` / solicite via canal de suporte
+- **MinIO**: `admin` / solicite via canal de suporte
+- **Evolution API Key**: solicite via canal de suporte
 
 ## ⚠️ Requisitos do Servidor
 

@@ -39,6 +39,16 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
 
+      - name: Copy static files to build output
+        run: |
+          cd docs
+          # Copy Matrix installation guide
+          cp matrix-index.html out/matrix.html
+          # Copy simple installation guide  
+          cp simple-index.html out/simple.html
+          # Create index redirect to matrix guide
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/matrix.html"></head><body>Redirecting...</body></html>' > out/index.html
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
