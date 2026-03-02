@@ -114,6 +114,20 @@ chmod +x diagnose-portainer.sh
 sudo ./diagnose-portainer.sh
 ```
 
+### Diagnóstico do MEGA (Chatwoot)
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-mega.sh
+chmod +x diagnose-mega.sh
+sudo ./diagnose-mega.sh
+```
+
+### Correção do MEGA (Para erro 404)
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh
+chmod +x fix-mega.sh
+sudo ./fix-mega.sh
+```
+
 ## 🛠️ Tecnologias Utilizadas
 
 - **Docker Swarm** - Orquestração de containers
@@ -152,6 +166,53 @@ sudo ./diagnose-portainer.sh
 - **RAM**: 8GB+
 - **Storage**: 100GB+ SSD
 - **Backup**: Configuração automática recomendada
+
+## ⚠️ Resolução de Problemas Comuns
+
+### MEGA (Chatwoot) retorna 404
+Se o MEGA estiver retornando erro 404:
+
+1. **Execute o script de correção:**
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh
+chmod +x fix-mega.sh
+sudo ./fix-mega.sh
+```
+
+2. **Ou inicialize manualmente o banco:**
+```bash
+docker run --rm --network db_internal-net \
+  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
+  -e RAILS_ENV=production \
+  sendingtk/chatwoot:v4.11.2 \
+  bundle exec rails db:chatwoot_prepare
+```
+
+### Portainer não acessível
+Se não conseguir acessar o Portainer:
+
+1. **Execute o diagnóstico:**
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-portainer.sh
+chmod +x diagnose-portainer.sh
+sudo ./diagnose-portainer.sh
+```
+
+2. **Verifique se os serviços estão rodando:**
+```bash
+docker service ls
+docker service ps core_portainer
+```
+
+### Serviços não iniciam (0/1 replicas)
+Se os serviços mostram 0/1 replicas:
+
+1. **Execute o script de correção completa:**
+```bash
+wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-and-redeploy.sh
+chmod +x fix-and-redeploy.sh
+sudo ./fix-and-redeploy.sh
+```
 
 ## 🚨 Pós-Instalação
 

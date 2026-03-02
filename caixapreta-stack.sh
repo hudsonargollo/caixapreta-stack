@@ -53,15 +53,29 @@ if ! docker info | grep -q "Swarm: active"; then
     docker swarm init --advertise-addr $PUBLIC_IP
 fi
 
+# 4.1. Configuração de permissões do Docker
+echo -e "${YELLOW}Configurando permissões do Docker...${NC}"
+chmod 666 /var/run/docker.sock
+systemctl enable docker
+systemctl restart docker
+sleep 5
+
 # 5. Criação de Redes do Swarm
 echo -e "${YELLOW}Criando redes do Swarm...${NC}"
-docker network create --driver overlay traefik-public || true
-docker network create --driver overlay internal-net || true
+# Remove networks if they exist to avoid conflicts
+docker network rm traefik-public internal-net 2>/dev/null || true
+sleep 2
+docker network create --driver overlay traefik-public
+docker network create --driver overlay internal-net
 
 # 6. Preparação de Diretórios de Dados
 echo -e "${YELLOW}Criando diretórios para persistência de dados...${NC}"
 mkdir -p /data/traefik /data/portainer /data/n8n /data/redis_n8n /data/redis_mega /data/postgres /data/minio /data/mega /data/evolution /data/grafana
 touch /data/traefik/acme.json
+chmod 600 /data/traefik/acme.json
+# Ensure proper ownership and permissions
+chown -R root:root /data
+chmod -R 755 /data
 chmod 600 /data/traefik/acme.json
 
 # 7. Configuração do Traefik (Proxy Reverso com SSL)
@@ -97,6 +111,9 @@ EOF
 # 8. Deploy das Stacks
 echo -e "${YELLOW}Iniciando o deploy das stacks...${NC}"
 
+# Wait for Docker to be fully ready
+sleep 5
+
 # STACK 1: Traefik & Portainer
 cat <<EOF > swarm-core.yml
 version: '3.8'
@@ -110,13 +127,17 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /data/traefik/traefik.yml:/etc/traefik/traefik.yml
+      - /data/traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - /data/traefik/acme.json:/etc/traefik/acme.json
     networks:
       - traefik-public
     deploy:
       placement:
         constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.traefik.rule=Host(\`traefik.$DOMAIN\`)"
@@ -129,11 +150,17 @@ services:
     image: portainer/portainer-ce:latest
     command: -H unix:///var/run/docker.sock
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /data/portainer:/data
     networks:
       - traefik-public
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.portainer.rule=Host(\`portainer.$DOMAIN\`)"
@@ -148,6 +175,13 @@ EOF
 
 docker stack deploy -c swarm-core.yml core
 
+echo -e "${YELLOW}Aguardando Traefik e Portainer iniciarem...${NC}"
+sleep 15
+
+# Verificar se os serviços estão rodando
+echo -e "${YELLOW}Verificando status dos serviços core...${NC}"
+docker service ls | grep core
+
 # STACK 2: Redis Dedicados e Banco de Dados (Postgres 15 para suporte a V4/pgvector)
 cat <<EOF > swarm-db.yml
 version: '3.8'
@@ -160,6 +194,12 @@ services:
     networks:
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       replicas: 1
 
   redis-mega:
@@ -170,6 +210,12 @@ services:
     networks:
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       replicas: 1
 
   postgres:
@@ -183,6 +229,12 @@ services:
     networks:
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       replicas: 1
 
 networks:
@@ -191,6 +243,13 @@ networks:
 EOF
 
 docker stack deploy -c swarm-db.yml db
+
+echo -e "${YELLOW}Aguardando banco de dados iniciar...${NC}"
+sleep 20
+
+# Verificar se os serviços de banco estão rodando
+echo -e "${YELLOW}Verificando status dos serviços de banco...${NC}"
+docker service ls | grep db
 
 # STACK 3: Automação (n8n em modo Queue)
 cat <<EOF > swarm-automation.yml
@@ -217,6 +276,12 @@ services:
       - traefik-public
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.n8n.rule=Host(\`n8n.$DOMAIN\`)"
@@ -237,6 +302,12 @@ services:
     networks:
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       replicas: 2
 
 networks:
@@ -248,7 +319,29 @@ EOF
 
 docker stack deploy -c swarm-automation.yml automation
 
+echo -e "${YELLOW}Aguardando n8n iniciar...${NC}"
+sleep 15
+
+# Verificar se os serviços de automação estão rodando
+echo -e "${YELLOW}Verificando status dos serviços de automação...${NC}"
+docker service ls | grep automation
+
 # STACK 4: MEGA (Chatwoot V4 Mod Valus) e Evolution API
+echo -e "${YELLOW}Preparando banco de dados para MEGA (Chatwoot)...${NC}"
+
+# Wait for PostgreSQL to be ready
+echo -e "${YELLOW}Aguardando PostgreSQL estar pronto...${NC}"
+sleep 10
+
+# Initialize Chatwoot database
+echo -e "${YELLOW}Inicializando banco de dados do Chatwoot...${NC}"
+docker run --rm --network db_internal-net \
+  -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
+  -e RAILS_ENV=production \
+  sendingtk/chatwoot:v4.11.2 \
+  bundle exec rails db:chatwoot_prepare || echo "Database already initialized or initialization failed - continuing..."
+
+sleep 5
 cat <<EOF > swarm-apps.yml
 version: '3.8'
 services:
@@ -264,6 +357,12 @@ services:
       - traefik-public
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.evolution.rule=Host(\`evolution.$DOMAIN\`)"
@@ -279,16 +378,26 @@ services:
       - REDIS_URL=redis://redis-mega:6379/1
       - SECRET_KEY_BASE=caixapretastack2626
       - FRONTEND_URL=https://mega.$DOMAIN
+      - FORCE_SSL=true
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
       - WOO_REDIS_URL=redis://redis-mega:6379/1
       - WOO_REDIS_HOST=redis-mega
       - WOO_REDIS_PORT=6379
       - WOO_REDIS_DB=1
+      - INSTALLATION_ENV=docker
     volumes:
       - /data/mega/storage:/app/storage
     networks:
       - traefik-public
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.mega.rule=Host(\`mega.$DOMAIN\`)"
@@ -310,6 +419,13 @@ services:
       - WOO_REDIS_DB=1
     networks:
       - internal-net
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   minio:
     image: minio/minio:latest
@@ -322,6 +438,12 @@ services:
     networks:
       - traefik-public
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.minio.rule=Host(\`s3.$DOMAIN\`)"
@@ -341,6 +463,12 @@ services:
       - traefik-public
       - internal-net
     deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.grafana.rule=Host(\`grafana.$DOMAIN\`)"
@@ -357,6 +485,16 @@ EOF
 
 docker stack deploy -c swarm-apps.yml apps
 
+echo -e "${YELLOW}Aguardando aplicações iniciarem...${NC}"
+sleep 20
+
+# Verificar se todos os serviços estão rodando
+echo -e "${YELLOW}Verificando status final de todos os serviços...${NC}"
+docker service ls
+
+echo -e "${YELLOW}Verificando serviços com problemas...${NC}"
+docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+
 # 9. Finalização
 echo -e "${GREEN}Instalação CaixaPreta concluída com sucesso!${NC}"
 echo -e "Acesse os serviços nos endereços abaixo:"
@@ -369,3 +507,25 @@ echo -e "- MEGA (Chatwoot V4 + Kanban): https://mega.$DOMAIN"
 echo -e "- Grafana: https://grafana.$DOMAIN"
 echo -e "\n${YELLOW}IMPORTANTE: Certifique-se de que os registros DNS (A Records) para os subdomínios acima apontam para o IP deste servidor.${NC}"
 echo -e "${YELLOW}Aguarde alguns minutos para a propagação do SSL do Let's Encrypt.${NC}"
+
+# Status final e troubleshooting
+echo -e "\n${YELLOW}=== STATUS FINAL DOS SERVIÇOS ===${NC}"
+docker service ls
+
+echo -e "\n${YELLOW}=== COMANDOS ÚTEIS PARA TROUBLESHOOTING ===${NC}"
+echo -e "Verificar logs do Portainer: docker service logs core_portainer"
+echo -e "Verificar logs do Traefik: docker service logs core_traefik"
+echo -e "Verificar status de um serviço: docker service ps NOME_DO_SERVICO"
+echo -e "Reiniciar um serviço: docker service update --force NOME_DO_SERVICO"
+echo -e "Verificar certificados SSL: cat /data/traefik/acme.json"
+
+# Verificar se há serviços com problemas
+FAILED_SERVICES=$(docker service ls --filter "desired-state=running" --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
+if [ "$FAILED_SERVICES" -gt 0 ]; then
+    echo -e "\n${RED}⚠️  ATENÇÃO: Alguns serviços não iniciaram corretamente:${NC}"
+    docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+    echo -e "\n${YELLOW}Execute os comandos de troubleshooting acima para investigar.${NC}"
+    echo -e "${YELLOW}Aguarde 2-3 minutos e verifique novamente com: docker service ls${NC}"
+else
+    echo -e "\n${GREEN}✅ Todos os serviços estão rodando corretamente!${NC}"
+fi
