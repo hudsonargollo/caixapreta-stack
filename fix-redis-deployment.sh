@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK - REDIS DEPLOYMENT FIX
+# INFRA CAIXA PRETA v2 - REDIS DEPLOYMENT FIX
 # Fix Redis services deployment issues
 # ==============================================================================
 

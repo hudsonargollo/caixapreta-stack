@@ -1,4 +1,4 @@
-# 🛠️ CaixaPreta Stack - Scripts Reference Guide
+# 🛠️ Infra Caixa Preta v2 - Scripts Reference Guide
 
 ## 📋 Quick Reference
 

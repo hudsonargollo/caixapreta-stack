@@ -1,10 +1,10 @@
-# 🚀 CaixaPreta Stack - Infraestrutura Automatizada
+# 🚀 Infra Caixa Preta v2 - Infraestrutura Automatizada
 
-**Parte do Ecossistema CaixaPreta** | [Visite nosso site](https://caixapreta.clubemkt.digital/)
+**Parte do Ecossistema Caixa Preta** | [Visite nosso site](https://caixapreta.clubemkt.digital/)
 
 ## 📋 Sobre o Produto
 
-O **CaixaPreta Stack** é uma solução completa de infraestrutura automatizada que permite a **não-técnicos** instalar e configurar uma stack profissional de automação e atendimento em poucos minutos, sem conhecimento técnico avançado.
+O **Infra Caixa Preta v2** é uma solução completa de infraestrutura automatizada que permite a **não-técnicos** instalar e configurar uma stack profissional de automação e atendimento em poucos minutos, sem conhecimento técnico avançado.
 
 ### 🎯 Para Quem é Este Produto?
 

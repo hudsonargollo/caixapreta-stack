@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK v2.0
+# INFRA CAIXA PRETA v2
 # Enhanced Docker Swarm deployment with robust error handling
 # Author: Hudson Argollo
 # System: Debian/Ubuntu
@@ -135,16 +135,16 @@ msg() {
     case "$key" in
         "welcome_title")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "BEM-VINDOS AO CAIXA PRETA STACK v2.0"
+                echo "BEM-VINDOS AO INFRA CAIXA PRETA v2"
             else
-                echo "WELCOME TO CAIXA PRETA STACK v2.0"
+                echo "WELCOME TO INFRA CAIXA PRETA v2"
             fi
             ;;
         "enhanced_version")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "Versao aprimorada com correcoes robustas"
+                echo "Sistema de infraestrutura aprimorado com correcoes robustas"
             else
-                echo "Enhanced version with robust fixes"
+                echo "Enhanced infrastructure system with robust fixes"
             fi
             ;;
         "root_check")
@@ -709,9 +709,9 @@ msg() {
             ;;
         "deployment_success")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "Implantacao aprimorada concluida com sucesso!"
+                echo "Implantacao do Infra Caixa Preta concluida com sucesso!"
             else
-                echo "Enhanced deployment completed successfully!"
+                echo "Infra Caixa Preta deployment completed successfully!"
             fi
             ;;
         "access_endpoints")
@@ -786,9 +786,9 @@ msg() {
             ;;
         "deployment_complete")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "Implantacao concluida! Seu CaixaPreta Stack esta pronto!"
+                echo "Implantacao concluida! Seu Infra Caixa Preta esta pronto!"
             else
-                echo "Deployment completed! Your CaixaPreta Stack is ready!"
+                echo "Deployment completed! Your Infra Caixa Preta is ready!"
             fi
             ;;
         "waiting_postgresql")
@@ -1654,24 +1654,24 @@ main() {
     
     echo -e "${GREEN}${BOLD}"
     cat << "EOF"
- ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
-██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
-██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
-██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
-╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
- ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
-                                                                                  
-███████╗████████╗ █████╗  ██████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
-██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║   ██║╚════██╗   ██╔═████╗
-███████╗   ██║   ███████║██║     █████╔╝     ██║   ██║ █████╔╝   ██║██╔██║
-╚════██║   ██║   ██╔══██║██║     ██╔═██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
-███████║   ██║   ██║  ██║╚██████╗██║  ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝
-╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═══╝  ╚══════╝╚═╝ ╚═════╝ 
+██╗███╗   ██╗███████╗██████╗  █████╗      ██████╗ █████╗ ██╗██╗  ██╗ █████╗ 
+██║████╗  ██║██╔════╝██╔══██╗██╔══██╗    ██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗
+██║██╔██╗ ██║█████╗  ██████╔╝███████║    ██║     ███████║██║ ╚███╔╝ ███████║
+██║██║╚██╗██║██╔══╝  ██╔══██╗██╔══██║    ██║     ██╔══██║██║ ██╔██╗ ██╔══██║
+██║██║ ╚████║██║     ██║  ██║██║  ██║    ╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║
+╚═╝╚═╝  ╚═══╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                                              
+██████╗ ██████╗ ███████╗████████╗ █████╗     ██╗   ██╗██████╗ 
+██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗    ██║   ██║╚════██╗
+██████╔╝██████╔╝█████╗     ██║   ███████║    ██║   ██║ █████╔╝
+██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║    ╚██╗ ██╔╝██╔═══╝ 
+██║     ██║  ██║███████╗   ██║   ██║  ██║     ╚████╔╝ ███████╗
+╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝      ╚═══╝  ╚══════╝
 EOF
     echo -e "${NC}"
     
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}${BOLD}                    ENHANCED AUTOMATED DEPLOYMENT SYSTEM v2.0${NC}"
+    echo -e "${CYAN}${BOLD}                    ENHANCED AUTOMATED DEPLOYMENT SYSTEM v2${NC}"
     echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo
     
@@ -1866,7 +1866,7 @@ EOF
     cat << "EOF"
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                              ║
-║                    🚀 CAIXA PRETA STACK v2.0 DEPLOYED! 🚀                   ║
+║                    🚀 INFRA CAIXA PRETA v2 DEPLOYED! 🚀                    ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 EOF

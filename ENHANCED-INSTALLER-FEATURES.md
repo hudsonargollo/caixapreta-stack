@@ -1,4 +1,4 @@
-# 🚀 CaixaPreta Stack Enhanced Installer v3.0
+# 🚀 Infra Caixa Preta v2 Enhanced Installer
 
 ## ✨ Key Improvements for Fresh Installs
 

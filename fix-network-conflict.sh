@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK - NETWORK CONFLICT FIX
+# INFRA CAIXA PRETA v2 - NETWORK CONFLICT FIX
 # Quick fix for existing network conflicts with bilingual support
 # ==============================================================================
 
@@ -192,9 +192,9 @@ msg() {
             ;;
         "fixing_conflicts")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "Corrigindo conflitos de rede Docker para CaixaPreta Stack..."
+                echo "Corrigindo conflitos de rede Docker para Infra Caixa Preta..."
             else
-                echo "Fixing Docker network conflicts for CaixaPreta Stack..."
+                echo "Fixing Docker network conflicts for Infra Caixa Preta..."
             fi
             ;;
         "language_selection")

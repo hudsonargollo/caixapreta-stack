@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK - REDIS DIAGNOSTIC TOOL
+# INFRA CAIXA PRETA v2 - REDIS DIAGNOSTIC TOOL
 # Comprehensive Redis services analysis and troubleshooting
 # ==============================================================================
 
@@ -24,9 +24,9 @@ msg() {
     case "$key" in
         "welcome_title")
             if [ "$LANG_MODE" = "pt" ]; then
-                echo "DIAGNOSTICO REDIS - CAIXA PRETA STACK"
+                echo "DIAGNOSTICO REDIS - INFRA CAIXA PRETA v2"
             else
-                echo "REDIS DIAGNOSTIC - CAIXA PRETA STACK"
+                echo "REDIS DIAGNOSTIC - INFRA CAIXA PRETA v2"
             fi
             ;;
         "analyzing_redis")
