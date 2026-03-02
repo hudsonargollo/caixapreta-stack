@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaixaPreta Stack - Installation Protocol</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #00ff41;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+        }
+        
+        .login-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #00ff41;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #00ff41;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .input-group input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            color: #00ff41;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+        
+        .btn {
+            width: 100%;
+            background: #00ff41;
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            background: #00cc33;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        .error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Main Interface */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+            background: #0a0a0a;
+        }
+        
+        .header {
+            background: #111;
+            border-bottom: 1px solid #333;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #00ff41;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .terminal-window {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 12px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+        
+        .terminal-title {
+            color: #888;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .terminal-body {
+            padding: 20px;
+        }
+        
+        .step {
+            margin-bottom: 30px;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            background: #00ff41;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+        
+        .step-title {
+            color: #00ff41;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .step-description {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .command-block {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .command-block:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+        }
+        
+        .command-text {
+            color: #00ff41;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        
+        .command-text::before {
+            content: '$ ';
+            color: #888;
+        }
+        
+        .copy-indicator {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #666;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        
+        .command-block.copied {
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.1);
+        }
+        
+        .command-block.copied .copy-indicator {
+            color: #00ff41;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .service-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .service-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .service-name {
+            color: #00ff41;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .service-url {
+            color: #666;
+            font-size: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #333;
+            margin-top: 40px;
+        }
+        
+        .footer-text {
+            color: #666;
+            font-size: 11px;
+        }
+        
+        @media (max-width: 600px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .terminal-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="logo">CAIXAPRETA_STACK</div>
+            <div class="subtitle">Installation Protocol v2.0</div>
+            
+            <div class="input-group">
+                <label for="accessCode">Access Code</label>
+                <input type="password" id="accessCode" placeholder="Enter access code">
+            </div>
+            
+            <button class="btn" onclick="authenticate()">Initialize</button>
+            <div class="error" id="errorMsg">Access denied. Invalid credentials.</div>
+        </div>
+    </div>
+    
+    <!-- Main Interface -->
+    <div id="mainInterface" class="main-container">
+        <div class="header">
+            <h1>CAIXAPRETA STACK DEPLOYMENT PROTOCOL</h1>
+        </div>
+        
+        <div class="content">
+            <!-- Step 1 -->
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">ssh_connection.sh</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">ESTABLISH CONNECTION</div>
+                        </div>
+                        <div class="step-description">
+                            Connect to your VPS server via SSH as root user
+                        </div>
+                        <div class="command-block" onclick="copyCommand(this, 'ssh root@YOUR_SERVER_IP')">
+                            <div class="command-text">ssh root@YOUR_SERVER_IP</div>
+                            <div class="copy-indicator">click to copy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">download_protocol.sh</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">DOWNLOAD INSTALLATION SCRIPT</div>
+                        </div>
+                        <div class="step-description">
+                            Fetch the automated deployment script from repository
+                        </div>
+                        <div class="command-block" onclick="copyCommand(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh')">
+                            <div class="command-text">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</div>
+                            <div class="copy-indicator">click to copy</div>
+                        </div>
+                        <div class="command-block" onclick="copyCommand(this, 'chmod +x caixapreta-stack.sh')">
+                            <div class="command-text">chmod +x caixapreta-stack.sh</div>
+                            <div class="copy-indicator">click to copy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">execute_deployment.sh</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">EXECUTE DEPLOYMENT</div>
+                        </div>
+                        <div class="step-description">
+                            Initialize automated infrastructure deployment
+                        </div>
+                        <div class="command-block" onclick="copyCommand(this, 'sudo ./caixapreta-stack.sh')">
+                            <div class="command-text">sudo ./caixapreta-stack.sh</div>
+                            <div class="copy-indicator">click to copy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services -->
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">deployed_services.log</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">SERVICES DEPLOYED</div>
+                        </div>
+                        <div class="step-description">
+                            After successful deployment, services will be available at:
+                        </div>
+                        <div class="services-grid">
+                            <div class="service-card">
+                                <div class="service-icon">🐳</div>
+                                <div class="service-name">PORTAINER</div>
+                                <div class="service-url">portainer.yourdomain.com</div>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">🔄</div>
+                                <div class="service-name">N8N</div>
+                                <div class="service-url">n8n.yourdomain.com</div>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">💬</div>
+                                <div class="service-name">MEGA</div>
+                                <div class="service-url">mega.yourdomain.com</div>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">📱</div>
+                                <div class="service-name">EVOLUTION</div>
+                                <div class="service-url">evolution.yourdomain.com</div>
+                            </div>
+                            <div class="service-card">
+                                <div class="service-icon">📊</div>
+                                <div class="service-name">GRAFANA</div>
+                                <div class="service-url">grafana.yourdomain.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-text">
+                CAIXAPRETA STACK v2.0 | AUTOMATED DEPLOYMENT PROTOCOL
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function authenticate() {
+            const code = document.getElementById('accessCode').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (code === 'caixapretastack2626') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainInterface').style.display = 'block';
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('accessCode').value = '';
+            }
+        }
+        
+        function copyCommand(element, command) {
+            navigator.clipboard.writeText(command).then(() => {
+                element.classList.add('copied');
+                element.querySelector('.copy-indicator').textContent = 'copied!';
+                
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                    element.querySelector('.copy-indicator').textContent = 'click to copy';
+                }, 2000);
+            });
+        }
+        
+        // Enter key support
+        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authenticate();
+            }
+        });
+    </script>
+</body>
+</html>

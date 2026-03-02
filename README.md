@@ -75,11 +75,13 @@ sudo ./validate-installation.sh
 Para um guia detalhado com interface visual, acesse:
 **[instalar.caixapreta.clubemkt.digital](https://instalar.caixapreta.clubemkt.digital)**
 
-- 🎭 **Interface Matrix**: Guia com tema cyberpunk e animações
-- 🔐 **Senha de acesso**: `caixapretastack2626`
+- 🎭 **Interface profissional**: Guia com tema cyberpunk e animações
+- 🔐 **Acesso restrito**: Solicite a senha via WhatsApp
 - 📱 **Interface responsiva**: Funciona em desktop e mobile
 - 🛠️ **Seção de troubleshooting**: Inclui todos os scripts de diagnóstico
 - 💀 **Utilitário de limpeza**: Script para limpar VPS com falhas
+
+**📱 Para obter acesso ao guia:** [WhatsApp +55 73 98808-3318](https://wa.me/5573988083318?text=Olá! Gostaria de solicitar acesso ao guia de instalação do CaixaPreta Stack.)
 
 ## 💡 Parte do Ecossistema CaixaPreta
 
@@ -150,9 +152,9 @@ sudo ./fix-mega.sh
 
 **Importante**: Altere as senhas após a instalação!
 
-- **PostgreSQL**: `postgres` / solicite via canal de suporte
-- **MinIO**: `admin` / solicite via canal de suporte
-- **Evolution API Key**: solicite via canal de suporte
+- **PostgreSQL**: `postgres` / [Solicite via WhatsApp](https://wa.me/5573988083318)
+- **MinIO**: `admin` / [Solicite via WhatsApp](https://wa.me/5573988083318)
+- **Evolution API Key**: [Solicite via WhatsApp](https://wa.me/5573988083318)
 
 ## ⚠️ Requisitos do Servidor
 
@@ -240,6 +242,7 @@ O Grafana vem pré-configurado para monitorar:
 ## 📞 Precisa de Ajuda?
 
 - 🌐 **Site oficial**: [caixapreta.clubemkt.digital](https://caixapreta.clubemkt.digital/)
+- 📱 **WhatsApp**: [+55 73 98808-3318](https://wa.me/5573988083318)
 - 💬 **Comunidade**: Acesso exclusivo para clientes
 - 📧 **Suporte**: Disponível no bundle completo
 
