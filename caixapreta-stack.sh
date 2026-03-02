@@ -32,11 +32,8 @@ REVERSE='\033[7m'
 print_slow() {
     local text="$1"
     local delay="${2:-0.03}"
-    for (( i=0; i<${#text}; i++ )); do
-        printf "${text:$i:1}"
-        sleep "$delay"
-    done
-    echo
+    echo -e "$text"
+    sleep "$delay"
 }
 
 print_matrix() {
@@ -67,6 +64,176 @@ print_info() {
 print_hacker() {
     local text="$1"
     echo -e "${GREEN}${BOLD}>>> ${NC}${GREEN}$text${NC}"
+}
+
+# Language-specific messages
+msg() {
+    local key="$1"
+    case "$key" in
+        "root_check")
+            if [ "$LANG" = "pt" ]; then
+                echo "Verificando privilégios do sistema..."
+            else
+                echo "Checking system privileges..."
+            fi
+            ;;
+        "root_error")
+            if [ "$LANG" = "pt" ]; then
+                echo "Acesso root necessário. Execute como root ou com sudo."
+            else
+                echo "Root access required. Please run as root or with sudo."
+            fi
+            ;;
+        "root_terminating")
+            if [ "$LANG" = "pt" ]; then
+                echo "FINALIZANDO PROCESSO..."
+            else
+                echo "TERMINATING PROCESS..."
+            fi
+            ;;
+        "root_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Privilégios root confirmados"
+            else
+                echo "Root privileges confirmed"
+            fi
+            ;;
+        "config_mode")
+            if [ "$LANG" = "pt" ]; then
+                echo "ENTRANDO NO MODO DE CONFIGURAÇÃO..."
+            else
+                echo "ENTERING CONFIGURATION MODE..."
+            fi
+            ;;
+        "domain_config")
+            if [ "$LANG" = "pt" ]; then
+                echo "                    CONFIGURAÇÃO DE DOMÍNIO                     "
+            else
+                echo "                    DOMAIN CONFIGURATION                     "
+            fi
+            ;;
+        "enter_domain")
+            if [ "$LANG" = "pt" ]; then
+                echo "Digite seu domínio base (ex: seu-dominio.com):"
+            else
+                echo "Enter your base domain (e.g., your-domain.com):"
+            fi
+            ;;
+        "enter_email")
+            if [ "$LANG" = "pt" ]; then
+                echo "Digite seu email para certificados SSL (Let's Encrypt):"
+            else
+                echo "Enter your email for SSL certificates (Let's Encrypt):"
+            fi
+            ;;
+        "config_required")
+            if [ "$LANG" = "pt" ]; then
+                echo "Domínio e email são obrigatórios para implantação segura"
+            else
+                echo "Domain and email are required for secure deployment"
+            fi
+            ;;
+        "aborting")
+            if [ "$LANG" = "pt" ]; then
+                echo "ABORTANDO MISSÃO..."
+            else
+                echo "ABORTING MISSION..."
+            fi
+            ;;
+        "config_accepted")
+            if [ "$LANG" = "pt" ]; then
+                echo "Configuração aceita"
+            else
+                echo "Configuration accepted"
+            fi
+            ;;
+        "validating_config")
+            if [ "$LANG" = "pt" ]; then
+                echo "Validando parâmetros de configuração"
+            else
+                echo "Validating configuration parameters"
+            fi
+            ;;
+        "system_upgrade")
+            if [ "$LANG" = "pt" ]; then
+                echo "INICIANDO SEQUÊNCIA DE ATUALIZAÇÃO DO SISTEMA..."
+            else
+                echo "INITIATING SYSTEM UPGRADE SEQUENCE..."
+            fi
+            ;;
+        "updating_repos")
+            if [ "$LANG" = "pt" ]; then
+                echo "Atualizando repositórios do sistema..."
+            else
+                echo "Updating system repositories..."
+            fi
+            ;;
+        "fetching_packages")
+            if [ "$LANG" = "pt" ]; then
+                echo "Buscando informações dos pacotes mais recentes"
+            else
+                echo "Fetching latest package information"
+            fi
+            ;;
+        "installing_deps")
+            if [ "$LANG" = "pt" ]; then
+                echo "Instalando dependências principais..."
+            else
+                echo "Installing core dependencies..."
+            fi
+            ;;
+        "deps_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Todas as dependências instaladas com sucesso"
+            else
+                echo "All dependencies installed successfully"
+            fi
+            ;;
+        "docker_deploy")
+            if [ "$LANG" = "pt" ]; then
+                echo "IMPLANTAÇÃO DO SISTEMA DE CONTÊINERS DOCKER..."
+            else
+                echo "DOCKER CONTAINERIZATION SYSTEM DEPLOYMENT..."
+            fi
+            ;;
+        "docker_installing")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker não detectado. Instalando Docker Engine..."
+            else
+                echo "Docker not detected. Installing Docker Engine..."
+            fi
+            ;;
+        "docker_downloading")
+            if [ "$LANG" = "pt" ]; then
+                echo "Baixando script de instalação do Docker"
+            else
+                echo "Downloading Docker installation script"
+            fi
+            ;;
+        "docker_executing")
+            if [ "$LANG" = "pt" ]; then
+                echo "Executando instalação do Docker..."
+            else
+                echo "Executing Docker installation..."
+            fi
+            ;;
+        "docker_success")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker Engine instalado com sucesso"
+            else
+                echo "Docker Engine installed successfully"
+            fi
+            ;;
+        "docker_exists")
+            if [ "$LANG" = "pt" ]; then
+                echo "Docker Engine já instalado"
+            else
+                echo "Docker Engine already installed"
+            fi
+            ;;
+            echo "$key"
+            ;;
+    esac
 }
 
 # Loading animation
@@ -130,65 +297,92 @@ echo -e "${CYAN}${BOLD}                    AUTOMATED INFRASTRUCTURE DEPLOYMENT S
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
 echo
 
-print_matrix "INITIALIZING CAIXA PRETA STACK v2.0..."
-sleep 1
-
-print_hacker "Author: Hudson Argollo aka getrules aka neverdie"
-print_hacker "System: Docker Swarm Orchestration"
-print_hacker "Stack: n8n + MEGA + Evolution API + Traefik + Monitoring"
+# Language Selection
+echo -e "${WHITE}${BOLD}Welcome! / Bem-vindos!${NC}"
 echo
+echo -e "${CYAN}Please choose your language / Por favor, escolha seu idioma:${NC}"
+echo -e "${GREEN}${BOLD}[1]${NC} ${GREEN}English${NC}"
+echo -e "${GREEN}${BOLD}[2]${NC} ${GREEN}Português${NC}"
+echo
+echo -ne "${GREEN}${BOLD}language@caixapreta:~$ ${NC}"
+read LANGUAGE_CHOICE
 
-print_slow "${YELLOW}${BOLD}[SYSTEM CHECK]${NC} ${YELLOW}Performing security and compatibility checks...${NC}" 0.02
-sleep 1
+# Set language variables
+if [ "$LANGUAGE_CHOICE" = "2" ]; then
+    LANG="pt"
+    print_matrix "INICIALIZANDO CAIXA PRETA STACK v2.0..."
+    sleep 1
+    print_hacker "Autor: Hudson Argollo aka getrules aka neverdie"
+    print_hacker "Sistema: Orquestração Docker Swarm"
+    print_hacker "Stack: n8n + MEGA + Evolution API + Traefik + Monitoramento"
+    echo
+    print_hacker "Executando verificações de segurança e compatibilidade..."
+    loading_animation 2 "Executando diagnósticos do sistema"
+else
+    LANG="en"
+    print_matrix "INITIALIZING CAIXA PRETA STACK v2.0..."
+    sleep 1
+    print_hacker "Author: Hudson Argollo aka getrules aka neverdie"
+    print_hacker "System: Docker Swarm Orchestration"
+    print_hacker "Stack: n8n + MEGA + Evolution API + Traefik + Monitoring"
+    echo
+    print_hacker "Performing security and compatibility checks..."
+    loading_animation 2 "Running system diagnostics"
+fi
 
 # 1. Verificação de Requisitos
-print_info "Checking system privileges..."
+print_info "$(msg "root_check")"
 if [ "$EUID" -ne 0 ]; then 
-  print_error "Root access required. Please run as root or with sudo."
-  echo -e "${RED}${BOLD}TERMINATING PROCESS...${NC}"
+  print_error "$(msg "root_error")"
+  echo -e "${RED}${BOLD}$(msg "root_terminating")${NC}"
   exit 1
 fi
-print_success "Root privileges confirmed"
+print_success "$(msg "root_success")"
 
 echo
-print_matrix "ENTERING CONFIGURATION MODE..."
+print_matrix "$(msg "config_mode")"
 echo
 
 # Solicitar domínio base
 echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+echo -e "${CYAN}${BOLD}│$(msg "domain_config")│${NC}"
 echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
 echo
-print_hacker "Enter your base domain (e.g., your-domain.com):"
+print_hacker "$(msg "enter_domain")"
 echo -ne "${GREEN}${BOLD}domain@caixapreta:~$ ${NC}"
 read DOMAIN
 
-print_hacker "Enter your email for SSL certificates (Let's Encrypt):"
+print_hacker "$(msg "enter_email")"
 echo -ne "${GREEN}${BOLD}ssl@caixapreta:~$ ${NC}"
 read EMAIL
 
 if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
-    print_error "Domain and email are required for secure deployment"
-    echo -e "${RED}${BOLD}ABORTING MISSION...${NC}"
+    print_error "$(msg "config_required")"
+    echo -e "${RED}${BOLD}$(msg "aborting")${NC}"
     exit 1
 fi
 
-print_success "Configuration accepted"
-print_info "Domain: $DOMAIN"
-print_info "SSL Email: $EMAIL"
+print_success "$(msg "config_accepted")"
+if [ "$LANG" = "pt" ]; then
+    print_info "Domínio: $DOMAIN"
+    print_info "Email SSL: $EMAIL"
+else
+    print_info "Domain: $DOMAIN"
+    print_info "SSL Email: $EMAIL"
+fi
 echo
 
-loading_animation 2 "Validating configuration parameters"
+loading_animation 2 "$(msg "validating_config")"
 
 # 2. Atualização do Sistema e Instalação de Dependências
 echo
-print_matrix "INITIATING SYSTEM UPGRADE SEQUENCE..."
+print_matrix "$(msg "system_upgrade")"
 echo
 
-print_hacker "Updating system repositories..."
-loading_animation 1 "Fetching latest package information"
+print_hacker "$(msg "updating_repos")"
+loading_animation 1 "$(msg "fetching_packages")"
 
-print_hacker "Installing core dependencies..."
+print_hacker "$(msg "installing_deps")"
 apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1
 
 # Progress bar simulation for package installation
@@ -201,25 +395,25 @@ for i in "${!packages[@]}"; do
     sleep 0.5
 done
 
-print_success "All dependencies installed successfully"
+print_success "$(msg "deps_success")"
 
 # 3. Instalação do Docker
 echo
-print_matrix "DOCKER CONTAINERIZATION SYSTEM DEPLOYMENT..."
+print_matrix "$(msg "docker_deploy")"
 echo
 
 if ! command -v docker &> /dev/null; then
-    print_hacker "Docker not detected. Installing Docker Engine..."
-    loading_animation 2 "Downloading Docker installation script"
+    print_hacker "$(msg "docker_installing")"
+    loading_animation 2 "$(msg "docker_downloading")"
     
     curl -fsSL https://get.docker.com -o get-docker.sh >/dev/null 2>&1
-    print_hacker "Executing Docker installation..."
+    print_hacker "$(msg "docker_executing")"
     sh get-docker.sh >/dev/null 2>&1
     rm get-docker.sh
     
-    print_success "Docker Engine installed successfully"
+    print_success "$(msg "docker_success")"
 else
-    print_success "Docker Engine already installed"
+    print_success "$(msg "docker_exists")"
 fi
 
 # 4. Inicialização do Docker Swarm
@@ -843,7 +1037,7 @@ fi
 
 echo
 echo -e "${GREEN}${BOLD}"
-print_slow "CAIXA PRETA STACK v2.0 - READY FOR PRODUCTION" 0.05
+echo "CAIXA PRETA STACK v2.0 - READY FOR PRODUCTION"
 echo -e "${NC}"
 
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
