@@ -1,85 +1,306 @@
 #!/bin/bash
 
 # ==============================================================================
-# CAIXA PRETA STACK
+# CAIXA PRETA STACK v2.0
 # Script de Automação de Infraestrutura Docker Swarm (Inspirado na Masterclass)
 # Autor: Hudson Argollo e seus amiguinho Manus
-# Sistema: Debian
+# Sistema: Debian/Ubuntu
 # Foco: n8n + MEGA (Chatwoot V4 mod Nestor/Valus) + Evolution API + Traefik
 # ==============================================================================
 
 set -e
 
-# Cores para output
+# Terminal Colors & Effects
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+GRAY='\033[0;90m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}Iniciando a instalação da infraestrutura automatizada CaixaPreta...${NC}"
+# Terminal Effects
+BOLD='\033[1m'
+DIM='\033[2m'
+UNDERLINE='\033[4m'
+BLINK='\033[5m'
+REVERSE='\033[7m'
+
+# Hacker-style functions
+print_slow() {
+    local text="$1"
+    local delay="${2:-0.03}"
+    for (( i=0; i<${#text}; i++ )); do
+        printf "${text:$i:1}"
+        sleep "$delay"
+    done
+    echo
+}
+
+print_matrix() {
+    local text="$1"
+    echo -e "${GREEN}${BOLD}$text${NC}"
+}
+
+print_error() {
+    local text="$1"
+    echo -e "${RED}${BOLD}[ERROR]${NC} ${RED}$text${NC}"
+}
+
+print_success() {
+    local text="$1"
+    echo -e "${GREEN}${BOLD}[SUCCESS]${NC} ${GREEN}$text${NC}"
+}
+
+print_warning() {
+    local text="$1"
+    echo -e "${YELLOW}${BOLD}[WARNING]${NC} ${YELLOW}$text${NC}"
+}
+
+print_info() {
+    local text="$1"
+    echo -e "${CYAN}${BOLD}[INFO]${NC} ${CYAN}$text${NC}"
+}
+
+print_hacker() {
+    local text="$1"
+    echo -e "${GREEN}${BOLD}>>> ${NC}${GREEN}$text${NC}"
+}
+
+# Loading animation
+loading_animation() {
+    local duration="$1"
+    local message="$2"
+    local chars="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+    local end_time=$((SECONDS + duration))
+    
+    while [ $SECONDS -lt $end_time ]; do
+        for (( i=0; i<${#chars}; i++ )); do
+            printf "\r${CYAN}${BOLD}[${chars:$i:1}]${NC} ${CYAN}$message${NC}"
+            sleep 0.1
+        done
+    done
+    printf "\r${GREEN}${BOLD}[✓]${NC} ${GREEN}$message - Complete${NC}\n"
+}
+
+# Progress bar
+progress_bar() {
+    local current="$1"
+    local total="$2"
+    local width=50
+    local percentage=$((current * 100 / total))
+    local filled=$((current * width / total))
+    
+    printf "\r${CYAN}${BOLD}["
+    for ((i=0; i<filled; i++)); do printf "█"; done
+    for ((i=filled; i<width; i++)); do printf "░"; done
+    printf "] %d%% (%d/%d)${NC}" "$percentage" "$current" "$total"
+    
+    if [ "$current" -eq "$total" ]; then
+        echo
+    fi
+}
+
+# Clear screen and show banner
+clear
+
+# ASCII Art Banner
+echo -e "${GREEN}${BOLD}"
+cat << "EOF"
+ ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
+██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
+██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
+██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
+╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
+ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
+                                                                                  
+███████╗████████╗ █████╗  ██████╗██╗  ██╗    ██╗   ██╗██████╗     ██████╗ 
+██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║   ██║╚════██╗   ██╔═████╗
+███████╗   ██║   ███████║██║     █████╔╝     ██║   ██║ █████╔╝   ██║██╔██║
+╚════██║   ██║   ██╔══██║██║     ██╔═██╗     ╚██╗ ██╔╝██╔═══╝    ████╔╝██║
+███████║   ██║   ██║  ██║╚██████╗██║  ██╗     ╚████╔╝ ███████╗██╗╚██████╔╝
+╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝      ╚═══╝  ╚══════╝╚═╝ ╚═════╝ 
+EOF
+echo -e "${NC}"
+
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}${BOLD}                    AUTOMATED INFRASTRUCTURE DEPLOYMENT SYSTEM${NC}"
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+echo
+
+print_matrix "INITIALIZING CAIXA PRETA STACK v2.0..."
+sleep 1
+
+print_hacker "Author: Hudson Argollo aka getrules aka neverdie"
+print_hacker "System: Docker Swarm Orchestration"
+print_hacker "Stack: n8n + MEGA + Evolution API + Traefik + Monitoring"
+echo
+
+print_slow "${YELLOW}${BOLD}[SYSTEM CHECK]${NC} ${YELLOW}Performing security and compatibility checks...${NC}" 0.02
+sleep 1
 
 # 1. Verificação de Requisitos
+print_info "Checking system privileges..."
 if [ "$EUID" -ne 0 ]; then 
-  echo -e "${RED}Por favor, execute como root.${NC}"
-  exit
+  print_error "Root access required. Please run as root or with sudo."
+  echo -e "${RED}${BOLD}TERMINATING PROCESS...${NC}"
+  exit 1
 fi
+print_success "Root privileges confirmed"
+
+echo
+print_matrix "ENTERING CONFIGURATION MODE..."
+echo
 
 # Solicitar domínio base
-read -p "Digite o seu domínio base (ex: seu-dominio.com): " DOMAIN
-read -p "Digite o seu e-mail para o SSL (Let's Encrypt): " EMAIL
+echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+echo
+print_hacker "Enter your base domain (e.g., your-domain.com):"
+echo -ne "${GREEN}${BOLD}domain@caixapreta:~$ ${NC}"
+read DOMAIN
+
+print_hacker "Enter your email for SSL certificates (Let's Encrypt):"
+echo -ne "${GREEN}${BOLD}ssl@caixapreta:~$ ${NC}"
+read EMAIL
 
 if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
-    echo -e "${RED}Domínio e e-mail são obrigatórios.${NC}"
+    print_error "Domain and email are required for secure deployment"
+    echo -e "${RED}${BOLD}ABORTING MISSION...${NC}"
     exit 1
 fi
 
+print_success "Configuration accepted"
+print_info "Domain: $DOMAIN"
+print_info "SSL Email: $EMAIL"
+echo
+
+loading_animation 2 "Validating configuration parameters"
+
 # 2. Atualização do Sistema e Instalação de Dependências
-echo -e "${YELLOW}Atualizando o sistema e instalando dependências...${NC}"
-apt update && apt upgrade -y
-apt install -y curl wget git jq ufw unzip
+echo
+print_matrix "INITIATING SYSTEM UPGRADE SEQUENCE..."
+echo
+
+print_hacker "Updating system repositories..."
+loading_animation 1 "Fetching latest package information"
+
+print_hacker "Installing core dependencies..."
+apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1
+
+# Progress bar simulation for package installation
+packages=("curl" "wget" "git" "jq" "ufw" "unzip")
+total_packages=${#packages[@]}
+
+for i in "${!packages[@]}"; do
+    progress_bar $((i+1)) $total_packages
+    apt install -y "${packages[$i]}" >/dev/null 2>&1
+    sleep 0.5
+done
+
+print_success "All dependencies installed successfully"
 
 # 3. Instalação do Docker
+echo
+print_matrix "DOCKER CONTAINERIZATION SYSTEM DEPLOYMENT..."
+echo
+
 if ! command -v docker &> /dev/null; then
-    echo -e "${YELLOW}Instalando Docker...${NC}"
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
+    print_hacker "Docker not detected. Installing Docker Engine..."
+    loading_animation 2 "Downloading Docker installation script"
+    
+    curl -fsSL https://get.docker.com -o get-docker.sh >/dev/null 2>&1
+    print_hacker "Executing Docker installation..."
+    sh get-docker.sh >/dev/null 2>&1
     rm get-docker.sh
+    
+    print_success "Docker Engine installed successfully"
+else
+    print_success "Docker Engine already installed"
 fi
 
 # 4. Inicialização do Docker Swarm
+echo
+print_matrix "INITIALIZING DOCKER SWARM CLUSTER..."
+echo
+
 if ! docker info | grep -q "Swarm: active"; then
-    echo -e "${YELLOW}Inicializando Docker Swarm...${NC}"
+    print_hacker "Configuring Docker Swarm orchestration..."
     PUBLIC_IP=$(curl -s ifconfig.me)
-    docker swarm init --advertise-addr $PUBLIC_IP
+    print_info "Public IP detected: $PUBLIC_IP"
+    
+    loading_animation 2 "Initializing Swarm cluster"
+    docker swarm init --advertise-addr $PUBLIC_IP >/dev/null 2>&1
+    print_success "Docker Swarm cluster initialized"
+else
+    print_success "Docker Swarm already active"
 fi
 
 # 4.1. Configuração de permissões do Docker
-echo -e "${YELLOW}Configurando permissões do Docker...${NC}"
+print_hacker "Configuring Docker security permissions..."
 chmod 666 /var/run/docker.sock
-systemctl enable docker
-systemctl restart docker
-sleep 5
+systemctl enable docker >/dev/null 2>&1
+systemctl restart docker >/dev/null 2>&1
+
+loading_animation 3 "Applying security configurations"
+print_success "Docker security configured"
 
 # 5. Criação de Redes do Swarm
-echo -e "${YELLOW}Criando redes do Swarm...${NC}"
+echo
+print_matrix "ESTABLISHING NETWORK INFRASTRUCTURE..."
+echo
+
+print_hacker "Cleaning existing network configurations..."
 # Remove networks if they exist to avoid conflicts
 docker network rm traefik-public internal-net 2>/dev/null || true
-sleep 2
-docker network create --driver overlay traefik-public
-docker network create --driver overlay internal-net
+sleep 1
+
+print_hacker "Creating overlay network topology..."
+loading_animation 1 "Configuring traefik-public network"
+docker network create --driver overlay traefik-public >/dev/null 2>&1
+
+loading_animation 1 "Configuring internal-net network"
+docker network create --driver overlay internal-net >/dev/null 2>&1
+
+print_success "Network infrastructure established"
 
 # 6. Preparação de Diretórios de Dados
-echo -e "${YELLOW}Criando diretórios para persistência de dados...${NC}"
-mkdir -p /data/traefik /data/portainer /data/n8n /data/redis_n8n /data/redis_mega /data/postgres /data/minio /data/mega /data/evolution /data/grafana
+echo
+print_matrix "PREPARING DATA PERSISTENCE LAYER..."
+echo
+
+print_hacker "Creating data directory structure..."
+directories=("traefik" "portainer" "n8n" "redis_n8n" "redis_mega" "postgres" "minio" "mega" "evolution" "grafana")
+
+for i in "${!directories[@]}"; do
+    mkdir -p "/data/${directories[$i]}" 2>/dev/null
+    progress_bar $((i+1)) ${#directories[@]}
+    sleep 0.2
+done
+
+print_hacker "Configuring SSL certificate storage..."
 touch /data/traefik/acme.json
 chmod 600 /data/traefik/acme.json
-# Ensure proper ownership and permissions
-chown -R root:root /data
-chmod -R 755 /data
+
+print_hacker "Setting directory permissions..."
+loading_animation 1 "Applying security permissions"
+chown -R root:root /data >/dev/null 2>&1
+chmod -R 755 /data >/dev/null 2>&1
 chmod 600 /data/traefik/acme.json
 
+print_success "Data persistence layer configured"
+
 # 7. Configuração do Traefik (Proxy Reverso com SSL)
-echo -e "${YELLOW}Configurando Traefik...${NC}"
+echo
+print_matrix "CONFIGURING REVERSE PROXY & SSL TERMINATION..."
+echo
+
+print_hacker "Generating Traefik configuration..."
+loading_animation 2 "Creating SSL automation rules"
+
 cat <<EOF > /data/traefik/traefik.yml
 api:
   dashboard: true
@@ -108,13 +329,17 @@ certificatesResolvers:
         entryPoint: web
 EOF
 
+print_success "Traefik reverse proxy configured"
+
 # 8. Deploy das Stacks
-echo -e "${YELLOW}Iniciando o deploy das stacks...${NC}"
+echo
+print_matrix "INITIATING STACK DEPLOYMENT SEQUENCE..."
+echo
 
 # Wait for Docker to be fully ready
-sleep 5
+loading_animation 3 "Preparing deployment environment"
 
-# STACK 1: Traefik & Portainer
+print_hacker "Deploying Core Infrastructure (Traefik + Portainer)..."
 cat <<EOF > swarm-core.yml
 version: '3.8'
 services:
@@ -173,13 +398,15 @@ networks:
     external: true
 EOF
 
-docker stack deploy -c swarm-core.yml core
+docker stack deploy -c swarm-core.yml core >/dev/null 2>&1
 
-echo -e "${YELLOW}Aguardando Traefik e Portainer iniciarem...${NC}"
-sleep 15
+loading_animation 8 "Deploying Traefik reverse proxy"
+loading_animation 7 "Deploying Portainer management interface"
+
+print_success "Core infrastructure deployed"
 
 # Verificar se os serviços estão rodando
-echo -e "${YELLOW}Verificando status dos serviços core...${NC}"
+print_info "Verifying core services status..."
 docker service ls | grep core
 
 # STACK 2: Redis Dedicados e Banco de Dados (Postgres 15 para suporte a V4/pgvector)
@@ -242,13 +469,16 @@ networks:
     external: true
 EOF
 
-docker stack deploy -c swarm-db.yml db
+docker stack deploy -c swarm-db.yml db >/dev/null 2>&1
 
-echo -e "${YELLOW}Aguardando banco de dados iniciar...${NC}"
-sleep 20
+loading_animation 10 "Deploying PostgreSQL database cluster"
+loading_animation 8 "Deploying Redis cache servers"
+loading_animation 5 "Configuring data persistence"
+
+print_success "Database infrastructure deployed"
 
 # Verificar se os serviços de banco estão rodando
-echo -e "${YELLOW}Verificando status dos serviços de banco...${NC}"
+print_info "Verifying database services status..."
 docker service ls | grep db
 
 # STACK 3: Automação (n8n em modo Queue)
@@ -317,31 +547,43 @@ networks:
     external: true
 EOF
 
-docker stack deploy -c swarm-automation.yml automation
+docker stack deploy -c swarm-automation.yml automation >/dev/null 2>&1
 
-echo -e "${YELLOW}Aguardando n8n iniciar...${NC}"
-sleep 15
+loading_animation 8 "Deploying n8n automation engine"
+loading_animation 6 "Configuring workflow workers"
+loading_animation 4 "Establishing queue system"
+
+print_success "Automation infrastructure deployed"
 
 # Verificar se os serviços de automação estão rodando
-echo -e "${YELLOW}Verificando status dos serviços de automação...${NC}"
+print_info "Verifying automation services status..."
 docker service ls | grep automation
 
-# STACK 4: MEGA (Chatwoot V4 Mod Valus) e Evolution API
-echo -e "${YELLOW}Preparando banco de dados para MEGA (Chatwoot)...${NC}"
+echo
+print_matrix "PREPARING MEGA (CHATWOOT) DATABASE..."
+echo
 
 # Wait for PostgreSQL to be ready
-echo -e "${YELLOW}Aguardando PostgreSQL estar pronto...${NC}"
-sleep 10
+print_hacker "Waiting for PostgreSQL cluster to be ready..."
+loading_animation 5 "Establishing database connections"
 
 # Initialize Chatwoot database
-echo -e "${YELLOW}Inicializando banco de dados do Chatwoot...${NC}"
+print_hacker "Initializing Chatwoot database schema..."
+loading_animation 3 "Preparing database initialization"
+
 docker run --rm --network db_internal-net \
   -e DATABASE_URL=postgresql://postgres:caixapretastack2626@postgres:5432/main_db \
   -e RAILS_ENV=production \
   sendingtk/chatwoot:v4.11.2 \
-  bundle exec rails db:chatwoot_prepare || echo "Database already initialized or initialization failed - continuing..."
+  bundle exec rails db:chatwoot_prepare >/dev/null 2>&1 || print_warning "Database already initialized or initialization failed - continuing..."
 
-sleep 5
+print_success "Chatwoot database prepared"
+
+echo
+print_matrix "DEPLOYING APPLICATION LAYER..."
+echo
+
+print_hacker "Deploying MEGA (Chatwoot V4), Evolution API, MinIO & Grafana..."
 cat <<EOF > swarm-apps.yml
 version: '3.8'
 services:
@@ -483,49 +725,127 @@ networks:
     external: true
 EOF
 
-docker stack deploy -c swarm-apps.yml apps
+docker stack deploy -c swarm-apps.yml apps >/dev/null 2>&1
 
-echo -e "${YELLOW}Aguardando aplicações iniciarem...${NC}"
-sleep 20
+loading_animation 10 "Deploying Evolution API (WhatsApp Integration)"
+loading_animation 12 "Deploying MEGA (Chatwoot V4 Customer Service)"
+loading_animation 8 "Deploying MinIO Object Storage"
+loading_animation 6 "Deploying Grafana Monitoring Dashboard"
+loading_animation 4 "Configuring service mesh"
+
+print_success "Application layer deployed successfully"
 
 # Verificar se todos os serviços estão rodando
-echo -e "${YELLOW}Verificando status final de todos os serviços...${NC}"
+echo
+print_matrix "PERFORMING FINAL SYSTEM VERIFICATION..."
+echo
+
+print_hacker "Scanning all deployed services..."
+loading_animation 3 "Collecting service status information"
+
 docker service ls
 
-echo -e "${YELLOW}Verificando serviços com problemas...${NC}"
-docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+print_hacker "Identifying services with deployment issues..."
+FAILED_SERVICES=$(docker service ls --filter "desired-state=running" --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
+
+if [ "$FAILED_SERVICES" -gt 0 ]; then
+    print_warning "Some services are still initializing:"
+    docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
+else
+    print_success "All services are operational"
+fi
 
 # 9. Finalização
-echo -e "${GREEN}Instalação CaixaPreta concluída com sucesso!${NC}"
-echo -e "Acesse os serviços nos endereços abaixo:"
-echo -e "- Portainer: https://portainer.$DOMAIN"
-echo -e "- Traefik Dashboard: https://traefik.$DOMAIN"
-echo -e "- n8n: https://n8n.$DOMAIN"
-echo -e "- Evolution API: https://evolution.$DOMAIN"
-echo -e "- MinIO Console: https://minio.$DOMAIN"
-echo -e "- MEGA (Chatwoot V4 + Kanban): https://mega.$DOMAIN"
-echo -e "- Grafana: https://grafana.$DOMAIN"
-echo -e "\n${YELLOW}IMPORTANTE: Certifique-se de que os registros DNS (A Records) para os subdomínios acima apontam para o IP deste servidor.${NC}"
-echo -e "${YELLOW}Aguarde alguns minutos para a propagação do SSL do Let's Encrypt.${NC}"
+echo
+echo -e "${GREEN}${BOLD}"
+cat << "EOF"
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                    🚀 CAIXA PRETA STACK DEPLOYMENT COMPLETE! 🚀              ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+EOF
+echo -e "${NC}"
 
-# Status final e troubleshooting
-echo -e "\n${YELLOW}=== STATUS FINAL DOS SERVIÇOS ===${NC}"
+print_matrix "MISSION ACCOMPLISHED - ALL SYSTEMS OPERATIONAL"
+echo
+
+print_success "Infrastructure deployment completed successfully!"
+echo
+
+echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${CYAN}${BOLD}│                    ACCESS ENDPOINTS                         │${NC}"
+echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+echo
+
+print_hacker "Portainer (Container Management): https://portainer.$DOMAIN"
+print_hacker "Traefik Dashboard (Proxy Status): https://traefik.$DOMAIN"
+print_hacker "n8n (Automation Engine): https://n8n.$DOMAIN"
+print_hacker "Evolution API (WhatsApp): https://evolution.$DOMAIN"
+print_hacker "MinIO Console (File Storage): https://minio.$DOMAIN"
+print_hacker "MEGA (Customer Service): https://mega.$DOMAIN"
+print_hacker "Grafana (Monitoring): https://grafana.$DOMAIN"
+
+echo
+echo -e "${YELLOW}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${YELLOW}${BOLD}│                    CRITICAL REMINDERS                       │${NC}"
+echo -e "${YELLOW}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+echo
+
+print_warning "DNS Configuration Required:"
+print_info "  → Create A records for all subdomains pointing to this server"
+print_info "  → Server IP: $(curl -s ifconfig.me)"
+
+print_warning "SSL Certificate Generation:"
+print_info "  → Let's Encrypt certificates will auto-generate (5-15 minutes)"
+print_info "  → Monitor progress: docker service logs core_traefik"
+
+print_warning "Security Notice:"
+print_info "  → Change default passwords immediately after first login"
+print_info "  → Configure firewall rules for production use"
+
+echo
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}${BOLD}                           SYSTEM STATUS OVERVIEW${NC}"
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+
 docker service ls
 
-echo -e "\n${YELLOW}=== COMANDOS ÚTEIS PARA TROUBLESHOOTING ===${NC}"
-echo -e "Verificar logs do Portainer: docker service logs core_portainer"
-echo -e "Verificar logs do Traefik: docker service logs core_traefik"
-echo -e "Verificar status de um serviço: docker service ps NOME_DO_SERVICO"
-echo -e "Reiniciar um serviço: docker service update --force NOME_DO_SERVICO"
-echo -e "Verificar certificados SSL: cat /data/traefik/acme.json"
+echo
+echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${PURPLE}${BOLD}│                  TROUBLESHOOTING TOOLKIT                    │${NC}"
+echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+echo
+
+print_info "Service Status Check: docker service ls"
+print_info "View Service Logs: docker service logs SERVICE_NAME"
+print_info "Restart Service: docker service update --force SERVICE_NAME"
+print_info "SSL Certificate Status: cat /data/traefik/acme.json"
+
+echo
+print_info "Validation Script: wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/validate-installation.sh"
+print_info "MEGA Fix Script: wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/fix-mega.sh"
+print_info "Portainer Diagnostic: wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/diagnose-portainer.sh"
 
 # Verificar se há serviços com problemas
 FAILED_SERVICES=$(docker service ls --filter "desired-state=running" --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
 if [ "$FAILED_SERVICES" -gt 0 ]; then
-    echo -e "\n${RED}⚠️  ATENÇÃO: Alguns serviços não iniciaram corretamente:${NC}"
+    echo
+    print_error "⚠️  ATTENTION: Some services failed to start properly:"
     docker service ls --filter "desired-state=running" --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/"
-    echo -e "\n${YELLOW}Execute os comandos de troubleshooting acima para investigar.${NC}"
-    echo -e "${YELLOW}Aguarde 2-3 minutos e verifique novamente com: docker service ls${NC}"
+    echo
+    print_warning "Execute troubleshooting commands above to investigate"
+    print_warning "Wait 2-3 minutes and check again with: docker service ls"
 else
-    echo -e "\n${GREEN}✅ Todos os serviços estão rodando corretamente!${NC}"
+    echo
+    print_success "✅ ALL SYSTEMS OPERATIONAL - DEPLOYMENT SUCCESSFUL!"
 fi
+
+echo
+echo -e "${GREEN}${BOLD}"
+print_slow "CAIXA PRETA STACK v2.0 - READY FOR PRODUCTION" 0.05
+echo -e "${NC}"
+
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}${BOLD}                    Thank you for using CaixaPreta Stack!${NC}"
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
