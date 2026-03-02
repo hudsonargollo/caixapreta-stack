@@ -67,8 +67,8 @@ show_progress() {
 handle_error() {
     local exit_code=$?
     local line_number=$1
-    log_error "Script failed at line $line_number with exit code $exit_code"
-    log_error "Last command: $BASH_COMMAND"
+    log_error "$(msg "script_failed") $line_number with exit code $exit_code"
+    log_error "$(msg "last_command") $BASH_COMMAND"
     exit $exit_code
 }
 
@@ -89,7 +89,7 @@ verify_service() {
     local max_attempts=30
     local attempt=1
     
-    log_info "Verifying service: $service_name (expecting $expected_replicas replicas)"
+    log_info "$(msg "verifying_service") $service_name $(msg "expecting_replicas") $expected_replicas $(msg "replicas")"
     
     while [ $attempt -le $max_attempts ]; do
         local current_replicas=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "^$service_name " | awk '{print $2}' || echo "0/0")
@@ -99,12 +99,12 @@ verify_service() {
             return 0
         fi
         
-        log_info "Attempt $attempt/$max_attempts: $service_name is $current_replicas, waiting..."
+        log_info "$(msg "attempt") $attempt/$max_attempts: $service_name is $current_replicas, $(msg "waiting")"
         sleep 5
         ((attempt++))
     done
     
-    log_error "Service $service_name failed to reach expected state $expected_replicas"
+    log_error "$(msg "service_failed_state") $expected_replicas"
     return 1
 }
 
@@ -113,7 +113,7 @@ verify_port_binding() {
     local max_attempts=12
     local attempt=1
     
-    log_info "Verifying port $port is bound..."
+    log_info "$(msg "verifying_port") $port $(msg "is_bound")"
     
     while [ $attempt -le $max_attempts ]; do
         if netstat -tlnp 2>/dev/null | grep -q ":$port "; then
@@ -121,12 +121,12 @@ verify_port_binding() {
             return 0
         fi
         
-        log_info "Attempt $attempt/$max_attempts: Port $port not bound yet, waiting..."
+        log_info "$(msg "attempt") $attempt/$max_attempts: $(msg "port_not_bound") $port $(msg "not_bound_yet")"
         sleep 5
         ((attempt++))
     done
     
-    log_error "Port $port failed to bind after $max_attempts attempts"
+    log_error "$(msg "port_failed_bind") $max_attempts $(msg "attempts")"
     return 1
 }
 # Language-specific messages
@@ -271,6 +271,286 @@ msg() {
                 echo "Verificando instalacao do Docker..."
             else
                 echo "Verifying Docker installation..."
+            fi
+            ;;
+        "directories_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Diretorios de dados configurados"
+            else
+                echo "Data directories configured"
+            fi
+            ;;
+        "script_failed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Script falhou na linha"
+            else
+                echo "Script failed at line"
+            fi
+            ;;
+        "last_command")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Ultimo comando:"
+            else
+                echo "Last command:"
+            fi
+            ;;
+        "verifying_service")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando servico:"
+            else
+                echo "Verifying service:"
+            fi
+            ;;
+        "expecting_replicas")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "(esperando"
+            else
+                echo "(expecting"
+            fi
+            ;;
+        "replicas")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "replicas)"
+            else
+                echo "replicas)"
+            fi
+            ;;
+        "attempt")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Tentativa"
+            else
+                echo "Attempt"
+            fi
+            ;;
+        "waiting")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "aguardando..."
+            else
+                echo "waiting..."
+            fi
+            ;;
+        "service_failed_state")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Servico falhou ao alcancar o estado esperado"
+            else
+                echo "Service failed to reach expected state"
+            fi
+            ;;
+        "verifying_port")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando se a porta"
+            else
+                echo "Verifying port"
+            fi
+            ;;
+        "is_bound")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "esta vinculada..."
+            else
+                echo "is bound..."
+            fi
+            ;;
+        "port_not_bound")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Porta"
+            else
+                echo "Port"
+            fi
+            ;;
+        "not_bound_yet")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "ainda nao vinculada, aguardando..."
+            else
+                echo "not bound yet, waiting..."
+            fi
+            ;;
+        "port_failed_bind")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Porta falhou ao vincular apos"
+            else
+                echo "Port failed to bind after"
+            fi
+            ;;
+        "attempts")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "tentativas"
+            else
+                echo "attempts"
+            fi
+            ;;
+        "creating_traefik_network")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Criando rede traefik-public..."
+            else
+                echo "Creating traefik-public network..."
+            fi
+            ;;
+        "creating_internal_network")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Criando rede internal-net..."
+            else
+                echo "Creating internal-net network..."
+            fi
+            ;;
+        "failed_create_networks")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Falha ao criar redes"
+            else
+                echo "Failed to create networks"
+            fi
+            ;;
+        "docker_verification_failed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificacao da instalacao do Docker falhou"
+            else
+                echo "Docker installation verification failed"
+            fi
+            ;;
+        "waiting_docker_daemon")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando Docker daemon..."
+            else
+                echo "Waiting for Docker daemon..."
+            fi
+            ;;
+        "docker_daemon_failed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker daemon falhou ao iniciar"
+            else
+                echo "Docker daemon failed to start"
+            fi
+            ;;
+        "could_not_detect_ip")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Nao foi possivel detectar IP, usando configuracao padrao"
+            else
+                echo "Could not detect IP, using default configuration"
+            fi
+            ;;
+        "swarm_init_attempt")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Tentativa de inicializacao do Swarm"
+            else
+                echo "Swarm initialization attempt"
+            fi
+            ;;
+        "swarm_attempt_failed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Tentativa de inicializacao do Swarm falhou"
+            else
+                echo "Swarm initialization attempt failed"
+            fi
+            ;;
+        "failed_initialize_swarm")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Falha ao inicializar Docker Swarm apos"
+            else
+                echo "Failed to initialize Docker Swarm after"
+            fi
+            ;;
+        "testing_traefik")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Testando conectividade do Traefik..."
+            else
+                echo "Testing Traefik connectivity..."
+            fi
+            ;;
+        "traefik_responding")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Traefik esta respondendo (HTTP"
+            else
+                echo "Traefik is responding (HTTP"
+            fi
+            ;;
+        "traefik_response")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Resposta do Traefik: HTTP"
+            else
+                echo "Traefik response: HTTP"
+            fi
+            ;;
+        "waiting_postgresql_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando PostgreSQL ficar pronto para conexoes..."
+            else
+                echo "Waiting for PostgreSQL to be ready for connections..."
+            fi
+            ;;
+        "waiting_postgresql_attempt")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando PostgreSQL..."
+            else
+                echo "Waiting for PostgreSQL..."
+            fi
+            ;;
+        "postgresql_failed_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PostgreSQL falhou ao ficar pronto"
+            else
+                echo "PostgreSQL failed to become ready"
+            fi
+            ;;
+        "creating_evolution_db")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Criando banco de dados Evolution API..."
+            else
+                echo "Creating Evolution API database..."
+            fi
+            ;;
+        "evolution_db_exists")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Banco de dados Evolution ja existe"
+            else
+                echo "Evolution database already exists"
+            fi
+            ;;
+        "initializing_chatwoot_db")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Inicializando esquema do banco de dados Chatwoot..."
+            else
+                echo "Initializing Chatwoot database schema..."
+            fi
+            ;;
+        "chatwoot_db_initialized")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Banco de dados Chatwoot ja inicializado"
+            else
+                echo "Chatwoot database already initialized"
+            fi
+            ;;
+        "waiting_mega_services")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Aguardando servicos MEGA (pode levar ate 3 minutos)..."
+            else
+                echo "Waiting for MEGA services (may take up to 3 minutes)..."
+            fi
+            ;;
+        "domain_email_required")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Dominio e email sao obrigatorios"
+            else
+                echo "Domain and email are required"
+            fi
+            ;;
+        "services_starting_up")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Alguns servicos ainda podem estar iniciando:"
+            else
+                echo "Some services may still be starting up:"
+            fi
+            ;;
+        "normal_startup_time")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Isso e normal - servicos podem levar 2-5 minutos para iniciar completamente"
+            else
+                echo "This is normal - services may take 2-5 minutes to fully start"
+            fi
+            ;;
+        "all_services_operational")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os servicos estao operacionais!"
+            else
+                echo "All services are operational!"
             fi
             ;;
         "directories_ready")
@@ -540,14 +820,14 @@ create_networks() {
     sleep 2
     
     # Create networks with explicit configuration
-    log_info "Creating traefik-public network..."
+    log_info "$(msg "creating_traefik_network")"
     docker network create \
         --driver overlay \
         --attachable \
         --subnet=10.0.1.0/24 \
         traefik-public
     
-    log_info "Creating internal-net network..."
+    log_info "$(msg "creating_internal_network")"
     docker network create \
         --driver overlay \
         --attachable \
@@ -558,7 +838,7 @@ create_networks() {
     if docker network ls | grep -q "traefik-public" && docker network ls | grep -q "internal-net"; then
         log_success "$(msg "networks_created")"
     else
-        log_error "Failed to create networks"
+        log_error "$(msg "failed_create_networks")"
         exit 1
     fi
 }
@@ -569,7 +849,7 @@ verify_docker() {
     
     # Verify Docker is working
     if ! docker --version >/dev/null 2>&1; then
-        log_error "Docker installation verification failed"
+        log_error "$(msg "docker_verification_failed")"
         exit 1
     fi
     
@@ -583,12 +863,12 @@ verify_docker() {
             break
         fi
         
-        log_info "Attempt $attempt/$max_attempts: Waiting for Docker daemon..."
+        log_info "$(msg "attempt") $attempt/$max_attempts: $(msg "waiting_docker_daemon")"
         sleep 2
         ((attempt++))
         
         if [ $attempt -gt $max_attempts ]; then
-            log_error "Docker daemon failed to start"
+            log_error "$(msg "docker_daemon_failed")"
             exit 1
         fi
     done
@@ -626,7 +906,7 @@ initialize_swarm() {
         ADVERTISE_ADDR="[$LOCAL_IPV6]"
         log_info "$(msg "using_ipv6") $LOCAL_IPV6"
     else
-        log_warning "Could not detect IP, using default configuration"
+        log_warning "$(msg "could_not_detect_ip")"
     fi
     
     # Initialize Swarm with retries
@@ -634,7 +914,7 @@ initialize_swarm() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        log_info "Swarm initialization attempt $attempt/$max_attempts..."
+        log_info "$(msg "swarm_init_attempt") $attempt/$max_attempts..."
         
         if [ -n "$ADVERTISE_ADDR" ]; then
             if docker swarm init --advertise-addr "$ADVERTISE_ADDR" >/dev/null 2>&1; then
@@ -648,12 +928,12 @@ initialize_swarm() {
             fi
         fi
         
-        log_warning "Swarm initialization attempt $attempt failed"
+        log_warning "$(msg "swarm_attempt_failed") $attempt"
         ((attempt++))
         sleep 5
     done
     
-    log_error "Failed to initialize Docker Swarm after $max_attempts attempts"
+    log_error "$(msg "failed_initialize_swarm") $max_attempts $(msg "attempts")"
     exit 1
 }
 # Enhanced Traefik deployment with robust port binding
@@ -787,16 +1067,16 @@ EOF
     verify_port_binding "443"
     
     # Test basic connectivity
-    log_info "Testing Traefik connectivity..."
+    log_info "$(msg "testing_traefik")"
     sleep 10
     
     local test_url="http://localhost"
     local response=$(timeout 10 curl -s -o /dev/null -w "%{http_code}" "$test_url" 2>/dev/null || echo "000")
     
     if [ "$response" = "301" ] || [ "$response" = "302" ] || [ "$response" = "404" ]; then
-        log_success "Traefik is responding (HTTP $response)"
+        log_success "$(msg "traefik_responding") $response)"
     else
-        log_warning "Traefik response: HTTP $response"
+        log_warning "$(msg "traefik_response") $response"
     fi
     
     # Cleanup
@@ -913,12 +1193,12 @@ EOF
             break
         fi
         
-        log_info "Attempt $attempt/$max_attempts: Waiting for PostgreSQL..."
+        log_info "$(msg "attempt") $attempt/$max_attempts: $(msg "waiting_postgresql_attempt")"
         sleep 5
         ((attempt++))
         
         if [ $attempt -gt $max_attempts ]; then
-            log_error "PostgreSQL failed to become ready"
+            log_error "$(msg "postgresql_failed_ready")"
             exit 1
         fi
     done
@@ -934,22 +1214,22 @@ initialize_databases() {
     sleep 15
     
     # Create Evolution API database
-    log_info "Creating Evolution API database..."
+    log_info "$(msg "creating_evolution_db")"
     docker run --rm --network internal-net \
         -e PGPASSWORD=caixapretastack2626 \
         postgres:15-alpine \
         psql -h db_postgres -U postgres -c "CREATE DATABASE evolution_db;" 2>/dev/null || \
-        log_info "Evolution database already exists"
+        log_info "$(msg "evolution_db_exists")"
     
     # Initialize Chatwoot database
-    log_info "Initializing Chatwoot database schema..."
+    log_info "$(msg "initializing_chatwoot_db")"
     docker run --rm --network internal-net \
         -e DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db \
         -e RAILS_ENV=production \
         -e PGPASSWORD=caixapretastack2626 \
         sendingtk/chatwoot:v4.11.2 \
         bundle exec rails db:chatwoot_prepare >/dev/null 2>&1 || \
-        log_info "Chatwoot database already initialized"
+        log_info "$(msg "chatwoot_db_initialized")"
     
     log_success "$(msg "databases_initialized")"
 }
@@ -1268,7 +1548,7 @@ EOF
     verify_service "apps_grafana" "1/1"
     
     # MEGA services may take longer to start
-    log_info "Waiting for MEGA services (may take up to 3 minutes)..."
+    log_info "$(msg "waiting_mega_services")"
     sleep 60
     
     verify_service "apps_mega-rails" "1/1"
@@ -1391,7 +1671,7 @@ EOF
     read EMAIL
     
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
-        log_error "Domain and email are required"
+        log_error "$(msg "domain_email_required")"
         exit 1
     fi
     
@@ -1483,11 +1763,11 @@ EOF
     FAILED_SERVICES=$(docker service ls --format "{{.Name}} {{.Replicas}}" | grep "0/" | wc -l)
     
     if [ "$FAILED_SERVICES" -gt 0 ]; then
-        log_warning "Some services may still be starting up:"
+        log_warning "$(msg "services_starting_up")"
         docker service ls --format "table {{.Name}}\t{{.Replicas}}\t{{.Image}}" | grep "0/" || true
-        log_info "This is normal - services may take 2-5 minutes to fully start"
+        log_info "$(msg "normal_startup_time")"
     else
-        log_success "All services are operational!"
+        log_success "$(msg "all_services_operational")"
     fi
     
     # Success message with enhanced visuals
