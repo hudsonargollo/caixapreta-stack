@@ -2018,7 +2018,6 @@ EOF
         echo
         echo -e "${YELLOW}${BOLD}$(msg "important_notes"):${NC}"
         if [ "$LANG_MODE" = "pt" ]; then
-        if [ "$LANG_MODE" = "pt" ]; then
             echo -e "${YELLOW}• Configure registros DNS para todos os subdominios${NC}"
             echo -e "${YELLOW}• Certificados SSL serao gerados automaticamente (5-15 minutos)${NC}"
             echo -e "${YELLOW}• Senha padrao para todos os servicos: caixapretastack2626${NC}"
@@ -2059,4 +2058,5 @@ EOF
 }
 
 # Execute main function
+main "$@"
 main "$@"
