@@ -1043,7 +1043,7 @@ services:
         failure_action: rollback
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.traefik.rule=Host(\`traefik.DOMAIN_PLACEHOLDER\`)"
+        - "traefik.http.routers.traefik.rule=Host(\\`traefik.DOMAIN_PLACEHOLDER\\`)"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.routers.traefik.entrypoints=websecure"
         - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
