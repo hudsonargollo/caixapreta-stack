@@ -29,6 +29,415 @@ BOLD='\033[1m'
 DIM='\033[2m'
 BLINK='\033[5m'
 
+# Language-specific messages
+msg() {
+    local key="$1"
+    case "$key" in
+        "welcome_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PROTOCOLO DE LIMPEZA COMPLETA DO SISTEMA"
+            else
+                echo "COMPLETE SYSTEM WIPE PROTOCOL"
+            fi
+            ;;
+        "danger_warning")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "ISSO IRA DESTRUIR COMPLETAMENTE TODOS OS DADOS DO DOCKER E CONFIGURACOES DA STACK"
+            else
+                echo "THIS WILL COMPLETELY DESTROY ALL DOCKER DATA AND STACK CONFIGURATIONS"
+            fi
+            ;;
+        "operation_will")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Esta operacao ira:"
+            else
+                echo "This operation will:"
+            fi
+            ;;
+        "remove_containers")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Remover todos os containers, imagens e volumes do Docker"
+            else
+                echo "  → Remove all Docker containers, images, and volumes"
+            fi
+            ;;
+        "destroy_swarm")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Destruir configuracao do cluster Docker Swarm"
+            else
+                echo "  → Destroy Docker Swarm cluster configuration"
+            fi
+            ;;
+        "uninstall_docker")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Desinstalar Docker Engine completamente"
+            else
+                echo "  → Uninstall Docker Engine completely"
+            fi
+            ;;
+        "delete_data")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Deletar todos os dados do CaixaPreta Stack (diretorio /data)"
+            else
+                echo "  → Delete all CaixaPreta Stack data (/data directory)"
+            fi
+            ;;
+        "remove_configs")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Remover todos os arquivos de configuracao da stack"
+            else
+                echo "  → Remove all stack configuration files"
+            fi
+            ;;
+        "purge_system")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Purgar arquivos e configuracoes do sistema Docker"
+            else
+                echo "  → Purge Docker system files and configurations"
+            fi
+            ;;
+        "cannot_undo")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "ESTA ACAO NAO PODE SER DESFEITA!"
+            else
+                echo "THIS ACTION CANNOT BE UNDONE!"
+            fi
+            ;;
+        "confirm_question")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Voce tem certeza absoluta de que deseja prosseguir?"
+            else
+                echo "Are you absolutely sure you want to proceed?"
+            fi
+            ;;
+        "type_wipe")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Digite 'WIPE' em maiusculas para confirmar a destruicao total:"
+            else
+                echo "Type 'WIPE' in uppercase to confirm total destruction:"
+            fi
+            ;;
+        "operation_cancelled")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Operacao cancelada. Sistema permanece intacto."
+            else
+                echo "Operation cancelled. System remains intact."
+            fi
+            ;;
+        "initiating_wipe")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "INICIANDO PROTOCOLO DE LIMPEZA TOTAL DO SISTEMA..."
+            else
+                echo "INITIATING TOTAL SYSTEM WIPE PROTOCOL..."
+            fi
+            ;;
+        "root_required")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Acesso root necessario para operacoes de limpeza do sistema"
+            else
+                echo "Root access required for system wipe operations"
+            fi
+            ;;
+        "terminating")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "TERMINANDO PROCESSO..."
+            else
+                echo "TERMINATING PROCESS..."
+            fi
+            ;;
+        "phase1_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 1: DESTRUINDO CLUSTER DOCKER SWARM..."
+            else
+                echo "PHASE 1: DESTROYING DOCKER SWARM CLUSTER..."
+            fi
+            ;;
+        "forcing_swarm")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Forcando dissolucao do cluster Swarm..."
+            else
+                echo "Forcing Swarm cluster dissolution..."
+            fi
+            ;;
+        "dismantling_cluster")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Desmontando coordenacao do cluster"
+            else
+                echo "Dismantling cluster coordination"
+            fi
+            ;;
+        "swarm_destroyed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Cluster Docker Swarm destruido"
+            else
+                echo "Docker Swarm cluster destroyed"
+            fi
+            ;;
+        "swarm_leave_failed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Falha ao sair do cluster Docker Swarm"
+            else
+                echo "Failed to leave Docker Swarm cluster"
+            fi
+            ;;
+        "swarm_not_active")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Swarm nao estava ativo (ja dissolvido ou nunca inicializado)"
+            else
+                echo "Docker Swarm was not active (already disbanded or never initialized)"
+            fi
+            ;;
+        "swarm_normal")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Isso e normal se a instalacao falhou ou estava incompleta"
+            else
+                echo "This is normal if the installation failed or was incomplete"
+            fi
+            ;;
+        "phase2_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 2: ANIQUILANDO TODOS OS CONTAINERS E IMAGENS..."
+            else
+                echo "PHASE 2: ANNIHILATING ALL CONTAINERS AND IMAGES..."
+            fi
+            ;;
+        "stopping_containers")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Parando todos os containers em execucao..."
+            else
+                echo "Stopping all running containers..."
+            fi
+            ;;
+        "removing_all")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Removendo todos os containers, imagens, redes e volumes..."
+            else
+                echo "Removing all containers, images, networks, and volumes..."
+            fi
+            ;;
+        "purging_docker")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Purgando dados do sistema Docker"
+            else
+                echo "Purging Docker system data"
+            fi
+            ;;
+        "containers_annihilated")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os containers e imagens do Docker aniquilados"
+            else
+                echo "All Docker containers and images annihilated"
+            fi
+            ;;
+        "phase3_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 3: TERMINANDO DOCKER ENGINE..."
+            else
+                echo "PHASE 3: TERMINATING DOCKER ENGINE..."
+            fi
+            ;;
+        "uninstalling_docker")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Desinstalando Docker Engine e todos os componentes..."
+            else
+                echo "Uninstalling Docker Engine and all components..."
+            fi
+            ;;
+        "removing_packages")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Removendo pacotes Docker"
+            else
+                echo "Removing Docker packages"
+            fi
+            ;;
+        "docker_terminated")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker Engine terminado"
+            else
+                echo "Docker Engine terminated"
+            fi
+            ;;
+        "phase4_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 4: OBLITERANDO TODOS OS DADOS DA STACK..."
+            else
+                echo "PHASE 4: OBLITERATING ALL STACK DATA..."
+            fi
+            ;;
+        "destroying_directories")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Destruindo diretorios do sistema e configuracoes..."
+            else
+                echo "Destroying system directories and configurations..."
+            fi
+            ;;
+        "data_obliterated")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os dados da stack obliterados"
+            else
+                echo "All stack data obliterated"
+            fi
+            ;;
+        "phase5_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 5: PURGANDO ARTEFATOS DE INSTALACAO..."
+            else
+                echo "PHASE 5: PURGING INSTALLATION ARTIFACTS..."
+            fi
+            ;;
+        "removing_scripts")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Removendo scripts de instalacao e configuracoes..."
+            else
+                echo "Removing installation scripts and configurations..."
+            fi
+            ;;
+        "cleaning_artifacts")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Limpando artefatos de instalacao"
+            else
+                echo "Cleaning installation artifacts"
+            fi
+            ;;
+        "artifacts_purged")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Artefatos de instalacao purgados"
+            else
+                echo "Installation artifacts purged"
+            fi
+            ;;
+        "phase6_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "FASE 6: VERIFICACAO FINAL DO SISTEMA..."
+            else
+                echo "PHASE 6: FINAL SYSTEM VERIFICATION..."
+            fi
+            ;;
+        "verifying_wipe")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando limpeza completa do sistema..."
+            else
+                echo "Verifying complete system wipe..."
+            fi
+            ;;
+        "destruction_verification")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Executando verificacao de destruicao"
+            else
+                echo "Running destruction verification"
+            fi
+            ;;
+        "docker_still_exists")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Comando Docker ainda existe (pode precisar de limpeza manual)"
+            else
+                echo "Docker command still exists (may need manual cleanup)"
+            fi
+            ;;
+        "docker_removed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker completamente removido do sistema"
+            else
+                echo "Docker completely removed from system"
+            fi
+            ;;
+        "data_still_exists")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Diretorio de dados ainda existe (pode precisar de limpeza manual)"
+            else
+                echo "Data directory still exists (may need manual cleanup)"
+            fi
+            ;;
+        "data_destroyed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Todos os dados da stack destruidos com sucesso"
+            else
+                echo "All stack data successfully destroyed"
+            fi
+            ;;
+        "wipe_complete_title")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "💀 PROTOCOLO DE LIMPEZA DO SISTEMA COMPLETO 💀"
+            else
+                echo "💀 SYSTEM WIPE PROTOCOL COMPLETE 💀"
+            fi
+            ;;
+        "vps_wiped")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "VPS foi completamente limpo e restaurado ao estado limpo"
+            else
+                echo "VPS has been completely wiped and restored to clean state"
+            fi
+            ;;
+        "cleanup_summary")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Resumo da limpeza do sistema:"
+            else
+                echo "System cleanup summary:"
+            fi
+            ;;
+        "swarm_cluster")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Cluster Docker Swarm: ${GREEN}DESTRUIDO${NC}"
+            else
+                echo "  → Docker Swarm cluster: ${GREEN}DESTROYED${NC}"
+            fi
+            ;;
+        "containers_images")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Containers/imagens Docker: ${GREEN}ANIQUILADOS${NC}"
+            else
+                echo "  → Docker containers/images: ${GREEN}ANNIHILATED${NC}"
+            fi
+            ;;
+        "docker_engine")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Docker Engine: ${GREEN}TERMINADO${NC}"
+            else
+                echo "  → Docker Engine: ${GREEN}TERMINATED${NC}"
+            fi
+            ;;
+        "stack_data")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Dados da stack (/data): ${GREEN}OBLITERADOS${NC}"
+            else
+                echo "  → Stack data (/data): ${GREEN}OBLITERATED${NC}"
+            fi
+            ;;
+        "config_files")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "  → Arquivos de configuracao: ${GREEN}PURGADOS${NC}"
+            else
+                echo "  → Configuration files: ${GREEN}PURGED${NC}"
+            fi
+            ;;
+        "ready_fresh")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "SEU VPS ESTA PRONTO PARA INSTALACAO NOVA"
+            else
+                echo "YOUR VPS IS NOW READY FOR FRESH INSTALLATION"
+            fi
+            ;;
+        "reinstall_info")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Para reinstalar CaixaPreta Stack:"
+            else
+                echo "To reinstall CaixaPreta Stack:"
+            fi
+            ;;
+        "destruction_terminated")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "PROTOCOLO DE DESTRUICAO TERMINADO"
+            else
+                echo "DESTRUCTION PROTOCOL TERMINATED"
+            fi
+            ;;
+        *)
+            echo "$key"
+            ;;
+    esac
+}
+
 # Hacker-style functions
 print_matrix() {
     local text="$1"
@@ -121,66 +530,93 @@ EOF
 echo -e "${NC}"
 
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
-echo -e "${RED}${BOLD}                        COMPLETE SYSTEM WIPE PROTOCOL                         ${NC}"
+echo -e "${RED}${BOLD}                        VPS WIPE UTILITY v2.0                               ${NC}"
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
 echo
 
-print_danger "THIS WILL COMPLETELY DESTROY ALL DOCKER DATA AND STACK CONFIGURATIONS"
+# Language Selection
+echo -e "${WHITE}${BOLD}Welcome! / Bem-vindos!${NC}"
 echo
-print_warning "This operation will:"
-print_info "  → Remove all Docker containers, images, and volumes"
-print_info "  → Destroy Docker Swarm cluster configuration"
-print_info "  → Uninstall Docker Engine completely"
-print_info "  → Delete all CaixaPreta Stack data (/data directory)"
-print_info "  → Remove all stack configuration files"
-print_info "  → Purge Docker system files and configurations"
+echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${CYAN}${BOLD}│                    LANGUAGE SELECTION                       │${NC}"
+echo -e "${CYAN}${BOLD}│                 SELECAO DE IDIOMA                           │${NC}"
+echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+echo
+echo -e "${GREEN}${BOLD}[1]${NC} ${GREEN}🇺🇸 English${NC}"
+echo -e "${GREEN}${BOLD}[2]${NC} ${GREEN}🇧🇷 Português${NC}"
+echo
+echo -ne "${GREEN}${BOLD}language@wipe:~$ ${NC}"
+read LANGUAGE_CHOICE
+
+# Set language
+if [ "$LANGUAGE_CHOICE" = "2" ]; then
+    LANG_MODE="pt"
+else
+    LANG_MODE="en"
+fi
+
+echo
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
+echo -e "${RED}${BOLD}                        $(msg "welcome_title")                         ${NC}"
+echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
 echo
 
-print_danger "THIS ACTION CANNOT BE UNDONE!"
+print_danger "$(msg "danger_warning")"
+echo
+print_warning "$(msg "operation_will")"
+print_info "$(msg "remove_containers")"
+print_info "$(msg "destroy_swarm")"
+print_info "$(msg "uninstall_docker")"
+print_info "$(msg "delete_data")"
+print_info "$(msg "remove_configs")"
+print_info "$(msg "purge_system")"
+echo
+
+print_danger "$(msg "cannot_undo")"
 echo
 
 # Confirmation
-echo -e "${YELLOW}${BOLD}Are you absolutely sure you want to proceed? ${NC}"
-echo -e "${RED}Type 'WIPE' in uppercase to confirm total destruction: ${NC}"
+echo -e "${YELLOW}${BOLD}$(msg "confirm_question") ${NC}"
+echo -e "${RED}$(msg "type_wipe") ${NC}"
 echo -ne "${RED}${BOLD}destruction@caixapreta:~$ ${NC}"
 read CONFIRMATION
 
 if [ "$CONFIRMATION" != "WIPE" ]; then
-    print_info "Operation cancelled. System remains intact."
+    print_info "$(msg "operation_cancelled")"
     exit 0
 fi
 
 echo
-print_matrix "INITIATING TOTAL SYSTEM WIPE PROTOCOL..."
+print_matrix "$(msg "initiating_wipe")"
 echo
 
 # Root check
 if [ "$EUID" -ne 0 ]; then 
-    print_error "Root access required for system wipe operations"
-    echo -e "${RED}${BOLD}TERMINATING PROCESS...${NC}"
+    print_error "$(msg "root_required")"
+    echo -e "${RED}${BOLD}$(msg "terminating")${NC}"
     exit 1
 fi
 
 # Phase 1: Docker Swarm Destruction
 echo
-print_matrix "PHASE 1: DESTROYING DOCKER SWARM CLUSTER..."
+print_matrix "$(msg "phase1_title")"
 echo
 
-print_hacker "Forcing Swarm cluster dissolution..."
-loading_animation 3 "Dismantling cluster coordination"
+print_hacker "$(msg "forcing_swarm")"
+loading_animation 3 "$(msg "dismantling_cluster")"
 
 # Check if swarm is actually active first
 SWARM_STATUS=$(docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null)
 
 if [ "$SWARM_STATUS" = "active" ]; then
     if docker swarm leave --force >/dev/null 2>&1; then
-        print_success "Docker Swarm cluster destroyed"
+        print_success "$(msg "swarm_destroyed")"
     else
-        print_error "Failed to leave Docker Swarm cluster"
+        print_error "$(msg "swarm_leave_failed")"
     fi
 elif [ "$SWARM_STATUS" = "inactive" ]; then
-    print_warning "Docker Swarm was not active (already disbanded or never initialized)"
-    print_info "This is normal if the installation failed or was incomplete"
+    print_warning "$(msg "swarm_not_active")"
+    print_info "$(msg "swarm_normal")"
 else
     print_warning "Docker Swarm status: $SWARM_STATUS"
     # Try to leave anyway in case of edge cases
@@ -189,38 +625,38 @@ fi
 
 # Phase 2: Container and Image Annihilation
 echo
-print_matrix "PHASE 2: ANNIHILATING ALL CONTAINERS AND IMAGES..."
+print_matrix "$(msg "phase2_title")"
 echo
 
-print_hacker "Stopping all running containers..."
+print_hacker "$(msg "stopping_containers")"
 docker stop $(docker ps -aq) >/dev/null 2>&1 || true
 
-print_hacker "Removing all containers, images, networks, and volumes..."
-loading_animation 5 "Purging Docker system data"
+print_hacker "$(msg "removing_all")"
+loading_animation 5 "$(msg "purging_docker")"
 
 docker system prune -a --volumes -f >/dev/null 2>&1 || true
 
-print_success "All Docker containers and images annihilated"
+print_success "$(msg "containers_annihilated")"
 
 # Phase 3: Docker Engine Termination
 echo
-print_matrix "PHASE 3: TERMINATING DOCKER ENGINE..."
+print_matrix "$(msg "phase3_title")"
 echo
 
-print_hacker "Uninstalling Docker Engine and all components..."
-loading_animation 4 "Removing Docker packages"
+print_hacker "$(msg "uninstalling_docker")"
+loading_animation 4 "$(msg "removing_packages")"
 
 apt-get purge -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null 2>&1 || true
 apt-get autoremove -y --purge >/dev/null 2>&1 || true
 
-print_success "Docker Engine terminated"
+print_success "$(msg "docker_terminated")"
 
 # Phase 4: Data Obliteration
 echo
-print_matrix "PHASE 4: OBLITERATING ALL STACK DATA..."
+print_matrix "$(msg "phase4_title")"
 echo
 
-print_hacker "Destroying system directories and configurations..."
+print_hacker "$(msg "destroying_directories")"
 
 # Progress simulation for dramatic effect
 directories=("/var/lib/docker" "/etc/docker" "/data" "~/stacks" "/var/run/docker.sock")
@@ -232,40 +668,40 @@ for i in "${!directories[@]}"; do
     sleep 0.5
 done
 
-print_success "All stack data obliterated"
+print_success "$(msg "data_obliterated")"
 
 # Phase 5: Script Cleanup
 echo
-print_matrix "PHASE 5: PURGING INSTALLATION ARTIFACTS..."
+print_matrix "$(msg "phase5_title")"
 echo
 
-print_hacker "Removing installation scripts and configurations..."
-loading_animation 2 "Cleaning installation artifacts"
+print_hacker "$(msg "removing_scripts")"
+loading_animation 2 "$(msg "cleaning_artifacts")"
 
 rm -f *.sh *.yml *.yaml 2>/dev/null || true
 
-print_success "Installation artifacts purged"
+print_success "$(msg "artifacts_purged")"
 
 # Phase 6: Final Verification
 echo
-print_matrix "PHASE 6: FINAL SYSTEM VERIFICATION..."
+print_matrix "$(msg "phase6_title")"
 echo
 
-print_hacker "Verifying complete system wipe..."
-loading_animation 3 "Running destruction verification"
+print_hacker "$(msg "verifying_wipe")"
+loading_animation 3 "$(msg "destruction_verification")"
 
 # Check if Docker is gone
 if command -v docker &> /dev/null; then
-    print_warning "Docker command still exists (may need manual cleanup)"
+    print_warning "$(msg "docker_still_exists")"
 else
-    print_success "Docker completely removed from system"
+    print_success "$(msg "docker_removed")"
 fi
 
 # Check if data directory is gone
 if [ -d "/data" ]; then
-    print_warning "Data directory still exists (may need manual cleanup)"
+    print_warning "$(msg "data_still_exists")"
 else
-    print_success "All stack data successfully destroyed"
+    print_success "$(msg "data_destroyed")"
 fi
 
 # Final message
@@ -280,26 +716,25 @@ cat << "EOF"
 EOF
 echo -e "${NC}"
 
-print_success "VPS has been completely wiped and restored to clean state"
+print_success "$(msg "vps_wiped")"
 echo
 
-print_info "System cleanup summary:"
-echo -e "${CYAN}  → Docker Swarm cluster: ${GREEN}DESTROYED${NC}"
-echo -e "${CYAN}  → Docker containers/images: ${GREEN}ANNIHILATED${NC}"
-echo -e "${CYAN}  → Docker Engine: ${GREEN}TERMINATED${NC}"
-echo -e "${CYAN}  → Stack data (/data): ${GREEN}OBLITERATED${NC}"
-echo -e "${CYAN}  → Configuration files: ${GREEN}PURGED${NC}"
+print_info "$(msg "cleanup_summary")"
+echo -e "$(msg "swarm_cluster")"
+echo -e "$(msg "containers_images")"
+echo -e "$(msg "docker_engine")"
+echo -e "$(msg "stack_data")"
+echo -e "$(msg "config_files")"
 
 echo
-print_matrix "YOUR VPS IS NOW READY FOR FRESH INSTALLATION"
+print_matrix "$(msg "ready_fresh")"
 echo
 
-print_info "To reinstall CaixaPreta Stack:"
+print_info "$(msg "reinstall_info")"
 echo "wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh"
-echo "chmod +x caixapreta-stack.sh"
-echo "sudo ./caixapreta-stack.sh"
+echo "chmod +x caixapreta-stack.sh && sudo ./caixapreta-stack.sh"
 
 echo
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"
-echo -e "${RED}${BOLD}                    DESTRUCTION PROTOCOL TERMINATED                          ${NC}"
+echo -e "${RED}${BOLD}                    $(msg "destruction_terminated")                          ${NC}"
 echo -e "${GRAY}${DIM}════════════════════════════════════════════════════════════════════════════════${NC}"

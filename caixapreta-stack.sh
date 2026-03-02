@@ -252,6 +252,41 @@ msg() {
                 echo "Docker already installed"
             fi
             ;;
+        "preinstalling_docker")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Pre-instalando Docker silenciosamente..."
+            else
+                echo "Pre-installing Docker silently..."
+            fi
+            ;;
+        "docker_preinstalled")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker pre-instalado com sucesso"
+            else
+                echo "Docker pre-installed successfully"
+            fi
+            ;;
+        "docker_verifying")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Verificando instalacao do Docker..."
+            else
+                echo "Verifying Docker installation..."
+            fi
+            ;;
+        "directories_ready")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Diretorios de dados configurados"
+            else
+                echo "Data directories configured"
+            fi
+            ;;
+        "docker_already_installed")
+            if [ "$LANG_MODE" = "pt" ]; then
+                echo "Docker ja instalado"
+            else
+                echo "Docker already installed"
+            fi
+            ;;
         "docker_ready")
             if [ "$LANG_MODE" = "pt" ]; then
                 echo "Docker daemon esta pronto"
@@ -528,29 +563,13 @@ create_networks() {
     fi
 }
 
-# Enhanced Docker installation with verification
-install_docker() {
-    log_step "$(msg "docker_installing")"
-    
-    if ! verify_command docker; then
-        log_info "Installing Docker Engine..."
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sh get-docker.sh
-        rm get-docker.sh
-        
-        # Start and enable Docker
-        systemctl start docker
-        systemctl enable docker
-        
-        # Wait for Docker to be ready
-        sleep 10
-    else
-        log_success "$(msg "docker_already_installed")"
-    fi
+# Enhanced Docker verification (Docker already pre-installed)
+verify_docker() {
+    log_step "$(msg "docker_verifying")"
     
     # Verify Docker is working
     if ! docker --version >/dev/null 2>&1; then
-        log_error "Docker installation failed"
+        log_error "Docker installation verification failed"
         exit 1
     fi
     
@@ -573,9 +592,6 @@ install_docker() {
             exit 1
         fi
     done
-    
-    # Fix Docker socket permissions
-    chmod 666 /var/run/docker.sock 2>/dev/null || true
 }
 
 # Enhanced Swarm initialization with better IP detection
@@ -1324,12 +1340,47 @@ EOF
     fi
     log_success "$(msg "root_confirmed")"
     
+    # Pre-installation system preparation (silent)
+    echo
+    log_step "$(msg "system_prep")"
+    
+    # Update system silently
+    log_info "$(msg "updating_system")"
+    apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1
+    
+    # Install dependencies silently
+    log_info "$(msg "installing_deps")"
+    apt install -y curl wget git jq ufw unzip net-tools >/dev/null 2>&1
+    
+    # Pre-install Docker silently to avoid verbose output later
+    log_info "$(msg "preinstalling_docker")"
+    if ! command -v docker >/dev/null 2>&1; then
+        curl -fsSL https://get.docker.com -o get-docker.sh >/dev/null 2>&1
+        sh get-docker.sh >/dev/null 2>&1
+        rm get-docker.sh >/dev/null 2>&1
+        systemctl start docker >/dev/null 2>&1
+        systemctl enable docker >/dev/null 2>&1
+        # Wait for Docker to be ready
+        sleep 5
+        # Fix Docker socket permissions
+        chmod 666 /var/run/docker.sock 2>/dev/null || true
+        log_success "$(msg "docker_preinstalled")"
+    else
+        log_success "$(msg "docker_already_installed")"
+    fi
+    
+    log_success "$(msg "system_prep_complete")"
+    
     # Configuration
     echo
     log_step "$(msg "config_setup")"
     echo
     echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}${BOLD}│                    $(msg "domain_config")                     │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${CYAN}${BOLD}│                 CONFIGURACAO DE DOMINIO                     │${NC}"
+    else
+        echo -e "${CYAN}${BOLD}│                    DOMAIN CONFIGURATION                     │${NC}"
+    fi
     echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
@@ -1348,20 +1399,9 @@ EOF
     log_info "Domain: $DOMAIN"
     log_info "Email: $EMAIL"
     
-    # System preparation
-    echo
-    log_step "$(msg "system_prep")"
-    
-    # Update system
-    log_info "$(msg "updating_system")"
-    apt update >/dev/null 2>&1 && apt upgrade -y >/dev/null 2>&1
-    
-    # Install dependencies
-    log_info "$(msg "installing_deps")"
-    apt install -y curl wget git jq ufw unzip net-tools >/dev/null 2>&1
-    
     # Setup data directories with proper permissions
-    log_info "$(msg "setup_dirs")"
+    echo
+    log_step "$(msg "setup_dirs")"
     mkdir -p /data/{traefik,portainer,n8n,redis_n8n,redis_mega,postgres,minio,mega,evolution,grafana}
     
     # Set specific permissions
@@ -1374,14 +1414,14 @@ EOF
     touch /data/traefik/acme.json
     chmod 600 /data/traefik/acme.json
     
-    log_success "$(msg "system_prep_complete")"
+    log_success "$(msg "directories_ready")"
     
-    # Docker installation and setup
+    # Docker verification
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${PURPLE}${BOLD}│                    DOCKER SETUP                             │${NC}"
+    echo -e "${PURPLE}${BOLD}│                    DOCKER VERIFICATION                      │${NC}"
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
-    install_docker
+    verify_docker
     
     # Swarm initialization
     echo
@@ -1467,7 +1507,11 @@ EOF
     
     # Access information with enhanced visuals
     echo -e "${CYAN}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}${BOLD}│                    $(msg "access_endpoints")                         │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${CYAN}${BOLD}│                    PONTOS DE ACESSO                         │${NC}"
+    else
+        echo -e "${CYAN}${BOLD}│                    ACCESS ENDPOINTS                         │${NC}"
+    fi
     echo -e "${CYAN}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
@@ -1482,7 +1526,11 @@ EOF
     
     echo
     echo -e "${YELLOW}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${YELLOW}${BOLD}│                    $(msg "important_notes")                          │${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${YELLOW}${BOLD}│                    NOTAS IMPORTANTES                        │${NC}"
+    else
+        echo -e "${YELLOW}${BOLD}│                    IMPORTANT NOTES                          │${NC}"
+    fi
     echo -e "${YELLOW}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     echo
     
