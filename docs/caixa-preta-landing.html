@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caixa Preta - Premium Marketing Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Primitive Variables - Core Foundation */
+            --obsidian-900: #0D0D12;
+            --obsidian-800: #12121A;
+            --obsidian-700: #1A1A24;
+            --obsidian-600: #24242E;
+            --charcoal-500: #2A2A36;
+            --slate-400: #64748B;
+            --slate-300: #94A3B8;
+            --slate-200: #CBD5E1;
+            --white: #FFFFFF;
+            
+            /* Semantic Variables - Functional Meaning */
+            --surface-primary: var(--obsidian-900);
+            --surface-elevated: var(--obsidian-700);
+            --surface-interactive: var(--obsidian-600);
+            --text-primary: var(--white);
+            --text-secondary: var(--slate-200);
+            --text-muted: var(--slate-400);
+            
+            /* Brand Accent System */
+            --neon-cyan: #00E5FF;
+            --neon-purple: #8B5CF6;
+            --neon-mint: #00E676;
+            --alert-crimson: #FF3B30;
+            
+            /* Gradient Definitions */
+            --gradient-primary: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+            --gradient-surface: linear-gradient(135deg, var(--obsidian-800) 0%, var(--obsidian-700) 100%);
+            
+            /* Typography Scale */
+            --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-family-display: 'Montserrat', sans-serif;
+            --font-family-mono: 'JetBrains Mono', monospace;
+            
+            /* Spacing System - Base 8 Grid */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            --spacing-4xl: 96px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-family-primary);
+            background: var(--surface-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Circuit Pattern Background */
+        .circuit-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                /* Main grid */
+                linear-gradient(90deg, transparent 49%, rgba(0, 229, 255, 0.08) 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, rgba(0, 229, 255, 0.08) 50%, transparent 51%),
+                /* Secondary grid */
+                linear-gradient(90deg, transparent 74%, rgba(139, 92, 246, 0.04) 75%, transparent 76%),
+                linear-gradient(0deg, transparent 74%, rgba(139, 92, 246, 0.04) 75%, transparent 76%),
+                /* Circuit nodes */
+                radial-gradient(circle at 25% 25%, rgba(0, 229, 255, 0.15) 1px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.12) 1px, transparent 2px);
+            background-size: 
+                120px 120px,
+                120px 120px,
+                60px 60px,
+                60px 60px,
+                240px 240px,
+                240px 240px;
+            opacity: 0.3;
+            animation: circuitFlow 30s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes circuitFlow {
+            0% { transform: translate(-15px, -15px) rotate(0deg); }
+            25% { transform: translate(15px, -8px) rotate(0.5deg); }
+            50% { transform: translate(8px, 15px) rotate(0deg); }
+            75% { transform: translate(-8px, 8px) rotate(-0.5deg); }
+            100% { transform: translate(-15px, -15px) rotate(0deg); }
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 13, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+            z-index: 1000;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-family-display);
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-xl);
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: var(--spacing-4xl) 0;
+        }
+        
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-4xl);
+            align-items: center;
+        }
+        
+        .hero-content h1 {
+            font-family: var(--font-family-display);
+            font-size: clamp(48px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .hero-content .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-content p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2xl);
+            max-width: 500px;
+        }
+        
+        /* 3D Abstract Visualization */
+        .hero-visual {
+            position: relative;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .black-box {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--obsidian-800) 0%, var(--obsidian-600) 100%);
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+            box-shadow: 
+                0 0 50px rgba(0, 229, 255, 0.2),
+                inset 0 0 50px rgba(139, 92, 246, 0.1);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotateX(5deg) rotateY(5deg); }
+            50% { transform: translateY(-20px) rotateX(-5deg) rotateY(-5deg); }
+        }
+        
+        .data-nodes {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+        }
+        
+        .data-node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .data-node:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+        .data-node:nth-child(2) { top: 20%; right: 20%; animation-delay: 0.5s; }
+        .data-node:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 1s; }
+        .data-node:nth-child(4) { bottom: 20%; right: 20%; animation-delay: 1.5s; }
+        .data-node:nth-child(5) { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 0.25s; background: var(--neon-purple); box-shadow: 0 0 20px var(--neon-purple); }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .data-connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: dataFlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes dataFlow {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-family-primary);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--surface-primary);
+            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 229, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid rgba(0, 229, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 229, 255, 0.1);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: var(--spacing-4xl) 0;
+            background: linear-gradient(180deg, var(--surface-primary) 0%, var(--obsidian-800) 100%);
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-4xl);
+        }
+        
+        .section-header h2 {
+            font-family: var(--font-family-display);
+            font-size: clamp(36px, 4vw, 48px);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+        }
+        
+        .feature-card {
+            background: var(--gradient-surface);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            border-radius: 16px;
+            padding: var(--spacing-2xl);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 229, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-lg);
+            font-size: 24px;
+        }
+        
+        .feature-card h3 {
+            font-family: var(--font-family-display);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: var(--spacing-4xl) 0;
+            background: var(--obsidian-800);
+        }
+        
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-2xl);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-family: var(--font-family-mono);
+            font-size: clamp(36px, 5vw, 48px);
+            font-weight: 600;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: var(--spacing-4xl) 0;
+            background: linear-gradient(135deg, var(--obsidian-900) 0%, var(--obsidian-700) 100%);
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .cta-section h2 {
+            font-family: var(--font-family-display);
+            font-size: clamp(32px, 4vw, 42px);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .cta-section p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--obsidian-900);
+            border-top: 1px solid rgba(0, 229, 255, 0.1);
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .footer p {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-credits {
+            color: var(--neon-cyan);
+            font-weight: 500;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-visual {
+                height: 400px;
+            }
+            
+            .black-box {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .cta-buttons {
+                justify-content: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus States */
+        .btn:focus,
+        .nav-link:focus {
+            outline: 2px solid var(--neon-cyan);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Circuit Background -->
+    <div class="circuit-background"></div>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">CAIXA PRETA</div>
+            <ul class="nav-links">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#platform" class="nav-link">Platform</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>
+                    Unlock the <span class="gradient-text">Black Box</span><br>
+                    of Marketing Intelligence
+                </h1>
+                <p>
+                    Transform hidden data into algorithmic advantage. Access premium SEO tools, 
+                    copywriting arsenals, and proprietary analytics that generate outsized returns.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary">Start Free Trial</a>
+                    <a href="#" class="btn btn-secondary">Watch Demo</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="black-box">
+                    <div class="data-nodes">
+                        <div class="data-node"></div>
+                        <div class="data-node"></div>
+                        <div class="data-node"></div>
+                        <div class="data-node"></div>
+                        <div class="data-node"></div>
+                    </div>
+                    <div class="data-connections">
+                        <div class="connection-line" style="top: 30%; left: 25%; width: 50%; animation-delay: 0s;"></div>
+                        <div class="connection-line" style="top: 70%; left: 25%; width: 50%; animation-delay: 1s;"></div>
+                        <div class="connection-line" style="top: 50%; left: 30%; width: 40%; transform: rotate(90deg); animation-delay: 0.5s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Premium <span class="gradient-text">Intelligence</span> Arsenal</h2>
+                <p>
+                    Proprietary tools and algorithmic insights that transform standard marketing inputs 
+                    into disproportionate commercial outputs.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Algorithmic SEO Intelligence</h3>
+                    <p>
+                        Advanced keyword research, competitor analysis, and programmatic SEO pipelines 
+                        that uncover hidden ranking opportunities and automate content optimization.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>AI-Powered Copywriting Arsenal</h3>
+                    <p>
+                        Sophisticated copywriting frameworks, conversion-optimized templates, and 
+                        AI-assisted content generation for high-converting marketing campaigns.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Proprietary Analytics Engine</h3>
+                    <p>
+                        Deep data synthesis, predictive modeling, and performance metrics that reveal 
+                        the invisible forces driving your marketing success.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Precision Targeting Matrix</h3>
+                    <p>
+                        Advanced audience segmentation, behavioral analysis, and targeting algorithms 
+                        that maximize campaign ROI and customer lifetime value.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Automation Workflows</h3>
+                    <p>
+                        Sophisticated marketing automation, lead nurturing sequences, and programmatic 
+                        campaign optimization that scales your operations exponentially.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Exclusive Community Access</h3>
+                    <p>
+                        Premium networking with elite marketers, exclusive tactical knowledge sharing, 
+                        and insider strategies from the Clube do Marketing Digital ecosystem.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">847%</span>
+                    <span class="stat-label">Average ROI Increase</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">12.3M</span>
+                    <span class="stat-label">Keywords Analyzed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2,847</span>
+                    <span class="stat-label">Elite Members</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">99.7%</span>
+                    <span class="stat-label">Uptime Guarantee</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Platform Preview Section -->
+    <section class="features" id="platform">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>The <span class="gradient-text">Black Box</span> Interface</h2>
+                <p>
+                    A sophisticated, dark-mode dashboard designed for elite marketing professionals. 
+                    Where complex data transforms into actionable intelligence.
+                </p>
+            </div>
+            
+            <!-- Dashboard Preview -->
+            <div style="background: var(--gradient-surface); border-radius: 16px; padding: var(--spacing-2xl); border: 1px solid rgba(0, 229, 255, 0.2); margin-top: var(--spacing-2xl);">
+                <div style="display: grid; grid-template-columns: 250px 1fr; gap: var(--spacing-lg); min-height: 400px;">
+                    <!-- Sidebar -->
+                    <div style="background: var(--obsidian-800); border-radius: 12px; padding: var(--spacing-lg);">
+                        <div style="color: var(--neon-cyan); font-family: var(--font-family-mono); font-size: 14px; margin-bottom: var(--spacing-lg);">NAVIGATION</div>
+                        <div style="space-y: var(--spacing-sm);">
+                            <div style="padding: var(--spacing-sm); background: rgba(0, 229, 255, 0.1); border-radius: 6px; color: var(--neon-cyan); font-size: 14px; margin-bottom: var(--spacing-sm);">📊 Dashboard</div>
+                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">🔍 SEO Intelligence</div>
+                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">✍️ Copy Arsenal</div>
+                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">📈 Analytics</div>
+                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">⚡ Automation</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Content -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <!-- Metric Cards -->
+                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(0, 229, 255, 0.1);">
+                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">CONVERSION RATE</div>
+                            <div style="font-family: var(--font-family-mono); font-size: 32px; color: var(--neon-mint); margin-bottom: var(--spacing-sm);">24.7%</div>
+                            <div style="color: var(--neon-mint); font-size: 12px;">↗ +12.3% vs last month</div>
+                        </div>
+                        
+                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(139, 92, 246, 0.1);">
+                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">ORGANIC TRAFFIC</div>
+                            <div style="font-family: var(--font-family-mono); font-size: 32px; color: var(--neon-purple); margin-bottom: var(--spacing-sm);">847K</div>
+                            <div style="color: var(--neon-purple); font-size: 12px;">↗ +34.2% vs last month</div>
+                        </div>
+                        
+                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(0, 229, 255, 0.1); grid-column: 1 / -1;">
+                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-md);">KEYWORD PERFORMANCE</div>
+                            <div style="display: flex; gap: var(--spacing-sm); align-items: end; height: 100px;">
+                                <div style="background: var(--neon-cyan); width: 20px; height: 60%; border-radius: 2px; opacity: 0.8;"></div>
+                                <div style="background: var(--neon-cyan); width: 20px; height: 80%; border-radius: 2px; opacity: 0.9;"></div>
+                                <div style="background: var(--neon-cyan); width: 20px; height: 100%; border-radius: 2px;"></div>
+                                <div style="background: var(--neon-cyan); width: 20px; height: 75%; border-radius: 2px; opacity: 0.9;"></div>
+                                <div style="background: var(--neon-cyan); width: 20px; height: 90%; border-radius: 2px;"></div>
+                                <div style="background: var(--neon-purple); width: 20px; height: 95%; border-radius: 2px;"></div>
+                                <div style="background: var(--neon-purple); width: 20px; height: 85%; border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Unlock Your <span class="gradient-text">Marketing Potential</span>?</h2>
+            <p>
+                Join the elite community of marketing professionals who have discovered 
+                the algorithmic advantage hidden within the black box.
+            </p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary" style="font-size: 18px; padding: var(--spacing-lg) var(--spacing-2xl);">
+                    Start Your Journey
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Caixa Preta Marketing Intelligence Platform. All rights reserved.</p>
+            <p class="footer-credits">Created by Hudson Argollo (@getrules)</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add interactive hover effects to the black box
+        const blackBox = document.querySelector('.black-box');
+        const dataNodes = document.querySelectorAll('.data-node');
+        
+        if (blackBox) {
+            blackBox.addEventListener('mousemove', (e) => {
+                const rect = blackBox.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                
+                const rotateX = (y - 0.5) * 20;
+                const rotateY = (x - 0.5) * 20;
+                
+                blackBox.style.transform = `translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            
+            blackBox.addEventListener('mouseleave', () => {
+                blackBox.style.transform = 'translateY(0px) rotateX(5deg) rotateY(5deg)';
+            });
+        }
+        
+        // Animate stats on scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach((stat, index) => {
+                        setTimeout(() => {
+                            stat.style.animation = 'none';
+                            stat.offsetHeight; // Trigger reflow
+                            stat.style.animation = 'countUp 2s ease-out forwards';
+                        }, index * 200);
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        const statsSection = document.querySelector('.stats');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+        
+        // Add CSS animation for count up effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes countUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
