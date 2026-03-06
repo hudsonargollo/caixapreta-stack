@@ -171,7 +171,7 @@
             width: 100%;
         }
         
-        /* Hero Section */
+        /* Hero Section with ASCII Aesthetic */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -181,114 +181,217 @@
         }
         
         .hero-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 var(--spacing-lg);
+        }
+        
+        /* ASCII Header */
+        .ascii-header {
+            text-align: center;
+            margin-bottom: var(--spacing-4xl);
+        }
+        
+        .ascii-art {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .ascii-text {
+            font-family: var(--font-family-mono);
+            font-size: clamp(8px, 1.2vw, 14px);
+            line-height: 1;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            animation: glitch 3s ease-in-out infinite;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        @keyframes glitch {
+            0%, 90%, 100% { 
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            10% { 
+                transform: translate(-2px, 2px);
+                filter: hue-rotate(90deg);
+            }
+            20% { 
+                transform: translate(-2px, -2px);
+                filter: hue-rotate(180deg);
+            }
+            30% { 
+                transform: translate(2px, 2px);
+                filter: hue-rotate(270deg);
+            }
+            40% { 
+                transform: translate(2px, -2px);
+                filter: hue-rotate(360deg);
+            }
+        }
+        
+        .system-info {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+        
+        .system-line {
+            font-family: var(--font-family-mono);
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-active {
+            color: var(--neon-mint);
+            text-shadow: 0 0 5px var(--neon-mint);
+        }
+        
+        /* Hero Content Grid */
+        .hero-content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: var(--spacing-4xl);
             align-items: center;
         }
         
-        .hero-content h1 {
+        /* Terminal Window */
+        .terminal-window {
+            background: var(--obsidian-800);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .terminal-header {
+            background: var(--obsidian-700);
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #FF5F57; }
+        .dot.yellow { background: #FFBD2E; }
+        .dot.green { background: #28CA42; }
+        
+        .terminal-title {
+            font-family: var(--font-family-mono);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .terminal-content {
+            padding: var(--spacing-lg);
+            font-family: var(--font-family-mono);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .terminal-line {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .prompt {
+            color: var(--neon-cyan);
+        }
+        
+        .command {
+            color: var(--text-primary);
+        }
+        
+        .output {
+            color: var(--text-secondary);
+            padding-left: var(--spacing-lg);
+        }
+        
+        .success {
+            color: var(--neon-mint);
+        }
+        
+        .warning {
+            color: #FFA500;
+        }
+        
+        .highlight {
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+        
+        .cursor {
+            color: var(--neon-cyan);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Hero Right Content */
+        .hero-title {
             font-family: var(--font-family-display);
-            font-size: clamp(48px, 6vw, 72px);
+            font-size: clamp(36px, 5vw, 56px);
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: var(--spacing-lg);
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
         
-        .hero-content .gradient-text {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hero-content p {
-            font-size: 20px;
+        .hero-description {
+            font-size: 18px;
             color: var(--text-secondary);
             margin-bottom: var(--spacing-2xl);
-            max-width: 500px;
+            line-height: 1.7;
         }
         
-        /* 3D Abstract Visualization */
-        .hero-visual {
-            position: relative;
-            height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Mini Stats */
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 1px solid rgba(0, 229, 255, 0.1);
         }
         
-        .black-box {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, var(--obsidian-800) 0%, var(--obsidian-600) 100%);
-            border: 2px solid rgba(0, 229, 255, 0.3);
-            border-radius: 12px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: float 6s ease-in-out infinite;
-            box-shadow: 
-                0 0 50px rgba(0, 229, 255, 0.2),
-                inset 0 0 50px rgba(139, 92, 246, 0.1);
+        .stat-mini {
+            text-align: center;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotateX(5deg) rotateY(5deg); }
-            50% { transform: translateY(-20px) rotateX(-5deg) rotateY(-5deg); }
+        .stat-value {
+            font-family: var(--font-family-mono);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            display: block;
+            margin-bottom: var(--spacing-xs);
         }
         
-        .data-nodes {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-        }
-        
-        .data-node {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--neon-cyan);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .data-node:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
-        .data-node:nth-child(2) { top: 20%; right: 20%; animation-delay: 0.5s; }
-        .data-node:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 1s; }
-        .data-node:nth-child(4) { bottom: 20%; right: 20%; animation-delay: 1.5s; }
-        .data-node:nth-child(5) { top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 0.25s; background: var(--neon-purple); box-shadow: 0 0 20px var(--neon-purple); }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        .data-connections {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .connection-line {
-            position: absolute;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            animation: dataFlow 3s ease-in-out infinite;
-        }
-        
-        @keyframes dataFlow {
-            0% { opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0; }
+        .stat-label {
+            font-family: var(--font-family-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         /* Buttons */
@@ -520,18 +623,32 @@
         
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-container {
+            .hero-content-grid {
                 grid-template-columns: 1fr;
+                gap: var(--spacing-2xl);
+            }
+            
+            .hero-left {
+                order: 2;
+            }
+            
+            .hero-right {
+                order: 1;
                 text-align: center;
             }
             
-            .hero-visual {
-                height: 400px;
+            .ascii-text {
+                font-size: 8px;
             }
             
-            .black-box {
-                width: 250px;
-                height: 250px;
+            .system-info {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+            
+            .stats-mini {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-md);
             }
             
             .nav-links {
@@ -584,33 +701,89 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
-            <div class="hero-content">
-                <h1>
-                    Unlock the <span class="gradient-text">Black Box</span><br>
-                    of Marketing Intelligence
-                </h1>
-                <p>
-                    Transform hidden data into algorithmic advantage. Access premium SEO tools, 
-                    copywriting arsenals, and proprietary analytics that generate outsized returns.
-                </p>
-                <div class="cta-buttons">
-                    <a href="#" class="btn btn-primary">Start Free Trial</a>
-                    <a href="#" class="btn btn-secondary">Watch Demo</a>
+            <!-- ASCII Art Header -->
+            <div class="ascii-header">
+                <div class="ascii-art">
+                    <pre class="ascii-text">
+ ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
+██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
+██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
+██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
+╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
+ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
+                    </pre>
+                </div>
+                <div class="system-info">
+                    <div class="system-line">MARKETING INTELLIGENCE PLATFORM v3.0</div>
+                    <div class="system-line">ALGORITHMIC ADVANTAGE PROTOCOL</div>
+                    <div class="system-line">STATUS: <span class="status-active">OPERATIONAL</span></div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="black-box">
-                    <div class="data-nodes">
-                        <div class="data-node"></div>
-                        <div class="data-node"></div>
-                        <div class="data-node"></div>
-                        <div class="data-node"></div>
-                        <div class="data-node"></div>
+            
+            <div class="hero-content-grid">
+                <div class="hero-left">
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">blackbox.exe</div>
+                        </div>
+                        <div class="terminal-content">
+                            <div class="terminal-line">
+                                <span class="prompt">root@caixapreta:~$</span> 
+                                <span class="command">./unlock_intelligence.sh</span>
+                            </div>
+                            <div class="terminal-line output">
+                                <span class="success">✓</span> Scanning market data...
+                            </div>
+                            <div class="terminal-line output">
+                                <span class="success">✓</span> Analyzing competitor strategies...
+                            </div>
+                            <div class="terminal-line output">
+                                <span class="success">✓</span> Extracting algorithmic insights...
+                            </div>
+                            <div class="terminal-line output">
+                                <span class="warning">⚡</span> <span class="highlight">847% ROI increase detected</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="prompt">root@caixapreta:~$</span> 
+                                <span class="cursor">█</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="data-connections">
-                        <div class="connection-line" style="top: 30%; left: 25%; width: 50%; animation-delay: 0s;"></div>
-                        <div class="connection-line" style="top: 70%; left: 25%; width: 50%; animation-delay: 1s;"></div>
-                        <div class="connection-line" style="top: 50%; left: 30%; width: 40%; transform: rotate(90deg); animation-delay: 0.5s;"></div>
+                </div>
+                
+                <div class="hero-right">
+                    <h1 class="hero-title">
+                        UNLOCK THE <span class="gradient-text">BLACK BOX</span><br>
+                        OF MARKETING INTELLIGENCE
+                    </h1>
+                    <p class="hero-description">
+                        Transform hidden data into algorithmic advantage. Access premium SEO tools, 
+                        copywriting arsenals, and proprietary analytics that generate outsized returns.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="caixa-preta-login.html" class="btn btn-primary">ACCESS PLATFORM</a>
+                        <a href="#features" class="btn btn-secondary">EXPLORE FEATURES</a>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="stats-mini">
+                        <div class="stat-mini">
+                            <div class="stat-value">847%</div>
+                            <div class="stat-label">AVG ROI</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-value">12.3M</div>
+                            <div class="stat-label">KEYWORDS</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-value">2,847</div>
+                            <div class="stat-label">MEMBERS</div>
+                        </div>
                     </div>
                 </div>
             </div>
