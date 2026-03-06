@@ -136,6 +136,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
         
         .logo {
@@ -176,7 +177,7 @@
             gap: var(--spacing-xl);
             list-style: none;
             position: absolute;
-            right: var(--spacing-lg);
+            right: 0;
         }
         
         .nav-link {
@@ -208,6 +209,94 @@
         
         .nav-link:hover::after {
             width: 100%;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+        
+        .mobile-logo {
+            font-family: var(--font-family-mono);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: textGlitch 3s ease-in-out infinite;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            position: absolute;
+            right: 0;
+        }
+        
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        .mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-dark);
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu-links {
+            list-style: none;
+            padding: var(--spacing-lg);
+        }
+        
+        .mobile-menu-links li {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .mobile-menu-links .nav-link {
+            display: block;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--gray-dark);
+            position: relative;
+        }
+        
+        .mobile-menu-links .nav-link::after {
+            display: none;
         }
         
         /* Hero Section with ASCII Aesthetic */
@@ -713,6 +802,29 @@
         
         /* Responsive Design */
         @media (max-width: 768px) {
+            .nav-container {
+                justify-content: space-between;
+            }
+            
+            .logo {
+                display: none;
+            }
+            
+            .mobile-nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
             .hero-content-grid {
                 grid-template-columns: 1fr;
                 gap: var(--spacing-2xl);
@@ -739,10 +851,6 @@
             .stats-mini {
                 grid-template-columns: repeat(3, 1fr);
                 gap: var(--spacing-md);
-            }
-            
-            .nav-links {
-                display: none;
             }
             
             .cta-buttons {
@@ -780,6 +888,7 @@
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
+            <!-- Desktop Navigation -->
             <div class="logo">CAIXA PRETA</div>
             <ul class="nav-links">
                 <li><a href="#features" class="nav-link">Features</a></li>
@@ -787,6 +896,26 @@
                 <li><a href="#pricing" class="nav-link">Pricing</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
+            
+            <!-- Mobile Navigation -->
+            <div class="mobile-nav">
+                <div class="mobile-logo">CAIXA PRETA</div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <ul class="mobile-menu-links">
+                    <li><a href="#features" class="nav-link">Features</a></li>
+                    <li><a href="#platform" class="nav-link">Platform</a></li>
+                    <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
     
@@ -1054,6 +1183,32 @@
     </footer>
     
     <script>
+        // Mobile hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links .nav-link');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+        
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
