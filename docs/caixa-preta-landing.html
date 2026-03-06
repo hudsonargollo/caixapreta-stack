@@ -134,7 +134,7 @@
             margin: 0 auto;
             padding: 0 var(--spacing-lg);
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
         }
         
@@ -146,6 +146,12 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             animation: textGlitch 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav.scrolled .logo {
+            opacity: 1;
         }
         
         @keyframes textGlitch {
@@ -154,12 +160,14 @@
                 text-shadow: none;
             }
             5% { 
-                color: var(--matrix-green);
-                text-shadow: 0 0 10px var(--matrix-green);
+                color: var(--black-pure);
+                text-shadow: 2px 0 var(--text-primary), -2px 0 var(--text-primary);
+                background: var(--text-primary);
             }
             10% { 
                 color: var(--text-primary);
-                text-shadow: 2px 0 var(--matrix-green), -2px 0 var(--matrix-green);
+                text-shadow: 1px 0 var(--black-pure), -1px 0 var(--black-pure);
+                background: transparent;
             }
         }
         
@@ -167,6 +175,8 @@
             display: flex;
             gap: var(--spacing-xl);
             list-style: none;
+            position: absolute;
+            right: var(--spacing-lg);
         }
         
         .nav-link {
@@ -240,20 +250,24 @@
                 color: var(--text-primary);
                 text-shadow: none;
                 transform: translate(0);
+                background: transparent;
             }
             5% { 
-                color: var(--matrix-green);
-                text-shadow: 0 0 20px var(--matrix-green);
+                color: var(--black-pure);
+                text-shadow: 1px 0 var(--text-primary), -1px 0 var(--text-primary);
+                background: var(--text-primary);
                 transform: translate(-1px, 0);
             }
             10% { 
                 color: var(--text-primary);
-                text-shadow: 1px 0 var(--matrix-green), -1px 0 var(--matrix-green);
+                text-shadow: 2px 0 var(--black-pure), -2px 0 var(--black-pure);
+                background: transparent;
                 transform: translate(1px, 0);
             }
             15% { 
-                color: var(--matrix-green);
-                text-shadow: 0 0 15px var(--matrix-green);
+                color: var(--black-pure);
+                text-shadow: none;
+                background: var(--text-primary);
                 transform: translate(0, -1px);
             }
         }
@@ -309,21 +323,27 @@
             border-bottom: 1px solid var(--gray-dark);
         }
         
+        .terminal-dots {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
         .dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: var(--gray-medium);
         }
         
-        .dot.red { background: var(--gray-medium); }
-        .dot.yellow { background: var(--gray-medium); }
-        .dot.green { background: var(--gray-light); }
+        .dot.red { background: #FF5F57; }
+        .dot.yellow { background: #FFBD2E; }
+        .dot.green { background: #28CA42; }
         
         .terminal-title {
             font-family: var(--font-family-mono);
             font-size: 14px;
             color: var(--text-secondary);
+            flex: 1;
+            text-align: center;
         }
         
         .terminal-content {
@@ -1048,6 +1068,29 @@
             });
         });
         
+        // Navigation scroll detection
+        const nav = document.querySelector('.nav');
+        const heroSection = document.querySelector('.hero');
+        
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '-100px 0px 0px 0px'
+        };
+        
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+        }, observerOptions);
+        
+        if (heroSection) {
+            heroObserver.observe(heroSection);
+        }
+        
         // Add interactive hover effects to the black box
         const blackBox = document.querySelector('.black-box');
         const dataNodes = document.querySelectorAll('.data-node');
@@ -1070,11 +1113,6 @@
         }
         
         // Animate stats on scroll
-        const observerOptions = {
-            threshold: 0.5,
-            rootMargin: '0px 0px -100px 0px'
-        };
-        
         const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1088,7 +1126,7 @@
                     });
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.5, rootMargin: '0px 0px -100px 0px' });
         
         const statsSection = document.querySelector('.stats');
         if (statsSection) {
