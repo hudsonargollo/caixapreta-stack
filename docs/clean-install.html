@@ -6,144 +6,401 @@
 <title>Infra Caixa Preta v2 - Installation Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="design-tokens.css">
 <style>
-/* Install Guide Specific Styles */
 :root {
-  --bg:#010101;--panel:#1a1a1a;--muted:#2d2d2d;
-  --text:#ffffff;--text-muted:#b0b0b0;
-  --accent:#ff4757;--accent-fg:#ffffff;
-  --shadow-dark:#000000;--shadow-light:#333333;--border-dark:#2d2d2d;
-  --dark-bg:#010101;--dark-text:#ffffff;--dark-muted:#808080;
-  --s-card:8px 8px 16px #000000,-8px -8px 16px #333333;
-  --s-float:12px 12px 24px #000000,-12px -12px 24px #333333,inset 1px 1px 0 rgba(255,255,255,0.1);
-  --s-press:inset 6px 6px 12px #000000,inset -6px -6px 12px #333333;
-  --s-recess:inset 4px 4px 8px #000000,inset -4px -4px 8px #333333;
-  --s-sharp:4px 4px 8px rgba(0,0,0,0.5),-1px -1px 1px rgba(51,51,51,0.8);
-  --s-glow:0 0 10px 2px rgba(255,71,87,0.6);
-  --s-glow-green:0 0 10px 2px rgba(34,197,94,0.6);
+  --bg:#010101;
+  --panel:#0a0a0a;
+  --accent:#ff4757;
+  --accent-light:#ff6b7a;
+  --success:#22c55e;
+  --text:#ffffff;
+  --text-muted:#a0a0a0;
+  --border:#2a2a2a;
   --font:Inter,-apple-system,sans-serif;
   --mono:'JetBrains Mono',monospace;
-  --r-sm:4px;--r-md:8px;--r-lg:16px;--r-xl:24px;--r-2xl:30px;--r-full:9999px;
-  --lang-en:block;--lang-pt:none;
 }
-html[lang="pt-BR"]{--lang-en:none;--lang-pt:block;}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E");opacity:.12;pointer-events:none;z-index:-1}
-.container{max-width:72rem;margin:0 auto;padding:0 24px}
-@media(min-width:768px){.container{padding:0 48px}}
-.lang-en{display:var(--lang-en)}.lang-pt{display:var(--lang-pt)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes copyFlash{0%,100%{background:var(--accent)}50%{background:#22c55e}}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html[lang="pt-BR"] { --lang-en:none; --lang-pt:block; }
+html:not([lang="pt-BR"]) { --lang-en:block; --lang-pt:none; }
+
+body {
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+.container {
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+@media(min-width:768px) {
+  .container { padding:0 48px; }
+}
+
+.lang-en { display:var(--lang-en); }
+.lang-pt { display:var(--lang-pt); }
 
 /* NAV */
-.nav{position:sticky;top:0;background:var(--bg);box-shadow:var(--s-sharp);z-index:100;padding:14px 0;border-bottom:1px solid var(--shadow-dark)}
-.nav-inner{display:flex;justify-content:space-between;align-items:center}
-.logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--text);text-decoration:none}
-.led{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:var(--s-glow-green);animation:pulse 2s infinite;flex-shrink:0}
-.led-red{background:var(--accent);box-shadow:var(--s-glow)}
-.nav-badge{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.nav {
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:16px 0;
+  z-index:100;
+}
+
+.nav-inner {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:16px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--text);
+  text-decoration:none;
+}
+
+.led {
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--success);
+  box-shadow:0 0 10px var(--success);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.4; }
+}
+
+.nav-badge {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--text-muted);
+}
 
 /* HERO */
-.hero{padding:64px 0 48px;text-align:center}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);margin-bottom:20px;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
-.hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:16px;text-shadow:0 1px 0 var(--shadow-light)}
-.hero-title .accent{color:var(--accent)}
-.hero-desc{font-size:1.05rem;color:var(--text-muted);max-width:560px;margin:0 auto 32px;line-height:1.7}
-.hero-credits{font-family:var(--mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:8px}
-.hero-credits span{color:var(--accent)}
+.hero {
+  padding:64px 0 48px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  margin-bottom:64px;
+}
 
-/* PASSWORD GATE */
-.gate{display:flex;align-items:center;justify-content:center;min-height:60vh;padding:48px 24px}
-.gate-card{background:var(--bg);border-radius:var(--r-xl);padding:48px;box-shadow:var(--s-float);max-width:420px;width:100%;position:relative;overflow:hidden;text-align:center}
-.gate-card::before{content:'';position:absolute;top:12px;left:12px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
-.gate-card::after{content:'';position:absolute;top:12px;right:12px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
-.gate-icon{width:64px;height:64px;border-radius:var(--r-full);background:var(--bg);box-shadow:var(--s-float);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-.gate-icon svg{width:28px;height:28px;stroke:var(--accent);stroke-width:1.5;fill:none}
-.gate-title{font-family:var(--mono);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:24px}
-.form-input{width:100%;padding:14px 20px;background:var(--bg);border:none;border-radius:var(--r-md);font-family:var(--mono);font-size:14px;color:var(--text);box-shadow:var(--s-recess);min-height:52px;margin-bottom:12px}
-.form-input::placeholder{color:var(--text-muted);opacity:.5}
-.form-input:focus{outline:none;box-shadow:var(--s-recess),0 0 0 2px var(--accent)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border:none;border-radius:var(--r-lg);font-family:var(--mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,1.275);min-height:48px;width:100%}
-.btn-primary{background:var(--accent);color:var(--accent-fg);box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:6px 6px 14px rgba(166,50,60,.4),-6px -6px 14px rgba(255,100,110,.4)}
-.btn-primary:active{transform:translateY(2px);box-shadow:var(--s-press)}
-.error-msg{display:none;padding:10px 14px;background:rgba(255,71,87,.1);border-left:3px solid var(--accent);border-radius:var(--r-md);margin-bottom:12px;font-family:var(--mono);font-size:12px;color:var(--accent)}
-.error-msg.show{display:block}
+.hero-title {
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:800;
+  letter-spacing:-.03em;
+  margin-bottom:16px;
+}
 
-/* MAIN CONTENT */
-.main{display:none;padding:48px 0 96px}
-.main.show{display:block}
+.hero-title .accent {
+  color:var(--accent);
+}
 
-/* SECTION HEADERS */
-.section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
-.section-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;text-shadow:0 1px 0 var(--shadow-light)}
-.section-desc{font-size:.95rem;color:var(--text-muted);line-height:1.65;margin-bottom:32px}
+.hero-desc {
+  font-size:1.05rem;
+  color:var(--text-muted);
+  max-width:560px;
+  margin:0 auto;
+  line-height:1.7;
+}
 
-/* STEP CARDS */
-.steps-list{display:flex;flex-direction:column;gap:20px;margin-bottom:48px}
-.step-card{background:var(--bg);border-radius:var(--r-lg);padding:24px;box-shadow:var(--s-card);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.175,.885,.32,1.275)}
-.step-card:hover{transform:translateY(-2px);box-shadow:var(--s-float)}
-.step-card::before{content:'';position:absolute;top:10px;left:10px;width:5px;height:5px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
-.step-card::after{content:'';position:absolute;top:10px;right:10px;width:5px;height:5px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
-.step-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.step-num{width:40px;height:40px;border-radius:var(--r-full);background:var(--accent);color:var(--accent-fg);font-family:var(--mono);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
-.step-title{font-size:1rem;font-weight:700;letter-spacing:-.01em}
-.step-desc{font-size:.9rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65}
+/* IP INPUT SECTION */
+.ip-section {
+  background:linear-gradient(135deg, rgba(255,71,87,0.1) 0%, rgba(255,71,87,0.05) 100%);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:32px;
+  margin-bottom:64px;
+  text-align:center;
+}
 
-/* CODE BLOCKS */
-.code-block{background:var(--dark-bg);border-radius:var(--r-md);overflow:hidden;margin-bottom:8px;position:relative}
-.code-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06)}
-.code-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
-.copy-btn{display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,71,87,.15);border:none;border-radius:var(--r-sm);font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);cursor:pointer;transition:all .2s ease}
-.copy-btn:hover{background:rgba(255,71,87,.25)}
-.copy-btn.copied{background:rgba(34,197,94,.15);color:#22c55e}
-.code-content{padding:16px;font-family:var(--mono);font-size:13px;color:var(--dark-text);line-height:1.6;overflow-x:auto;position:relative}
-.code-content::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.15) 50%);background-size:100% 4px;pointer-events:none;opacity:.4}
-.code-content code{position:relative;z-index:1;display:block;white-space:pre}
-.code-comment{color:var(--dark-muted)}
-.code-cmd{color:#e0e5ec}
-.code-accent{color:var(--accent)}
+.ip-section h2 {
+  font-size:1.3rem;
+  margin-bottom:16px;
+  color:var(--accent);
+}
 
-/* DNS TABLE */
-.dns-table{width:100%;border-collapse:collapse;margin-top:12px}
-.dns-table th{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:10px 14px;text-align:left;background:var(--panel);border-bottom:2px solid var(--shadow-dark)}
-.dns-table td{font-family:var(--mono);font-size:12px;padding:10px 14px;border-bottom:1px solid var(--shadow-dark);color:var(--text)}
-.dns-table tr:hover td{background:var(--panel)}
-.dns-table .subdomain{color:var(--accent);font-weight:600}
+.ip-section p {
+  color:var(--text-muted);
+  margin-bottom:24px;
+  font-size:0.95rem;
+}
 
-/* SERVICES GRID */
-.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
-@media(min-width:768px){.services-grid{grid-template-columns:repeat(3,1fr)}}
-.service-card{background:var(--bg);border-radius:var(--r-lg);padding:20px;box-shadow:var(--s-card);transition:all .3s ease;position:relative;overflow:hidden}
-.service-card:hover{transform:translateY(-2px);box-shadow:var(--s-float)}
-.service-card::before{content:'';position:absolute;top:8px;left:8px;width:5px;height:5px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
-.service-icon{width:40px;height:40px;border-radius:var(--r-md);background:var(--panel);box-shadow:var(--s-card);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.service-icon svg{width:20px;height:20px;stroke:var(--accent);stroke-width:1.5;fill:none}
-.service-name{font-size:.9rem;font-weight:700;margin-bottom:4px}
-.service-desc{font-size:.8rem;color:var(--text-muted);line-height:1.5}
+.ip-input-group {
+  display:flex;
+  gap:12px;
+  max-width:500px;
+  margin:0 auto;
+  flex-wrap:wrap;
+  justify-content:center;
+}
 
-/* LANG TOGGLE */
-.lang-toggle{position:fixed;bottom:24px;right:24px;z-index:999}
-.lang-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);cursor:pointer;border:none;transition:all .3s ease}
-.lang-btn:hover{color:var(--accent);box-shadow:var(--s-float)}
-.flag{width:16px;height:11px;border-radius:2px;display:inline-block}
-.flag-en{background:linear-gradient(to bottom,#00247d 33%,#fff 33%,#fff 66%,#cf142b 66%)}
-.flag-pt{background:linear-gradient(to bottom,#009c3b 33%,#ffdf00 33%,#ffdf00 66%,#009c3b 66%)}
+.ip-input {
+  flex:1;
+  min-width:200px;
+  padding:12px 16px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:14px;
+}
+
+.ip-input:focus {
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 10px rgba(255,71,87,0.2);
+}
+
+.ip-input::placeholder {
+  color:var(--text-muted);
+}
+
+.btn {
+  padding:12px 24px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-family:var(--mono);
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  min-height:48px;
+}
+
+.btn:hover {
+  background:var(--accent-light);
+  transform:translateY(-2px);
+}
+
+.btn:active {
+  transform:translateY(0);
+}
+
+.ip-status {
+  margin-top:16px;
+  font-size:0.9rem;
+  color:var(--text-muted);
+}
+
+.ip-status.active {
+  color:var(--success);
+}
+
+/* STEPS */
+.steps-container {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:32px;
+  margin-bottom:64px;
+}
+
+.step {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  transition:all 0.3s ease;
+}
+
+.step:hover {
+  border-color:var(--accent);
+  box-shadow:0 0 20px rgba(255,71,87,0.1);
+}
+
+.step-header {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:24px;
+  background:linear-gradient(90deg, rgba(255,71,87,0.1) 0%, transparent 100%);
+  border-bottom:1px solid var(--border);
+}
+
+.step-number {
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#fff;
+  font-family:var(--mono);
+  font-size:18px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.step-title {
+  font-size:1.2rem;
+  font-weight:700;
+}
+
+.step-content {
+  padding:24px;
+}
+
+.step-desc {
+  color:var(--text-muted);
+  margin-bottom:20px;
+  line-height:1.7;
+}
+
+.code-block {
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+
+.code-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  background:rgba(255,71,87,0.1);
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--accent);
+}
+
+.code-content {
+  padding:16px;
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--text);
+  overflow-x:auto;
+  line-height:1.6;
+  white-space:pre-wrap;
+  word-break:break-all;
+}
+
+.copy-btn {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  background:rgba(255,71,87,0.2);
+  border:1px solid var(--accent);
+  border-radius:6px;
+  color:var(--accent);
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background:rgba(255,71,87,0.3);
+}
+
+.copy-btn.copied {
+  background:rgba(34,197,94,0.2);
+  border-color:var(--success);
+  color:var(--success);
+}
 
 /* FOOTER */
-.footer{background:var(--dark-bg);padding:32px 0;border-top:1px solid rgba(255,255,255,.06)}
-.footer-inner{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
-@media(min-width:768px){.footer-inner{flex-direction:row;justify-content:space-between;text-align:left}}
-.footer-logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--dark-text)}
-.footer-text{font-family:var(--mono);font-size:11px;color:var(--dark-muted);text-transform:uppercase;letter-spacing:1px}
-.footer-credits{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.footer {
+  background:var(--panel);
+  border-top:1px solid var(--border);
+  padding:32px 0;
+  text-align:center;
+  color:var(--text-muted);
+  font-size:12px;
+}
 
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-.btn:focus,.form-input:focus,.lang-btn:focus{outline:2px solid var(--accent);outline-offset:2px}
+.footer a {
+  color:var(--accent);
+  text-decoration:none;
+}
+
+.footer a:hover {
+  text-decoration:underline;
+}
+
+/* LANG TOGGLE */
+.lang-toggle {
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  z-index:999;
+}
+
+.lang-btn {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 14px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text-muted);
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+
+.lang-btn:hover {
+  color:var(--accent);
+  border-color:var(--accent);
+}
+
+@media(max-width:768px) {
+  .ip-input-group {
+    flex-direction:column;
+  }
+  
+  .ip-input {
+    min-width:100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -151,11 +408,11 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 <!-- NAV -->
 <nav class="nav">
   <div class="container nav-inner">
-    <a href="caixa-preta-landing-industrial.html" class="logo">
+    <a href="/" class="logo">
       <div class="led"></div>CAIXA PRETA
     </a>
     <div class="nav-badge">
-      <div class="led-red led" style="width:8px;height:8px"></div>
+      <div class="led" style="width:6px;height:6px"></div>
       <span class="lang-en">INSTALL GUIDE v2</span>
       <span class="lang-pt">GUIA DE INSTALAÇÃO v2</span>
     </div>
@@ -165,245 +422,168 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 <!-- HERO -->
 <div class="hero">
   <div class="container">
-    <div class="hero-tag">
-      <div class="led"></div>
-      <span class="lang-en">INFRA CAIXA PRETA v2</span>
-      <span class="lang-pt">INFRA CAIXA PRETA v2</span>
-    </div>
     <h1 class="hero-title">
       <span class="lang-en">Installation <span class="accent">Protocol</span></span>
       <span class="lang-pt">Protocolo de <span class="accent">Instalação</span></span>
     </h1>
     <p class="hero-desc">
-      <span class="lang-en">Exclusive step-by-step guide to deploy the complete CaixaPreta infrastructure stack on your VPS.</span>
-      <span class="lang-pt">Guia exclusivo passo a passo para implantar a stack completa de infraestrutura CaixaPreta no seu VPS.</span>
-    </p>
-    <p class="hero-credits">
-      <span class="lang-en">Created by <span>Hudson Argollo (@getrules)</span></span>
-      <span class="lang-pt">Criado por <span>Hudson Argollo (@getrules)</span></span>
+      <span class="lang-en">Deploy your complete infrastructure stack in 5 minutes. Follow the steps below.</span>
+      <span class="lang-pt">Implante sua stack completa de infraestrutura em 5 minutos. Siga os passos abaixo.</span>
     </p>
   </div>
 </div>
 
-<!-- PASSWORD GATE -->
-<div class="gate" id="gate">
-  <div class="gate-card">
-    <div class="gate-icon">
-      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+<!-- IP INPUT SECTION -->
+<div class="container">
+  <div class="ip-section">
+    <h2>
+      <span class="lang-en">🔧 Your Server IP Address</span>
+      <span class="lang-pt">🔧 Endereço IP do Seu Servidor</span>
+    </h2>
+    <p>
+      <span class="lang-en">Enter your VPS IP address to generate personalized installation commands</span>
+      <span class="lang-pt">Digite o endereço IP do seu VPS para gerar comandos de instalação personalizados</span>
+    </p>
+    <div class="ip-input-group">
+      <input type="text" class="ip-input" id="ipInput" placeholder="192.168.1.1" autocomplete="off">
+      <button class="btn" onclick="setIP()">
+        <span class="lang-en">SET IP</span>
+        <span class="lang-pt">DEFINIR IP</span>
+      </button>
     </div>
-    <div class="gate-title">
-      <span class="lang-en">RESTRICTED ACCESS</span>
-      <span class="lang-pt">ACESSO RESTRITO</span>
+    <div class="ip-status" id="ipStatus">
+      <span class="lang-en">No IP set yet</span>
+      <span class="lang-pt">Nenhum IP definido ainda</span>
     </div>
-    <div class="error-msg" id="errorMsg">
-      <span class="lang-en">Invalid access code. Please verify your credentials.</span>
-      <span class="lang-pt">Código de acesso inválido. Por favor, verifique suas credenciais.</span>
-    </div>
-    <input type="password" class="form-input" id="pwInput" placeholder="••••••••••••••••••••" autocomplete="current-password">
-    <button class="btn btn-primary" id="unlockBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      <span class="lang-en">UNLOCK GUIDE</span>
-      <span class="lang-pt">DESBLOQUEAR GUIA</span>
-    </button>
   </div>
 </div>
 
-<!-- MAIN CONTENT (hidden until unlocked) -->
-<div class="main" id="mainContent">
-  <div class="container">
-
-    <!-- QUICK INSTALL -->
-    <div style="margin-bottom:64px">
-      <div class="section-tag">
-        <div class="led-red led" style="width:7px;height:7px"></div>
-        <span class="lang-en">QUICK START</span><span class="lang-pt">INÍCIO RÁPIDO</span>
+<!-- STEPS -->
+<div class="container">
+  <div class="steps-container">
+    
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <div class="step-title">
+          <span class="lang-en">Connect to Your Server</span>
+          <span class="lang-pt">Conecte ao Seu Servidor</span>
+        </div>
       </div>
-      <h2 class="section-title">
-        <span class="lang-en">5-Minute Installation</span>
-        <span class="lang-pt">Instalação em 5 Minutos</span>
-      </h2>
-      <p class="section-desc">
-        <span class="lang-en">Follow these steps in order. The automated script handles the heavy lifting.</span>
-        <span class="lang-pt">Siga estes passos em ordem. O script automatizado faz o trabalho pesado.</span>
-      </p>
-
-      <div class="steps-list">
-
-        <!-- STEP 1 -->
-        <div class="step-card">
-          <div class="step-header">
-            <div class="step-num">01</div>
-            <div class="step-title">
-              <span class="lang-en">Connect to Your Server</span>
-              <span class="lang-pt">Conecte ao Seu Servidor</span>
-            </div>
+      <div class="step-content">
+        <p class="step-desc">
+          <span class="lang-en">Access your VPS via SSH as root user.</span>
+          <span class="lang-pt">Acesse seu VPS via SSH como usuário root.</span>
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span>SSH</span>
+            <button class="copy-btn" onclick="copyCode(this, document.getElementById('cmd1').textContent)">
+              <span class="lang-en">COPY</span>
+              <span class="lang-pt">COPIAR</span>
+            </button>
           </div>
-          <p class="step-desc">
-            <span class="lang-en">Access your VPS via SSH as root user. Replace with your server's IP address.</span>
-            <span class="lang-pt">Acesse seu VPS via SSH como usuário root. Substitua pelo endereço IP do seu servidor.</span>
-          </p>
-          <div class="code-block">
-            <div class="code-header">
-              <span class="code-label">TERMINAL</span>
-              <button class="copy-btn" onclick="copyCode(this, 'ssh root@SEU_IP_DO_SERVIDOR')">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span class="lang-en">COPY</span><span class="lang-pt">COPIAR</span>
-              </button>
-            </div>
-            <div class="code-content">
-              <code><span class="code-comment"># Connect via SSH</span>
-<span class="code-cmd">ssh root@</span><span class="code-accent">SEU_IP_DO_SERVIDOR</span></code>
-            </div>
-          </div>
+          <div class="code-content" id="cmd1">ssh root@YOUR_IP_ADDRESS</div>
         </div>
-
-        <!-- STEP 2 -->
-        <div class="step-card">
-          <div class="step-header">
-            <div class="step-num">02</div>
-            <div class="step-title">
-              <span class="lang-en">Download the Installation Script</span>
-              <span class="lang-pt">Baixe o Script de Instalação</span>
-            </div>
-          </div>
-          <p class="step-desc">
-            <span class="lang-en">Download and prepare the CaixaPreta Stack installer from the official repository.</span>
-            <span class="lang-pt">Baixe e prepare o instalador da CaixaPreta Stack do repositório oficial.</span>
-          </p>
-          <div class="code-block">
-            <div class="code-header">
-              <span class="code-label">TERMINAL</span>
-              <button class="copy-btn" onclick="copyCode(this, 'wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh\nchmod +x caixapreta-stack.sh')">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span class="lang-en">COPY</span><span class="lang-pt">COPIAR</span>
-              </button>
-            </div>
-            <div class="code-content">
-              <code><span class="code-comment"># Download installer</span>
-<span class="code-cmd">wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh</span>
-<span class="code-cmd">chmod +x caixapreta-stack.sh</span></code>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="step-card">
-          <div class="step-header">
-            <div class="step-num">03</div>
-            <div class="step-title">
-              <span class="lang-en">Run the Installation</span>
-              <span class="lang-pt">Execute a Instalação</span>
-            </div>
-          </div>
-          <p class="step-desc">
-            <span class="lang-en">Launch the automated installation process. The script will prompt for your domain and email.</span>
-            <span class="lang-pt">Inicie o processo de instalação automatizado. O script solicitará seu domínio e e-mail.</span>
-          </p>
-          <div class="code-block">
-            <div class="code-header">
-              <span class="code-label">TERMINAL</span>
-              <button class="copy-btn" onclick="copyCode(this, 'sudo ./caixapreta-stack.sh')">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                <span class="lang-en">COPY</span><span class="lang-pt">COPIAR</span>
-              </button>
-            </div>
-            <div class="code-content">
-              <code><span class="code-comment"># Run installer as root</span>
-<span class="code-cmd">sudo ./caixapreta-stack.sh</span></code>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 4 -->
-        <div class="step-card">
-          <div class="step-header">
-            <div class="step-num">04</div>
-            <div class="step-title">
-              <span class="lang-en">Configure DNS Records</span>
-              <span class="lang-pt">Configure os Registros DNS</span>
-            </div>
-          </div>
-          <p class="step-desc">
-            <span class="lang-en">Point these subdomains to your server IP (A record for IPv4, AAAA for IPv6).</span>
-            <span class="lang-pt">Aponte estes subdomínios para o IP do seu servidor (registro A para IPv4, AAAA para IPv6).</span>
-          </p>
-          <div style="overflow-x:auto;border-radius:var(--r-md);box-shadow:var(--s-card)">
-            <table class="dns-table">
-              <thead>
-                <tr>
-                  <th><span class="lang-en">Subdomain</span><span class="lang-pt">Subdomínio</span></th>
-                  <th><span class="lang-en">Type</span><span class="lang-pt">Tipo</span></th>
-                  <th><span class="lang-en">Points To</span><span class="lang-pt">Aponta Para</span></th>
-                  <th><span class="lang-en">Service</span><span class="lang-pt">Serviço</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td class="subdomain">n8n.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>n8n Automation</td></tr>
-                <tr><td class="subdomain">mega.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>MEGA Chatwoot</td></tr>
-                <tr><td class="subdomain">evolution.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>Evolution API</td></tr>
-                <tr><td class="subdomain">portainer.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>Portainer</td></tr>
-                <tr><td class="subdomain">traefik.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>Traefik Dashboard</td></tr>
-                <tr><td class="subdomain">minio.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>MinIO Storage</td></tr>
-                <tr><td class="subdomain">grafana.seudominio.com</td><td>A / AAAA</td><td><span class="lang-en">Your Server IP</span><span class="lang-pt">IP do Servidor</span></td><td>Grafana Monitoring</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <!-- SERVICES -->
-    <div style="margin-bottom:64px">
-      <div class="section-tag">
-        <div class="led-red led" style="width:7px;height:7px"></div>
-        <span class="lang-en">INCLUDED SERVICES</span><span class="lang-pt">SERVIÇOS INCLUSOS</span>
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <div class="step-title">
+          <span class="lang-en">Download Installation Script</span>
+          <span class="lang-pt">Baixe o Script de Instalação</span>
+        </div>
       </div>
-      <h2 class="section-title">
-        <span class="lang-en">What Gets Deployed</span>
-        <span class="lang-pt">O Que Será Implantado</span>
-      </h2>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-          <div class="service-name">n8n Automation</div>
-          <div class="service-desc"><span class="lang-en">Powerful workflow automation in queue mode</span><span class="lang-pt">Automação de workflows em modo queue</span></div>
+      <div class="step-content">
+        <p class="step-desc">
+          <span class="lang-en">Download and prepare the CaixaPreta Stack installer from the official repository.</span>
+          <span class="lang-pt">Baixe e prepare o instalador da Stack CaixaPreta do repositório oficial.</span>
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span>BASH</span>
+            <button class="copy-btn" onclick="copyCode(this, document.getElementById('cmd2').textContent)">
+              <span class="lang-en">COPY</span>
+              <span class="lang-pt">COPIAR</span>
+            </button>
+          </div>
+          <div class="code-content" id="cmd2">curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/caixapreta-stack-enhanced.sh -o installer.sh && chmod +x installer.sh</div>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-          <div class="service-name">MEGA Chatwoot V4</div>
-          <div class="service-desc"><span class="lang-en">Professional multichannel customer service</span><span class="lang-pt">Atendimento multicanal profissional</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <div class="step-title">
+          <span class="lang-en">Run the Installer</span>
+          <span class="lang-pt">Execute o Instalador</span>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-          <div class="service-name">Evolution API</div>
-          <div class="service-desc"><span class="lang-en">Integrated WhatsApp Business API</span><span class="lang-pt">API WhatsApp Business integrada</span></div>
+      </div>
+      <div class="step-content">
+        <p class="step-desc">
+          <span class="lang-en">Execute the installation script. You'll be prompted for your domain and email.</span>
+          <span class="lang-pt">Execute o script de instalação. Você será solicitado a fornecer seu domínio e email.</span>
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span>BASH</span>
+            <button class="copy-btn" onclick="copyCode(this, document.getElementById('cmd3').textContent)">
+              <span class="lang-en">COPY</span>
+              <span class="lang-pt">COPIAR</span>
+            </button>
+          </div>
+          <div class="code-content" id="cmd3">./installer.sh</div>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></div>
-          <div class="service-name">Portainer</div>
-          <div class="service-desc"><span class="lang-en">Docker container management UI</span><span class="lang-pt">Interface de gerenciamento de containers</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <div class="step-title">
+          <span class="lang-en">Configure Your Domain</span>
+          <span class="lang-pt">Configure Seu Domínio</span>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div class="service-name">Traefik v2.11</div>
-          <div class="service-desc"><span class="lang-en">Reverse proxy with auto SSL</span><span class="lang-pt">Proxy reverso com SSL automático</span></div>
+      </div>
+      <div class="step-content">
+        <p class="step-desc">
+          <span class="lang-en">Point your domain DNS records to your server IP address. The installer will provide specific instructions.</span>
+          <span class="lang-pt">Aponte os registros DNS do seu domínio para o endereço IP do seu servidor. O instalador fornecerá instruções específicas.</span>
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span>DNS A RECORD</span>
+          </div>
+          <div class="code-content" id="cmd4">*.seudominio.com  A  YOUR_IP_ADDRESS</div>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
-          <div class="service-name">PostgreSQL + Redis</div>
-          <div class="service-desc"><span class="lang-en">Production-grade database stack</span><span class="lang-pt">Stack de banco de dados para produção</span></div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <div class="step-title">
+          <span class="lang-en">Wait for SSL Certificates</span>
+          <span class="lang-pt">Aguarde os Certificados SSL</span>
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-          <div class="service-name">MinIO</div>
-          <div class="service-desc"><span class="lang-en">S3-compatible object storage</span><span class="lang-pt">Armazenamento de objetos compatível S3</span></div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <div class="service-name">Grafana</div>
-          <div class="service-desc"><span class="lang-en">Monitoring and observability dashboards</span><span class="lang-pt">Dashboards de monitoramento e observabilidade</span></div>
-        </div>
+      </div>
+      <div class="step-content">
+        <p class="step-desc">
+          <span class="lang-en">SSL certificates are generated automatically via Let's Encrypt. This typically takes 5-15 minutes.</span>
+          <span class="lang-pt">Os certificados SSL são gerados automaticamente via Let's Encrypt. Isso normalmente leva 5-15 minutos.</span>
+        </p>
+        <p class="step-desc" style="color:var(--success)">
+          <span class="lang-en">✓ Once complete, your entire stack will be live and accessible!</span>
+          <span class="lang-pt">✓ Após a conclusão, sua stack completa estará ativa e acessível!</span>
+        </p>
       </div>
     </div>
 
@@ -412,80 +592,100 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="container footer-inner">
-    <div class="footer-logo"><div class="led" style="width:8px;height:8px"></div>CAIXA PRETA</div>
-    <div class="footer-text">
-      <span class="lang-en">Infra Caixa Preta v2 &mdash; Exclusive Installation Guide</span>
-      <span class="lang-pt">Infra Caixa Preta v2 &mdash; Guia de Instalação Exclusivo</span>
-    </div>
-    <div class="footer-credits">
-      <span class="lang-en">By Hudson Argollo (@getrules)</span>
-      <span class="lang-pt">Por Hudson Argollo (@getrules)</span>
-    </div>
+  <div class="container">
+    <p>
+      <span class="lang-en">© 2026 Caixa Preta by Hudson Argollo (@getrules)</span>
+      <span class="lang-pt">© 2026 Caixa Preta por Hudson Argollo (@getrules)</span>
+    </p>
   </div>
 </footer>
 
 <!-- LANG TOGGLE -->
 <div class="lang-toggle">
-  <button class="lang-btn" id="langBtn">
-    <span class="flag flag-en" id="langFlag"></span>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()">
     <span id="langText">EN</span>
   </button>
 </div>
 
 <script>
-  // Language detection
-  const html = document.documentElement;
-  const langBtn = document.getElementById('langBtn');
-  const langFlag = document.getElementById('langFlag');
-  const langText = document.getElementById('langText');
-  const isBrowserPT = (navigator.language || '').startsWith('pt');
+// Language detection
+const html = document.documentElement;
+const langBtn = document.getElementById('langBtn');
+const langText = document.getElementById('langText');
+const isBrowserPT = (navigator.language || '').startsWith('pt');
 
-  function setLang(pt) {
-    html.lang = pt ? 'pt-BR' : 'en';
-    langFlag.className = pt ? 'flag flag-pt' : 'flag flag-en';
-    langText.textContent = pt ? 'PT' : 'EN';
-  }
-  setLang(isBrowserPT);
-  langBtn.addEventListener('click', () => setLang(html.lang !== 'pt-BR'));
+function setLang(pt) {
+  html.lang = pt ? 'pt-BR' : 'en';
+  langText.textContent = pt ? 'PT' : 'EN';
+  localStorage.setItem('caixapreta_lang', pt ? 'pt' : 'en');
+}
 
-  // Password gate - always show content (no password required)
-  const gate = document.getElementById('gate');
-  const mainContent = document.getElementById('mainContent');
+function toggleLang() {
+  setLang(html.lang !== 'pt-BR');
+}
+
+// Initialize language
+const savedLang = localStorage.getItem('caixapreta_lang');
+setLang(savedLang === 'pt' || isBrowserPT);
+
+// IP Address Management
+function setIP() {
+  const ipInput = document.getElementById('ipInput');
+  const ip = ipInput.value.trim();
   
-  // Always show main content
-  gate.style.display = 'none';
-  mainContent.classList.add('show');
-
-  // Copy code
-  function copyCode(btn, text) {
-    navigator.clipboard.writeText(text.replace(/\\n/g, '\n')).then(() => {
-      btn.classList.add('copied');
-      const origHTML = btn.innerHTML;
-      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span class="lang-en">COPIED</span><span class="lang-pt">COPIADO</span>';
-      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = origHTML; }, 2000);
-    });
+  if (!ip) {
+    alert(html.lang === 'pt-BR' ? 'Por favor, digite um endereço IP' : 'Please enter an IP address');
+    return;
   }
+  
+  // Validate IP format (basic)
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipRegex.test(ip)) {
+    alert(html.lang === 'pt-BR' ? 'Formato de IP inválido' : 'Invalid IP format');
+    return;
+  }
+  
+  // Store IP
+  localStorage.setItem('caixapreta_ip', ip);
+  
+  // Update all commands
+  updateCommands(ip);
+  
+  // Update status
+  const status = document.getElementById('ipStatus');
+  status.classList.add('active');
+  status.innerHTML = `<span class="lang-en">✓ IP set to: <strong>${ip}</strong></span><span class="lang-pt">✓ IP definido para: <strong>${ip}</strong></span>`;
+}
 
-  // Scroll animations
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.animation = 'slideUp .4s cubic-bezier(.175,.885,.32,1.275) forwards';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
+function updateCommands(ip) {
+  document.getElementById('cmd1').textContent = `ssh root@${ip}`;
+  document.getElementById('cmd4').textContent = `*.seudominio.com  A  ${ip}`;
+}
 
-  document.querySelectorAll('.step-card, .service-card').forEach(el => {
-    el.style.opacity = '0';
-    observer.observe(el);
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="lang-en">✓ COPIED</span><span class="lang-pt">✓ COPIADO</span>';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = origHTML;
+    }, 2000);
   });
+}
 
-  // Add shake keyframe
-  const style = document.createElement('style');
-  style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}';
-  document.head.appendChild(style);
+// Load saved IP on page load
+window.addEventListener('load', () => {
+  const savedIP = localStorage.getItem('caixapreta_ip');
+  if (savedIP) {
+    document.getElementById('ipInput').value = savedIP;
+    updateCommands(savedIP);
+    const status = document.getElementById('ipStatus');
+    status.classList.add('active');
+    status.innerHTML = `<span class="lang-en">✓ IP set to: <strong>${savedIP}</strong></span><span class="lang-pt">✓ IP definido para: <strong>${savedIP}</strong></span>`;
+  }
+});
 </script>
+
 </body>
 </html>
