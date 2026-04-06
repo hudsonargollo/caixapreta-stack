@@ -1,1308 +1,639 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html-root">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caixa Preta - Premium Marketing Intelligence Platform</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            /* Monochrome Matrix Color System */
-            --black-pure: #000000;
-            --black-deep: #0a0a0a;
-            --black-medium: #1a1a1a;
-            --black-light: #2a2a2a;
-            --gray-dark: #333333;
-            --gray-medium: #666666;
-            --gray-light: #999999;
-            --white-dim: #cccccc;
-            --white-bright: #ffffff;
-            
-            /* Matrix Green - Only for glitch effects */
-            --matrix-green: #00ff41;
-            --matrix-green-dim: #00cc33;
-            
-            /* Semantic Variables */
-            --surface-primary: var(--black-pure);
-            --surface-elevated: var(--black-deep);
-            --surface-interactive: var(--black-medium);
-            --text-primary: var(--white-bright);
-            --text-secondary: var(--white-dim);
-            --text-muted: var(--gray-light);
-            --text-accent: var(--matrix-green);
-            
-            /* Matrix Gradients */
-            --gradient-matrix: linear-gradient(180deg, var(--black-pure) 0%, var(--black-deep) 50%, var(--black-medium) 100%);
-            --gradient-text: linear-gradient(90deg, var(--white-bright) 0%, var(--matrix-green) 50%, var(--white-bright) 100%);
-            
-            /* Typography */
-            --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-family-display: 'Montserrat', sans-serif;
-            --font-family-mono: 'JetBrains Mono', monospace;
-            
-            /* Spacing System */
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --spacing-2xl: 48px;
-            --spacing-3xl: 64px;
-            --spacing-4xl: 96px;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: var(--font-family-primary);
-            background: var(--surface-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        /* Matrix Digital Rain Background */
-        .circuit-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--black-pure);
-            overflow: hidden;
-            z-index: -1;
-        }
-        
-        .matrix-rain {
-            position: absolute;
-            top: -100px;
-            width: 100%;
-            height: calc(100% + 100px);
-            background-image: 
-                /* Vertical lines */
-                linear-gradient(90deg, transparent 0%, rgba(0, 255, 65, 0.03) 1%, transparent 2%),
-                linear-gradient(90deg, transparent 10%, rgba(0, 255, 65, 0.02) 11%, transparent 12%),
-                linear-gradient(90deg, transparent 20%, rgba(0, 255, 65, 0.04) 21%, transparent 22%),
-                linear-gradient(90deg, transparent 30%, rgba(0, 255, 65, 0.01) 31%, transparent 32%),
-                linear-gradient(90deg, transparent 40%, rgba(0, 255, 65, 0.03) 41%, transparent 42%),
-                linear-gradient(90deg, transparent 50%, rgba(0, 255, 65, 0.02) 51%, transparent 52%),
-                linear-gradient(90deg, transparent 60%, rgba(0, 255, 65, 0.04) 61%, transparent 62%),
-                linear-gradient(90deg, transparent 70%, rgba(0, 255, 65, 0.01) 71%, transparent 72%),
-                linear-gradient(90deg, transparent 80%, rgba(0, 255, 65, 0.03) 81%, transparent 82%),
-                linear-gradient(90deg, transparent 90%, rgba(0, 255, 65, 0.02) 91%, transparent 92%);
-            background-size: 
-                50px 100%,
-                75px 100%,
-                100px 100%,
-                125px 100%,
-                150px 100%,
-                175px 100%,
-                200px 100%,
-                225px 100%,
-                250px 100%,
-                275px 100%;
-            animation: matrixRain 20s linear infinite;
-        }
-        
-        @keyframes matrixRain {
-            0% { transform: translateY(-100px); }
-            100% { transform: translateY(100vh); }
-        }
-        
-        /* Navigation */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--gray-dark);
-            z-index: 1000;
-            padding: var(--spacing-md) 0;
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        
-        .logo {
-            font-family: var(--font-family-mono);
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: textGlitch 3s ease-in-out infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .nav.scrolled .logo {
-            opacity: 1;
-        }
-        
-        @keyframes textGlitch {
-            0%, 90%, 100% { 
-                color: var(--text-primary);
-                text-shadow: none;
-            }
-            5% { 
-                color: var(--black-pure);
-                text-shadow: 2px 0 var(--text-primary), -2px 0 var(--text-primary);
-                background: var(--text-primary);
-            }
-            10% { 
-                color: var(--text-primary);
-                text-shadow: 1px 0 var(--black-pure), -1px 0 var(--black-pure);
-                background: transparent;
-            }
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: var(--spacing-xl);
-            list-style: none;
-            position: absolute;
-            right: 0;
-        }
-        
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-family: var(--font-family-mono);
-            font-size: 14px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            color: var(--text-primary);
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--matrix-green);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        /* Mobile Navigation */
-        .mobile-nav {
-            display: none;
-            position: absolute;
-            left: 0;
-            right: 0;
-        }
-        
-        .mobile-logo {
-            font-family: var(--font-family-mono);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: textGlitch 3s ease-in-out infinite;
-        }
-        
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: var(--spacing-xs);
-            position: absolute;
-            right: 0;
-        }
-        
-        .hamburger span {
-            width: 24px;
-            height: 2px;
-            background: var(--text-primary);
-            margin: 2px 0;
-            transition: all 0.3s ease;
-            transform-origin: center;
-        }
-        
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-        }
-        
-        .mobile-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--gray-dark);
-            transform: translateY(-100%);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .mobile-menu.active {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .mobile-menu-links {
-            list-style: none;
-            padding: var(--spacing-lg);
-        }
-        
-        .mobile-menu-links li {
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .mobile-menu-links .nav-link {
-            display: block;
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--gray-dark);
-            position: relative;
-        }
-        
-        .mobile-menu-links .nav-link::after {
-            display: none;
-        }
-        
-        /* Hero Section with ASCII Aesthetic */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            padding: var(--spacing-4xl) 0;
-        }
-        
-        .hero-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        /* ASCII Header */
-        .ascii-header {
-            text-align: center;
-            margin-bottom: var(--spacing-4xl);
-        }
-        
-        .ascii-art {
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .ascii-text {
-            font-family: var(--font-family-mono);
-            font-size: clamp(8px, 1.2vw, 14px);
-            line-height: 1;
-            color: var(--text-primary);
-            animation: matrixGlitch 4s ease-in-out infinite;
-            white-space: pre;
-            overflow-x: auto;
-        }
-        
-        @keyframes matrixGlitch {
-            0%, 85%, 100% { 
-                color: var(--text-primary);
-                text-shadow: none;
-                transform: translate(0);
-                background: transparent;
-            }
-            5% { 
-                color: var(--black-pure);
-                text-shadow: 1px 0 var(--text-primary), -1px 0 var(--text-primary);
-                background: var(--text-primary);
-                transform: translate(-1px, 0);
-            }
-            10% { 
-                color: var(--text-primary);
-                text-shadow: 2px 0 var(--black-pure), -2px 0 var(--black-pure);
-                background: transparent;
-                transform: translate(1px, 0);
-            }
-            15% { 
-                color: var(--black-pure);
-                text-shadow: none;
-                background: var(--text-primary);
-                transform: translate(0, -1px);
-            }
-        }
-        
-        .system-info {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-xl);
-            flex-wrap: wrap;
-        }
-        
-        .system-line {
-            font-family: var(--font-family-mono);
-            font-size: 14px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .status-active {
-            color: var(--matrix-green);
-            animation: statusBlink 2s ease-in-out infinite;
-        }
-        
-        @keyframes statusBlink {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0.3; }
-        }
-        
-        /* Hero Content Grid */
-        .hero-content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-4xl);
-            align-items: center;
-        }
-        
-        /* Terminal Window */
-        .terminal-window {
-            background: var(--black-deep);
-            border-radius: 8px;
-            border: 1px solid var(--gray-dark);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-        }
-        
-        .terminal-header {
-            background: var(--black-medium);
-            padding: var(--spacing-md);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            border-bottom: 1px solid var(--gray-dark);
-        }
-        
-        .terminal-dots {
-            display: flex;
-            gap: var(--spacing-xs);
-        }
-        
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .dot.red { background: #FF5F57; }
-        .dot.yellow { background: #FFBD2E; }
-        .dot.green { background: #28CA42; }
-        
-        .terminal-title {
-            font-family: var(--font-family-mono);
-            font-size: 14px;
-            color: var(--text-secondary);
-            flex: 1;
-            text-align: center;
-        }
-        
-        .terminal-content {
-            padding: var(--spacing-lg);
-            font-family: var(--font-family-mono);
-            font-size: 14px;
-            line-height: 1.6;
-            background: var(--black-pure);
-        }
-        
-        .terminal-line {
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .prompt {
-            color: var(--text-secondary);
-        }
-        
-        .command {
-            color: var(--text-primary);
-        }
-        
-        .output {
-            color: var(--text-muted);
-            padding-left: var(--spacing-lg);
-        }
-        
-        .success {
-            color: var(--matrix-green);
-        }
-        
-        .warning {
-            color: var(--white-dim);
-        }
-        
-        .highlight {
-            color: var(--text-primary);
-            font-weight: 600;
-            animation: textFlash 2s ease-in-out infinite;
-        }
-        
-        @keyframes textFlash {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0.7; }
-        }
-        
-        .cursor {
-            color: var(--matrix-green);
-            animation: cursorBlink 1s infinite;
-        }
-        
-        @keyframes cursorBlink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        /* Hero Right Content */
-        .hero-title {
-            font-family: var(--font-family-display);
-            font-size: clamp(36px, 5vw, 56px);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: var(--spacing-lg);
-            text-transform: uppercase;
-            letter-spacing: -1px;
-        }
-        
-        .gradient-text {
-            background: var(--gradient-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 100%;
-            animation: textShimmer 3s ease-in-out infinite;
-        }
-        
-        @keyframes textShimmer {
-            0%, 100% { 
-                background-position: 0% 50%;
-            }
-            50% { 
-                background-position: 100% 50%;
-            }
-        }
-        
-        .hero-description {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-2xl);
-            line-height: 1.7;
-        }
-        
-        /* Mini Stats */
-        .stats-mini {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-2xl);
-            padding-top: var(--spacing-2xl);
-            border-top: 1px solid rgba(0, 229, 255, 0.1);
-        }
-        
-        .stat-mini {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-family: var(--font-family-mono);
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: block;
-            margin-bottom: var(--spacing-xs);
-            animation: statGlow 2s ease-in-out infinite;
-        }
-        
-        @keyframes statGlow {
-            0%, 70%, 100% { 
-                color: var(--text-primary);
-                text-shadow: none;
-            }
-            85% { 
-                color: var(--matrix-green);
-                text-shadow: 0 0 10px var(--matrix-green);
-            }
-        }
-        
-        .stat-label {
-            font-family: var(--font-family-mono);
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-md) var(--spacing-xl);
-            border: none;
-            border-radius: 4px;
-            font-family: var(--font-family-mono);
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary {
-            background: var(--text-primary);
-            color: var(--black-pure);
-            border: 1px solid var(--text-primary);
-        }
-        
-        .btn-primary:hover {
-            background: var(--matrix-green);
-            color: var(--black-pure);
-            border-color: var(--matrix-green);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--gray-medium);
-        }
-        
-        .btn-secondary:hover {
-            border-color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-        
-        /* Features Section */
-        .features {
-            padding: var(--spacing-4xl) 0;
-            background: linear-gradient(180deg, var(--surface-primary) 0%, var(--obsidian-800) 100%);
-        }
-        
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: var(--spacing-4xl);
-        }
-        
-        .section-header h2 {
-            font-family: var(--font-family-display);
-            font-size: clamp(36px, 4vw, 48px);
-            font-weight: 700;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .section-header p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: var(--spacing-xl);
-        }
-        
-        .feature-card {
-            background: var(--gradient-surface);
-            border: 1px solid rgba(0, 229, 255, 0.1);
-            border-radius: 16px;
-            padding: var(--spacing-2xl);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 229, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-        
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--spacing-lg);
-            font-size: 24px;
-        }
-        
-        .feature-card h3 {
-            font-family: var(--font-family-display);
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .feature-card p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-        
-        /* Stats Section */
-        .stats {
-            padding: var(--spacing-4xl) 0;
-            background: var(--obsidian-800);
-        }
-        
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--spacing-2xl);
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-family: var(--font-family-mono);
-            font-size: clamp(36px, 5vw, 48px);
-            font-weight: 600;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .stat-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: var(--spacing-4xl) 0;
-            background: linear-gradient(135deg, var(--obsidian-900) 0%, var(--obsidian-700) 100%);
-            text-align: center;
-        }
-        
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        .cta-section h2 {
-            font-family: var(--font-family-display);
-            font-size: clamp(32px, 4vw, 42px);
-            font-weight: 700;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .cta-section p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-2xl);
-        }
-        
-        /* Footer */
-        .footer {
-            background: var(--obsidian-900);
-            border-top: 1px solid rgba(0, 229, 255, 0.1);
-            padding: var(--spacing-2xl) 0;
-            text-align: center;
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-        
-        .footer p {
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .footer-credits {
-            color: var(--neon-cyan);
-            font-weight: 500;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-container {
-                justify-content: space-between;
-            }
-            
-            .logo {
-                display: none;
-            }
-            
-            .mobile-nav {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-            }
-            
-            .hamburger {
-                display: flex;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-content-grid {
-                grid-template-columns: 1fr;
-                gap: var(--spacing-2xl);
-            }
-            
-            .hero-left {
-                order: 2;
-            }
-            
-            .hero-right {
-                order: 1;
-                text-align: center;
-            }
-            
-            .ascii-text {
-                font-size: 8px;
-            }
-            
-            .system-info {
-                flex-direction: column;
-                gap: var(--spacing-sm);
-            }
-            
-            .stats-mini {
-                grid-template-columns: repeat(3, 1fr);
-                gap: var(--spacing-md);
-            }
-            
-            .cta-buttons {
-                justify-content: center;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-        
-        /* Focus States */
-        .btn:focus,
-        .nav-link:focus {
-            outline: 2px solid var(--neon-cyan);
-            outline-offset: 2px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caixa Preta - Industrial Marketing Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-tokens.css">
+<style>
+/* Landing Page Specific Styles */
+:root {
+  --bg:#e0e5ec;--panel:#f0f2f5;--muted:#d1d9e6;
+  --text:#2d3436;--text-muted:#4a5568;
+  --accent:#ff4757;--accent-fg:#ffffff;
+  --shadow-dark:#babecc;--shadow-light:#ffffff;--border-dark:#a3b1c6;
+  --dark-bg:#2d3436;--dark-text:#ffffff;--dark-muted:#a8b2d1;
+  --s-card:8px 8px 16px #babecc,-8px -8px 16px #ffffff;
+  --s-float:12px 12px 24px #babecc,-12px -12px 24px #ffffff,inset 1px 1px 0 rgba(255,255,255,0.5);
+  --s-press:inset 6px 6px 12px #babecc,inset -6px -6px 12px #ffffff;
+  --s-recess:inset 4px 4px 8px #babecc,inset -4px -4px 8px #ffffff;
+  --s-sharp:4px 4px 8px rgba(0,0,0,0.15),-1px -1px 1px rgba(255,255,255,0.8);
+  --s-glow:0 0 10px 2px rgba(255,71,87,0.6);
+  --s-glow-green:0 0 10px 2px rgba(34,197,94,0.6);
+  --font:Inter,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r-sm:4px;--r-md:8px;--r-lg:16px;--r-xl:24px;--r-2xl:30px;--r-full:9999px;
+  --lang-en:block;--lang-pt:none;
+}
+html[lang="pt-BR"]{--lang-en:none;--lang-pt:block;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+.container{max-width:72rem;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.container{padding:0 48px}}
+.lang-en{display:var(--lang-en)}.lang-pt{display:var(--lang-pt)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;background:var(--bg);box-shadow:var(--s-sharp);z-index:1000;padding:14px 0;border-bottom:1px solid var(--shadow-dark)}
+.nav-inner{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:2px;color:var(--text);text-shadow:0 1px 0 var(--shadow-light);text-decoration:none}
+.led{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:var(--s-glow-green);animation:pulse 2s infinite;flex-shrink:0}
+.led-red{background:var(--accent);box-shadow:var(--s-glow)}
+.nav-links{display:flex;gap:4px;list-style:none}
+.nav-link{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);text-decoration:none;padding:8px 14px;border-radius:var(--r-md);transition:all .3s cubic-bezier(.175,.885,.32,1.275)}
+.nav-link:hover{color:var(--accent);background:var(--panel);box-shadow:var(--s-card)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:10px;background:var(--bg);border-radius:var(--r-md);box-shadow:var(--s-card);border:none;transition:all .3s ease}
+.hamburger span{width:22px;height:2px;background:var(--text);transition:all .3s ease;display:block}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mobile-menu{position:absolute;top:100%;left:0;right:0;background:var(--bg);box-shadow:var(--s-float);padding:16px 24px;transform:translateY(-8px);opacity:0;visibility:hidden;transition:all .25s ease}
+.mobile-menu.open{transform:translateY(0);opacity:1;visibility:visible}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.mobile-menu .nav-link{display:block;background:var(--panel);box-shadow:var(--s-card)}
+@media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}}
+
+/* HERO */
+.hero{padding:120px 0 96px;min-height:100vh;display:flex;align-items:center}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center}
+@media(min-width:1024px){.hero-grid{grid-template-columns:1fr 1fr}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);margin-bottom:20px;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero-title{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:20px;letter-spacing:-.03em;text-shadow:0 1px 0 var(--shadow-light)}
+.hero-title .accent{background:linear-gradient(90deg,var(--text) 0%,var(--accent) 50%,var(--text) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 100%;animation:shimmer 3s ease-in-out infinite}
+.hero-desc{font-size:1.1rem;color:var(--text-muted);margin-bottom:32px;line-height:1.75;max-width:520px}
+.btn-group{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:none;border-radius:var(--r-lg);font-family:var(--mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-decoration:none;cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,1.275);min-height:48px;position:relative}
+.btn-primary{background:var(--accent);color:var(--accent-fg);box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:6px 6px 14px rgba(166,50,60,.4),-6px -6px 14px rgba(255,100,110,.4)}
+.btn-primary:active{transform:translateY(2px);box-shadow:var(--s-press)}
+.btn-secondary{background:var(--bg);color:var(--text);box-shadow:var(--s-card)}
+.btn-secondary:hover{color:var(--accent);box-shadow:var(--s-float);transform:translateY(-2px)}
+.btn-secondary:active{transform:translateY(2px);box-shadow:var(--s-press)}
+@media(max-width:768px){.btn-group{flex-direction:column}.btn{width:100%;justify-content:center}.hero-desc{max-width:100%}}
+
+/* DEVICE */
+.device-wrap{perspective:1000px}
+.device{background:var(--dark-bg);border-radius:var(--r-xl);padding:20px;box-shadow:var(--s-float);position:relative;overflow:hidden;transform:rotateX(4deg) rotateY(-4deg);transition:transform .5s cubic-bezier(.175,.885,.32,1.275)}
+.device:hover{transform:rotateX(0) rotateY(0) scale(1.02)}
+.device::after{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.15;pointer-events:none}
+.device-bezel{position:absolute;inset:4px;border:1px solid rgba(255,255,255,.08);border-radius:calc(var(--r-xl) - 4px);pointer-events:none;z-index:1}
+.device-screen{background:#000;border-radius:var(--r-lg);padding:16px;box-shadow:var(--s-recess);position:relative;overflow:hidden;min-height:280px}
+.device-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.2) 50%);background-size:100% 4px;pointer-events:none;z-index:2}
+.screen-inner{position:relative;z-index:3;color:var(--dark-text);font-family:var(--mono)}
+.screen-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.screen-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-live{display:flex;align-items:center;gap:6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.metric-box{background:rgba(255,255,255,.05);border-radius:var(--r-md);padding:12px;text-align:center}
+.metric-val{font-size:22px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.metric-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-graph{height:70px;background:rgba(255,255,255,.04);border-radius:var(--r-md);display:flex;align-items:flex-end;gap:4px;padding:8px;overflow:hidden}
+.bar{border-radius:2px 2px 0 0;background:var(--accent);opacity:.8;transition:height .3s ease;animation:growBar .8s ease forwards}
+@keyframes growBar{from{height:0}}
+.device-btns{position:absolute;top:50%;right:-14px;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
+.hw-btn{width:10px;height:36px;background:var(--border-dark);border-radius:3px;box-shadow:var(--s-recess)}
+.pwr-led{position:absolute;top:16px;right:16px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:var(--s-glow);animation:pulse 2s infinite;z-index:4}
+
+/* STATS STRIP */
+.stats-strip{background:var(--dark-bg);padding:48px 0;position:relative;overflow:hidden}
+.stats-strip::before{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.1}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;position:relative;z-index:1}
+@media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-item{text-align:center;padding:24px 16px;background:rgba(255,255,255,.04);border-radius:var(--r-lg);border:1px solid rgba(255,255,255,.06)}
+.stat-num{font-family:var(--mono);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:600;color:var(--accent);display:block;margin-bottom:6px;text-shadow:0 0 20px rgba(255,71,87,.3)}
+.stat-lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+
+/* FEATURES */
+.features{padding:96px 0}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:16px}
+.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.02em;margin-bottom:12px;text-shadow:0 1px 0 var(--shadow-light)}
+.section-desc{font-size:1.05rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.7}
+.features-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.features-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* CARD - Bolted Module */
+.card{background:var(--bg);border-radius:var(--r-lg);padding:28px;box-shadow:var(--s-card);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.175,.885,.32,1.275);cursor:default}
+.card:hover{transform:translateY(-4px);box-shadow:var(--s-float)}
+/* Corner screws */
+.card::before{content:'';position:absolute;top:10px;left:10px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
+.card::after{content:'';position:absolute;top:10px;right:10px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
+.card-vents{position:absolute;bottom:14px;right:14px;display:flex;gap:3px}
+.vent{width:2px;height:18px;background:var(--muted);border-radius:1px;box-shadow:inset 1px 1px 2px rgba(0,0,0,.1)}
+.card-icon{width:52px;height:52px;border-radius:var(--r-full);background:var(--bg);box-shadow:var(--s-float);display:flex;align-items:center;justify-content:center;margin-bottom:18px;transition:transform .3s ease}
+.card:hover .card-icon{transform:scale(1.1) rotate(6deg)}
+.card-icon svg{width:24px;height:24px;stroke:var(--accent);stroke-width:1.5;fill:none}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+.card p{font-size:.95rem;color:var(--text-muted);line-height:1.65}
+
+/* HOW IT WORKS */
+.how{padding:96px 0;background:var(--panel)}
+.steps{display:grid;grid-template-columns:1fr;gap:32px;position:relative}
+@media(min-width:768px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{text-align:center;padding:32px 24px;background:var(--bg);border-radius:var(--r-xl);box-shadow:var(--s-card);position:relative}
+.step-num{width:52px;height:52px;border-radius:var(--r-full);background:var(--accent);color:var(--accent-fg);font-family:var(--mono);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
+.step h3{font-size:1.05rem;font-weight:700;margin-bottom:10px}
+.step p{font-size:.9rem;color:var(--text-muted);line-height:1.65}
+.pipe{display:none;height:3px;background:var(--muted);border-radius:var(--r-full);box-shadow:inset 0 1px 3px rgba(0,0,0,.2);flex:1;margin-top:26px}
+@media(min-width:768px){.pipe{display:block}}
+
+/* DARK BENEFITS */
+.benefits{padding:96px 0;background:var(--dark-bg);position:relative;overflow:hidden}
+.benefits::before{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.08}
+.benefits-grid{display:grid;grid-template-columns:1fr;gap:24px;position:relative;z-index:1}
+@media(min-width:768px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
+.benefit-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:32px;transition:all .3s ease}
+.benefit-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,71,87,.3);transform:translateY(-2px)}
+.benefit-card h3{font-size:1.1rem;font-weight:700;color:var(--dark-text);margin-bottom:10px}
+.benefit-card p{font-size:.95rem;color:var(--dark-muted);line-height:1.65}
+.benefit-icon{width:44px;height:44px;border-radius:var(--r-md);background:rgba(255,71,87,.15);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.benefit-icon svg{width:22px;height:22px;stroke:var(--accent);stroke-width:1.5;fill:none}
+
+/* CTA */
+.cta{padding:96px 0;text-align:center}
+.cta-card{background:var(--bg);border-radius:var(--r-2xl);padding:64px 48px;box-shadow:var(--s-float);max-width:700px;margin:0 auto;position:relative;overflow:hidden}
+.cta-card::before{content:'';position:absolute;top:12px;left:12px;width:8px;height:8px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 3px,transparent 3.5px);border-radius:50%}
+.cta-card::after{content:'';position:absolute;top:12px;right:12px;width:8px;height:8px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 3px,transparent 3.5px);border-radius:50%}
+.cta-card h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.03em;margin-bottom:16px;text-shadow:0 1px 0 var(--shadow-light)}
+.cta-card p{font-size:1.05rem;color:var(--text-muted);margin-bottom:32px;line-height:1.7}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media(max-width:480px){.cta-btns{flex-direction:column}.cta-btns .btn{width:100%;justify-content:center}}
+
+/* FOOTER */
+.footer{background:var(--dark-bg);padding:40px 0;border-top:1px solid rgba(255,255,255,.06)}
+.footer-inner{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+@media(min-width:768px){.footer-inner{flex-direction:row;justify-content:space-between;text-align:left}}
+.footer-logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--dark-text)}
+.footer-text{font-family:var(--mono);font-size:11px;color:var(--dark-muted);text-transform:uppercase;letter-spacing:1px}
+.footer-credits{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+
+/* LANG TOGGLE */
+.lang-toggle{position:fixed;bottom:24px;right:24px;z-index:999}
+.lang-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);cursor:pointer;border:none;transition:all .3s ease}
+.lang-btn:hover{color:var(--accent);box-shadow:var(--s-float)}
+.flag{width:16px;height:11px;border-radius:2px;display:inline-block}
+.flag-en{background:linear-gradient(to bottom,#00247d 33%,#fff 33%,#fff 66%,#cf142b 66%)}
+.flag-pt{background:linear-gradient(to bottom,#009c3b 33%,#ffdf00 33%,#ffdf00 66%,#009c3b 66%)}
+
+/* ACCESSIBILITY */
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.btn:focus,.nav-link:focus,.lang-btn:focus{outline:2px solid var(--accent);outline-offset:2px}
+</style>
 </head>
 <body>
-    <!-- Matrix Digital Rain Background -->
-    <div class="circuit-background">
-        <div class="matrix-rain"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><div class="led"></div>CAIXA PRETA</a>
+    <ul class="nav-links">
+      <li><a href="#features" class="nav-link"><span class="lang-en">Features</span><span class="lang-pt">Recursos</span></a></li>
+      <li><a href="#how" class="nav-link"><span class="lang-en">How It Works</span><span class="lang-pt">Como Funciona</span></a></li>
+      <li><a href="#benefits" class="nav-link"><span class="lang-en">Benefits</span><span class="lang-pt">Benefícios</span></a></li>
+      <li><a href="caixa-preta-login-industrial.html" class="btn btn-primary" style="padding:8px 18px;font-size:12px"><span class="lang-en">Login</span><span class="lang-pt">Entrar</span></a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#features" class="nav-link"><span class="lang-en">Features</span><span class="lang-pt">Recursos</span></a></li>
+      <li><a href="#how" class="nav-link"><span class="lang-en">How It Works</span><span class="lang-pt">Como Funciona</span></a></li>
+      <li><a href="#benefits" class="nav-link"><span class="lang-en">Benefits</span><span class="lang-pt">Benefícios</span></a></li>
+      <li><a href="caixa-preta-login-industrial.html" class="nav-link" style="color:var(--accent)"><span class="lang-en">Login</span><span class="lang-pt">Entrar</span></a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">
+          <div class="led"></div>
+          <span class="lang-en">SYSTEM OPERATIONAL</span>
+          <span class="lang-pt">SISTEMA OPERACIONAL</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="lang-en">INDUSTRIAL<br><span class="accent">INTELLIGENCE</span><br>PLATFORM</span>
+          <span class="lang-pt">PLATAFORMA DE<br><span class="accent">INTELIGÊNCIA</span><br>INDUSTRIAL</span>
+        </h1>
+        <p class="hero-desc">
+          <span class="lang-en">Transform raw data into algorithmic advantage. Precision-engineered marketing tools built for measurable, outsized returns.</span>
+          <span class="lang-pt">Transforme dados brutos em vantagem algorítmica. Ferramentas de marketing de precisão construídas para resultados mensuráveis e extraordinários.</span>
+        </p>
+        <div class="btn-group">
+          <a href="caixa-preta-login-industrial.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span class="lang-en">ACCESS PLATFORM</span>
+            <span class="lang-pt">ACESSAR PLATAFORMA</span>
+          </a>
+          <a href="#features" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="lang-en">EXPLORE FEATURES</span>
+            <span class="lang-pt">VER RECURSOS</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- DEVICE MOCKUP -->
+      <div class="device-wrap">
+        <div class="device">
+          <div class="device-bezel"></div>
+          <div class="pwr-led"></div>
+          <div class="device-screen">
+            <div class="screen-inner">
+              <div class="screen-bar">
+                <span class="screen-label lang-en">INTELLIGENCE DASHBOARD</span>
+                <span class="screen-label lang-pt">PAINEL DE INTELIGÊNCIA</span>
+                <div class="screen-live">
+                  <div class="led" style="width:7px;height:7px"></div>
+                  <span class="lang-en">LIVE</span><span class="lang-pt">AO VIVO</span>
+                </div>
+              </div>
+              <div class="screen-metrics">
+                <div class="metric-box">
+                  <div class="metric-val">847%</div>
+                  <div class="metric-lbl lang-en">ROI INCREASE</div>
+                  <div class="metric-lbl lang-pt">AUMENTO ROI</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-val">12.3M</div>
+                  <div class="metric-lbl lang-en">KEYWORDS</div>
+                  <div class="metric-lbl lang-pt">PALAVRAS-CHAVE</div>
+                </div>
+              </div>
+              <div class="screen-graph" id="graph"></div>
+            </div>
+          </div>
+          <div class="device-btns">
+            <div class="hw-btn"></div>
+            <div class="hw-btn"></div>
+            <div class="hw-btn"></div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <!-- Desktop Navigation -->
-            <div class="logo">CAIXA PRETA</div>
-            <ul class="nav-links">
-                <li><a href="#features" class="nav-link">Features</a></li>
-                <li><a href="#platform" class="nav-link">Platform</a></li>
-                <li><a href="#pricing" class="nav-link">Pricing</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            
-            <!-- Mobile Navigation -->
-            <div class="mobile-nav">
-                <div class="mobile-logo">CAIXA PRETA</div>
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div class="mobile-menu" id="mobileMenu">
-                <ul class="mobile-menu-links">
-                    <li><a href="#features" class="nav-link">Features</a></li>
-                    <li><a href="#platform" class="nav-link">Platform</a></li>
-                    <li><a href="#pricing" class="nav-link">Pricing</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
-            </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num">847%</span>
+        <span class="stat-lbl lang-en">Avg ROI Increase</span>
+        <span class="stat-lbl lang-pt">Aumento Médio ROI</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">12.3M</span>
+        <span class="stat-lbl lang-en">Keywords Analyzed</span>
+        <span class="stat-lbl lang-pt">Palavras Analisadas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2,847</span>
+        <span class="stat-lbl lang-en">Elite Members</span>
+        <span class="stat-lbl lang-pt">Membros Elite</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">99.7%</span>
+        <span class="stat-lbl lang-en">Uptime Guarantee</span>
+        <span class="stat-lbl lang-pt">Garantia de Uptime</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">
+        <div class="led led-red" style="width:7px;height:7px"></div>
+        <span class="lang-en">CAPABILITIES</span><span class="lang-pt">CAPACIDADES</span>
+      </div>
+      <h2 class="section-title">
+        <span class="lang-en">Intelligence Arsenal</span>
+        <span class="lang-pt">Arsenal de Inteligência</span>
+      </h2>
+      <p class="section-desc">
+        <span class="lang-en">Precision-engineered tools that transform standard marketing inputs into disproportionate commercial outputs.</span>
+        <span class="lang-pt">Ferramentas de precisão que transformam entradas de marketing padrão em resultados comerciais desproporcionais.</span>
+      </p>
+    </div>
+    <div class="features-grid">
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <!-- ASCII Art Header -->
-            <div class="ascii-header">
-                <div class="ascii-art">
-                    <pre class="ascii-text">
- ██████╗ █████╗ ██╗██╗  ██╗ █████╗     ██████╗ ██████╗ ███████╗████████╗ █████╗ 
-██╔════╝██╔══██╗██║╚██╗██╔╝██╔══██╗    ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔══██╗
-██║     ███████║██║ ╚███╔╝ ███████║    ██████╔╝██████╔╝█████╗     ██║   ███████║
-██║     ██╔══██║██║ ██╔██╗ ██╔══██║    ██╔═══╝ ██╔══██╗██╔══╝     ██║   ██╔══██║
-╚██████╗██║  ██║██║██╔╝ ██╗██║  ██║    ██║     ██║  ██║███████╗   ██║   ██║  ██║
- ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝
-                    </pre>
-                </div>
-                <div class="system-info">
-                    <div class="system-line">MARKETING INTELLIGENCE PLATFORM v3.0</div>
-                    <div class="system-line">ALGORITHMIC ADVANTAGE PROTOCOL</div>
-                    <div class="system-line">STATUS: <span class="status-active">OPERATIONAL</span></div>
-                </div>
-            </div>
-            
-            <div class="hero-content-grid">
-                <div class="hero-left">
-                    <div class="terminal-window">
-                        <div class="terminal-header">
-                            <div class="terminal-dots">
-                                <div class="dot red"></div>
-                                <div class="dot yellow"></div>
-                                <div class="dot green"></div>
-                            </div>
-                            <div class="terminal-title">blackbox.exe</div>
-                        </div>
-                        <div class="terminal-content">
-                            <div class="terminal-line">
-                                <span class="prompt">root@caixapreta:~$</span> 
-                                <span class="command">./unlock_intelligence.sh</span>
-                            </div>
-                            <div class="terminal-line output">
-                                <span class="success">✓</span> Scanning market data...
-                            </div>
-                            <div class="terminal-line output">
-                                <span class="success">✓</span> Analyzing competitor strategies...
-                            </div>
-                            <div class="terminal-line output">
-                                <span class="success">✓</span> Extracting algorithmic insights...
-                            </div>
-                            <div class="terminal-line output">
-                                <span class="warning">⚡</span> <span class="highlight">847% ROI increase detected</span>
-                            </div>
-                            <div class="terminal-line">
-                                <span class="prompt">root@caixapreta:~$</span> 
-                                <span class="cursor">█</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hero-right">
-                    <h1 class="hero-title">
-                        UNLOCK THE <span class="gradient-text">BLACK BOX</span><br>
-                        OF MARKETING INTELLIGENCE
-                    </h1>
-                    <p class="hero-description">
-                        Transform hidden data into algorithmic advantage. Access premium SEO tools, 
-                        copywriting arsenals, and proprietary analytics that generate outsized returns.
-                    </p>
-                    <div class="cta-buttons">
-                        <a href="caixa-preta-login.html" class="btn btn-primary">ACCESS PLATFORM</a>
-                        <a href="#features" class="btn btn-secondary">EXPLORE FEATURES</a>
-                    </div>
-                    
-                    <!-- Stats Grid -->
-                    <div class="stats-mini">
-                        <div class="stat-mini">
-                            <div class="stat-value">847%</div>
-                            <div class="stat-label">AVG ROI</div>
-                        </div>
-                        <div class="stat-mini">
-                            <div class="stat-value">12.3M</div>
-                            <div class="stat-label">KEYWORDS</div>
-                        </div>
-                        <div class="stat-mini">
-                            <div class="stat-value">2,847</div>
-                            <div class="stat-label">MEMBERS</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <h3><span class="lang-en">Algorithmic SEO Intelligence</span><span class="lang-pt">Inteligência SEO Algorítmica</span></h3>
+        <p><span class="lang-en">Advanced keyword research, competitor analysis, and programmatic SEO pipelines that uncover hidden ranking opportunities.</span><span class="lang-pt">Pesquisa avançada de palavras-chave, análise de concorrentes e pipelines de SEO programático que descobrem oportunidades ocultas.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-    </section>
-</body>
-</html>
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="features-container">
-            <div class="section-header">
-                <h2>Premium <span class="gradient-text">Intelligence</span> Arsenal</h2>
-                <p>
-                    Proprietary tools and algorithmic insights that transform standard marketing inputs 
-                    into disproportionate commercial outputs.
-                </p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Algorithmic SEO Intelligence</h3>
-                    <p>
-                        Advanced keyword research, competitor analysis, and programmatic SEO pipelines 
-                        that uncover hidden ranking opportunities and automate content optimization.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">✍️</div>
-                    <h3>AI-Powered Copywriting Arsenal</h3>
-                    <p>
-                        Sophisticated copywriting frameworks, conversion-optimized templates, and 
-                        AI-assisted content generation for high-converting marketing campaigns.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Proprietary Analytics Engine</h3>
-                    <p>
-                        Deep data synthesis, predictive modeling, and performance metrics that reveal 
-                        the invisible forces driving your marketing success.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Precision Targeting Matrix</h3>
-                    <p>
-                        Advanced audience segmentation, behavioral analysis, and targeting algorithms 
-                        that maximize campaign ROI and customer lifetime value.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Automation Workflows</h3>
-                    <p>
-                        Sophisticated marketing automation, lead nurturing sequences, and programmatic 
-                        campaign optimization that scales your operations exponentially.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <h3>Exclusive Community Access</h3>
-                    <p>
-                        Premium networking with elite marketers, exclusive tactical knowledge sharing, 
-                        and insider strategies from the Clube do Marketing Digital ecosystem.
-                    </p>
-                </div>
-            </div>
+        <h3><span class="lang-en">AI Copywriting Arsenal</span><span class="lang-pt">Arsenal de Copywriting IA</span></h3>
+        <p><span class="lang-en">Sophisticated copywriting frameworks, conversion-optimized templates, and AI-assisted content generation for high-converting campaigns.</span><span class="lang-pt">Frameworks sofisticados de copywriting, templates otimizados para conversão e geração de conteúdo assistida por IA.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </div>
-    </section>
-    
-    <!-- Stats Section -->
-    <section class="stats">
-        <div class="stats-container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-number">847%</span>
-                    <span class="stat-label">Average ROI Increase</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">12.3M</span>
-                    <span class="stat-label">Keywords Analyzed</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">2,847</span>
-                    <span class="stat-label">Elite Members</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">99.7%</span>
-                    <span class="stat-label">Uptime Guarantee</span>
-                </div>
-            </div>
+        <h3><span class="lang-en">Proprietary Analytics Engine</span><span class="lang-pt">Motor de Analytics Proprietário</span></h3>
+        <p><span class="lang-en">Deep data synthesis, predictive modeling, and performance metrics that reveal the invisible forces driving your marketing success.</span><span class="lang-pt">Síntese profunda de dados, modelagem preditiva e métricas de desempenho que revelam as forças invisíveis do seu sucesso.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
-    </section>
-    
-    <!-- Platform Preview Section -->
-    <section class="features" id="platform">
-        <div class="features-container">
-            <div class="section-header">
-                <h2>The <span class="gradient-text">Black Box</span> Interface</h2>
-                <p>
-                    A sophisticated, dark-mode dashboard designed for elite marketing professionals. 
-                    Where complex data transforms into actionable intelligence.
-                </p>
-            </div>
-            
-            <!-- Dashboard Preview -->
-            <div style="background: var(--gradient-surface); border-radius: 16px; padding: var(--spacing-2xl); border: 1px solid rgba(0, 229, 255, 0.2); margin-top: var(--spacing-2xl);">
-                <div style="display: grid; grid-template-columns: 250px 1fr; gap: var(--spacing-lg); min-height: 400px;">
-                    <!-- Sidebar -->
-                    <div style="background: var(--obsidian-800); border-radius: 12px; padding: var(--spacing-lg);">
-                        <div style="color: var(--neon-cyan); font-family: var(--font-family-mono); font-size: 14px; margin-bottom: var(--spacing-lg);">NAVIGATION</div>
-                        <div style="space-y: var(--spacing-sm);">
-                            <div style="padding: var(--spacing-sm); background: rgba(0, 229, 255, 0.1); border-radius: 6px; color: var(--neon-cyan); font-size: 14px; margin-bottom: var(--spacing-sm);">📊 Dashboard</div>
-                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">🔍 SEO Intelligence</div>
-                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">✍️ Copy Arsenal</div>
-                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">📈 Analytics</div>
-                            <div style="padding: var(--spacing-sm); color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">⚡ Automation</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Main Content -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
-                        <!-- Metric Cards -->
-                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(0, 229, 255, 0.1);">
-                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">CONVERSION RATE</div>
-                            <div style="font-family: var(--font-family-mono); font-size: 32px; color: var(--neon-mint); margin-bottom: var(--spacing-sm);">24.7%</div>
-                            <div style="color: var(--neon-mint); font-size: 12px;">↗ +12.3% vs last month</div>
-                        </div>
-                        
-                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(139, 92, 246, 0.1);">
-                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-sm);">ORGANIC TRAFFIC</div>
-                            <div style="font-family: var(--font-family-mono); font-size: 32px; color: var(--neon-purple); margin-bottom: var(--spacing-sm);">847K</div>
-                            <div style="color: var(--neon-purple); font-size: 12px;">↗ +34.2% vs last month</div>
-                        </div>
-                        
-                        <div style="background: var(--obsidian-700); border-radius: 12px; padding: var(--spacing-lg); border: 1px solid rgba(0, 229, 255, 0.1); grid-column: 1 / -1;">
-                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: var(--spacing-md);">KEYWORD PERFORMANCE</div>
-                            <div style="display: flex; gap: var(--spacing-sm); align-items: end; height: 100px;">
-                                <div style="background: var(--neon-cyan); width: 20px; height: 60%; border-radius: 2px; opacity: 0.8;"></div>
-                                <div style="background: var(--neon-cyan); width: 20px; height: 80%; border-radius: 2px; opacity: 0.9;"></div>
-                                <div style="background: var(--neon-cyan); width: 20px; height: 100%; border-radius: 2px;"></div>
-                                <div style="background: var(--neon-cyan); width: 20px; height: 75%; border-radius: 2px; opacity: 0.9;"></div>
-                                <div style="background: var(--neon-cyan); width: 20px; height: 90%; border-radius: 2px;"></div>
-                                <div style="background: var(--neon-purple); width: 20px; height: 95%; border-radius: 2px;"></div>
-                                <div style="background: var(--neon-purple); width: 20px; height: 85%; border-radius: 2px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <h3><span class="lang-en">Precision Targeting Matrix</span><span class="lang-pt">Matriz de Segmentação de Precisão</span></h3>
+        <p><span class="lang-en">Advanced audience segmentation, behavioral analysis, and targeting algorithms that maximize campaign ROI and customer lifetime value.</span><span class="lang-pt">Segmentação avançada de audiência, análise comportamental e algoritmos de targeting que maximizam o ROI.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
-    </section>
-    
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-container">
-            <h2>Ready to Unlock Your <span class="gradient-text">Marketing Potential</span>?</h2>
-            <p>
-                Join the elite community of marketing professionals who have discovered 
-                the algorithmic advantage hidden within the black box.
-            </p>
-            <div class="cta-buttons">
-                <a href="#" class="btn btn-primary" style="font-size: 18px; padding: var(--spacing-lg) var(--spacing-2xl);">
-                    Start Your Journey
-                </a>
-            </div>
+        <h3><span class="lang-en">Automation Workflows</span><span class="lang-pt">Workflows de Automação</span></h3>
+        <p><span class="lang-en">Sophisticated marketing automation, lead nurturing sequences, and programmatic campaign optimization that scales your operations.</span><span class="lang-pt">Automação de marketing sofisticada, sequências de nutrição de leads e otimização programática de campanhas.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2026 Caixa Preta Marketing Intelligence Platform. All rights reserved.</p>
-            <p class="footer-credits">Created by Hudson Argollo (@getrules)</p>
+        <h3><span class="lang-en">Exclusive Community Access</span><span class="lang-pt">Acesso à Comunidade Exclusiva</span></h3>
+        <p><span class="lang-en">Premium networking with elite marketers, exclusive tactical knowledge sharing, and insider strategies from the Clube do Marketing Digital.</span><span class="lang-pt">Networking premium com marketers de elite, compartilhamento exclusivo de conhecimento tático e estratégias do Clube do Marketing Digital.</span></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">
+        <div class="led led-red" style="width:7px;height:7px"></div>
+        <span class="lang-en">PROCESS</span><span class="lang-pt">PROCESSO</span>
+      </div>
+      <h2 class="section-title">
+        <span class="lang-en">How It Works</span>
+        <span class="lang-pt">Como Funciona</span>
+      </h2>
+      <p class="section-desc">
+        <span class="lang-en">Three precision-engineered steps from raw data to measurable results.</span>
+        <span class="lang-pt">Três etapas de precisão do dado bruto ao resultado mensurável.</span>
+      </p>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:0">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3><span class="lang-en">Connect Your Data</span><span class="lang-pt">Conecte Seus Dados</span></h3>
+          <p><span class="lang-en">Integrate your existing marketing channels, analytics platforms, and data sources into the unified intelligence hub.</span><span class="lang-pt">Integre seus canais de marketing, plataformas de analytics e fontes de dados no hub de inteligência unificado.</span></p>
         </div>
-    </footer>
-    
-    <script>
-        // Mobile hamburger menu
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-        });
-        
-        // Close mobile menu when clicking on a link
-        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links .nav-link');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-            });
-        });
-        
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-            }
-        });
-        
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-        
-        // Navigation scroll detection
-        const nav = document.querySelector('.nav');
-        const heroSection = document.querySelector('.hero');
-        
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '-100px 0px 0px 0px'
-        };
-        
-        const heroObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
-            });
-        }, observerOptions);
-        
-        if (heroSection) {
-            heroObserver.observe(heroSection);
-        }
-        
-        // Add interactive hover effects to the black box
-        const blackBox = document.querySelector('.black-box');
-        const dataNodes = document.querySelectorAll('.data-node');
-        
-        if (blackBox) {
-            blackBox.addEventListener('mousemove', (e) => {
-                const rect = blackBox.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width;
-                const y = (e.clientY - rect.top) / rect.height;
-                
-                const rotateX = (y - 0.5) * 20;
-                const rotateY = (x - 0.5) * 20;
-                
-                blackBox.style.transform = `translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-            
-            blackBox.addEventListener('mouseleave', () => {
-                blackBox.style.transform = 'translateY(0px) rotateX(5deg) rotateY(5deg)';
-            });
-        }
-        
-        // Animate stats on scroll
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const statNumbers = entry.target.querySelectorAll('.stat-number');
-                    statNumbers.forEach((stat, index) => {
-                        setTimeout(() => {
-                            stat.style.animation = 'none';
-                            stat.offsetHeight; // Trigger reflow
-                            stat.style.animation = 'countUp 2s ease-out forwards';
-                        }, index * 200);
-                    });
-                }
-            });
-        }, { threshold: 0.5, rootMargin: '0px 0px -100px 0px' });
-        
-        const statsSection = document.querySelector('.stats');
-        if (statsSection) {
-            statsObserver.observe(statsSection);
-        }
-        
-        // Add CSS animation for count up effect
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes countUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+        <div class="pipe"></div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3><span class="lang-en">Activate Intelligence</span><span class="lang-pt">Ative a Inteligência</span></h3>
+          <p><span class="lang-en">Our algorithmic engine processes your data, identifies patterns, and surfaces actionable insights in real-time.</span><span class="lang-pt">Nosso motor algorítmico processa seus dados, identifica padrões e apresenta insights acionáveis em tempo real.</span></p>
+        </div>
+        <div class="pipe"></div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3><span class="lang-en">Scale Results</span><span class="lang-pt">Escale os Resultados</span></h3>
+          <p><span class="lang-en">Deploy automated workflows, optimized campaigns, and precision targeting to multiply your marketing output exponentially.</span><span class="lang-pt">Implante workflows automatizados, campanhas otimizadas e targeting de precisão para multiplicar seu output de marketing.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS (DARK PANEL) -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div class="section-header" style="position:relative;z-index:1">
+      <div class="section-tag" style="background:rgba(255,255,255,.08);color:var(--dark-muted)">
+        <div class="led" style="width:7px;height:7px"></div>
+        <span class="lang-en">WHY CAIXA PRETA</span><span class="lang-pt">POR QUE CAIXA PRETA</span>
+      </div>
+      <h2 class="section-title" style="color:var(--dark-text);text-shadow:0 2px 4px rgba(0,0,0,.3)">
+        <span class="lang-en">The Algorithmic Advantage</span>
+        <span class="lang-pt">A Vantagem Algorítmica</span>
+      </h2>
+      <p class="section-desc" style="color:var(--dark-muted)">
+        <span class="lang-en">What separates elite marketers from the rest isn't effort—it's access to the right intelligence.</span>
+        <span class="lang-pt">O que separa os marketers de elite dos demais não é esforço—é acesso à inteligência certa.</span>
+      </p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3><span class="lang-en">10x Faster Insights</span><span class="lang-pt">Insights 10x Mais Rápidos</span></h3>
+        <p><span class="lang-en">What takes competitors weeks to analyze, our engine surfaces in minutes. Speed is the ultimate competitive advantage.</span><span class="lang-pt">O que leva semanas para concorrentes analisarem, nosso motor apresenta em minutos. Velocidade é a vantagem competitiva definitiva.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3><span class="lang-en">Proprietary Data Access</span><span class="lang-pt">Acesso a Dados Proprietários</span></h3>
+        <p><span class="lang-en">Exclusive datasets and intelligence sources unavailable to the general market. The black box contains what others can't see.</span><span class="lang-pt">Conjuntos de dados exclusivos e fontes de inteligência indisponíveis para o mercado geral. A caixa preta contém o que outros não podem ver.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3><span class="lang-en">Measurable ROI</span><span class="lang-pt">ROI Mensurável</span></h3>
+        <p><span class="lang-en">Every tool, every insight, every automation is engineered for one outcome: measurable, attributable return on investment.</span><span class="lang-pt">Cada ferramenta, cada insight, cada automação é projetada para um resultado: retorno sobre investimento mensurável e atribuível.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3><span class="lang-en">Elite Community Network</span><span class="lang-pt">Rede da Comunidade Elite</span></h3>
+        <p><span class="lang-en">Access to a curated network of high-performance marketers, exclusive masterminds, and tactical knowledge exchanges.</span><span class="lang-pt">Acesso a uma rede curada de marketers de alta performance, masterminds exclusivos e trocas de conhecimento tático.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-card">
+      <div class="hero-badge" style="margin-bottom:24px">
+        <div class="led"></div>
+        <span class="lang-en">READY TO UNLOCK</span>
+        <span class="lang-pt">PRONTO PARA DESBLOQUEAR</span>
+      </div>
+      <h2>
+        <span class="lang-en">Access the Black Box</span>
+        <span class="lang-pt">Acesse a Caixa Preta</span>
+      </h2>
+      <p>
+        <span class="lang-en">Join the elite community of marketing professionals who have discovered the algorithmic advantage hidden within the black box.</span>
+        <span class="lang-pt">Junte-se à comunidade elite de profissionais de marketing que descobriram a vantagem algorítmica escondida dentro da caixa preta.</span>
+      </p>
+      <div class="cta-btns">
+        <a href="caixa-preta-login-industrial.html" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span class="lang-en">ACCESS PLATFORM</span>
+          <span class="lang-pt">ACESSAR PLATAFORMA</span>
+        </a>
+        <a href="clean-install.html" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="lang-en">INSTALL GUIDE</span>
+          <span class="lang-pt">GUIA DE INSTALAÇÃO</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-logo"><div class="led" style="width:8px;height:8px"></div>CAIXA PRETA</div>
+    <div class="footer-text">
+      <span class="lang-en">&copy; 2026 Caixa Preta Marketing Intelligence. All rights reserved.</span>
+      <span class="lang-pt">&copy; 2026 Caixa Preta Marketing Intelligence. Todos os direitos reservados.</span>
+    </div>
+    <div class="footer-credits">
+      <span class="lang-en">Created by Hudson Argollo (@getrules)</span>
+      <span class="lang-pt">Criado por Hudson Argollo (@getrules)</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn" id="langBtn">
+    <span class="flag flag-en" id="langFlag"></span>
+    <span id="langText">EN</span>
+  </button>
+</div>
+
+<script>
+  // Language detection
+  const html = document.documentElement;
+  const langBtn = document.getElementById('langBtn');
+  const langFlag = document.getElementById('langFlag');
+  const langText = document.getElementById('langText');
+  const isBrowserPT = (navigator.language || '').startsWith('pt');
+
+  function setLang(pt) {
+    if (pt) {
+      html.lang = 'pt-BR';
+      langFlag.className = 'flag flag-pt';
+      langText.textContent = 'PT';
+    } else {
+      html.lang = 'en';
+      langFlag.className = 'flag flag-en';
+      langText.textContent = 'EN';
+    }
+  }
+
+  setLang(isBrowserPT);
+
+  langBtn.addEventListener('click', () => setLang(html.lang !== 'pt-BR'));
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      }
+    });
+  });
+
+  // Device 3D tilt
+  const device = document.querySelector('.device');
+  if (device) {
+    device.addEventListener('mousemove', e => {
+      const r = device.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      device.style.transform = `rotateX(${y * -12}deg) rotateY(${x * 12}deg) scale(1.02)`;
+    });
+    device.addEventListener('mouseleave', () => {
+      device.style.transform = 'rotateX(4deg) rotateY(-4deg)';
+    });
+  }
+
+  // Build graph bars
+  const graph = document.getElementById('graph');
+  if (graph) {
+    const heights = [40, 55, 35, 70, 50, 85, 60, 90, 65, 100, 75, 88];
+    heights.forEach((h, i) => {
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.cssText = `height:${h}%;flex:1;animation-delay:${i * 0.08}s`;
+      graph.appendChild(bar);
+    });
+  }
+
+  // Button press physics
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousedown', () => { btn.style.transform = 'translateY(2px)'; });
+    btn.addEventListener('mouseup', () => { btn.style.transform = ''; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+
+  // Scroll-based entrance animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'slideUp .5s cubic-bezier(.175,.885,.32,1.275) forwards';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .step, .benefit-card, .stat-item').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
 </body>
 </html>
