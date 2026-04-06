@@ -449,43 +449,13 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
   setLang(isBrowserPT);
   langBtn.addEventListener('click', () => setLang(html.lang !== 'pt-BR'));
 
-  // Password gate
+  // Password gate - always show content (no password required)
   const gate = document.getElementById('gate');
   const mainContent = document.getElementById('mainContent');
-  const pwInput = document.getElementById('pwInput');
-  const unlockBtn = document.getElementById('unlockBtn');
-  const errorMsg = document.getElementById('errorMsg');
-
-  // Check if already authorized in this session
-  function checkAuthorization() {
-    if (sessionStorage.getItem('caixapreta_authorized') === 'true') {
-      gate.style.display = 'none';
-      mainContent.classList.add('show');
-    }
-  }
-
-  function unlock() {
-    if (pwInput.value === 'caixapretastack2626') {
-      sessionStorage.setItem('caixapreta_authorized', 'true');
-      gate.style.display = 'none';
-      mainContent.classList.add('show');
-      errorMsg.classList.remove('show');
-    } else {
-      errorMsg.classList.add('show');
-      pwInput.value = '';
-      pwInput.focus();
-      // Shake animation
-      const card = gate.querySelector('.gate-card');
-      card.style.animation = 'none';
-      setTimeout(() => { card.style.animation = 'shake .4s ease'; }, 10);
-    }
-  }
-
-  // Check authorization on page load
-  checkAuthorization();
-
-  unlockBtn.addEventListener('click', unlock);
-  pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+  
+  // Always show main content
+  gate.style.display = 'none';
+  mainContent.classList.add('show');
 
   // Copy code
   function copyCode(btn, text) {
