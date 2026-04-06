@@ -923,6 +923,7 @@ create_networks() {
 # Enhanced data directory setup with proper permissions
 setup_data_directories() {
     local evolution_instances="${1:-1}"
+    local install_moltbot="${2:-n}"
     
     log_step "Setting up data directories with proper permissions"
     
@@ -942,6 +943,11 @@ setup_data_directories() {
         "/data/painel"
         "/data/grafana"
     )
+    
+    # Add Moltbot directory if requested
+    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
+        directories+=("/data/moltbot")
+    fi
     
     # Add directories for additional Evolution instances
     for i in $(seq 2 $evolution_instances); do
@@ -971,6 +977,12 @@ setup_data_directories() {
     # n8n, Evolution, Gowa (UID 1000)
     chown -R 1000:1000 /data/{n8n,evolution,gowa}
     chmod -R 755 /data/{n8n,evolution,gowa}
+    
+    # Moltbot (UID 1000)
+    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
+        chown -R 1000:1000 /data/moltbot
+        chmod -R 755 /data/moltbot
+    fi
     
     # Additional Evolution instances
     for i in $(seq 2 $evolution_instances); do
@@ -1348,6 +1360,38 @@ initialize_databases() {
         fi
     done
     
+    # Create Moltbot database if requested
+    if [[ "$INSTALL_MOLTBOT" =~ ^[Yy]$ ]]; then
+        log_info "Creating Moltbot database..."
+        attempt=1
+        
+        while [ $attempt -le $max_attempts ]; do
+            if docker run --rm --network internal-net \
+                -e PGPASSWORD=caixapretastack2626 \
+                postgres:14-alpine \
+                psql -h db_postgres -U postgres -c "CREATE DATABASE moltbot_db;" >/dev/null 2>&1; then
+                log_success "Moltbot database created successfully"
+                break
+            elif [ $attempt -eq $max_attempts ]; then
+                # Check if database already exists
+                if docker run --rm --network internal-net \
+                    -e PGPASSWORD=caixapretastack2626 \
+                    postgres:14-alpine \
+                    psql -h db_postgres -U postgres -l | grep -q "moltbot_db"; then
+                    log_info "Moltbot database already exists"
+                    break
+                else
+                    log_error "Failed to create Moltbot database after $max_attempts attempts"
+                    FAILED_SERVICES+=("moltbot_db")
+                    return 1
+                fi
+            else
+                log_info "Attempt $attempt/$max_attempts: Retrying Moltbot database creation..."
+                sleep 5
+                ((attempt++))
+            fi
+        done
+    fi
     # Initialize Chatwoot database with retry logic
     log_info "Initializing Chatwoot database schema..."
     attempt=1
@@ -1378,6 +1422,7 @@ initialize_databases() {
 deploy_applications() {
     local domain="$1"
     local evolution_instances="${2:-1}"
+    local install_moltbot="${3:-n}"
     
     log_step "Deploying automation applications with enhanced configuration"
     
@@ -1637,12 +1682,63 @@ EOFEVO
         - "traefik.http.routers.gowa.tls.certresolver=letsencrypt"
         - "traefik.http.services.gowa.loadbalancer.server.port=8080"
 
+EOFGOWA
+
+    # Add Moltbot service if requested
+    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
+        cat >> /tmp/apps-stack.yml << 'EOFMOLTBOT'
+  moltbot:
+    image: moltbot/moltbot:latest
+    environment:
+      - MOLTBOT_HOST=moltbot.$domain
+      - MOLTBOT_PORT=3000
+      - MOLTBOT_PROTOCOL=https
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/moltbot_db
+      - REDIS_URL=redis://db_redis-n8n:6379/2
+      - API_KEY=caixapretastack2626
+      - WEBHOOK_URL=https://moltbot.$domain
+      - LOG_LEVEL=info
+    volumes:
+      - /data/moltbot:/app/data
+    networks:
+      - traefik-public
+      - internal-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 20s
+        max_attempts: 5
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.moltbot.rule=Host(\`moltbot.$domain\`)"
+        - "traefik.http.routers.moltbot.entrypoints=websecure"
+        - "traefik.http.routers.moltbot.tls.certresolver=letsencrypt"
+        - "traefik.http.services.moltbot.loadbalancer.server.port=3000"
+
+EOFMOLTBOT
+    fi
+
+    cat >> /tmp/apps-stack.yml << 'EOFNETWORKS'
 networks:
   traefik-public:
     external: true
   internal-net:
     external: true
-EOFGOWA
+EOFNETWORKS
 
     # Deploy automation stack
     log_info "Deploying automation stack..."
@@ -1660,6 +1756,11 @@ EOFGOWA
     
     verify_service "automation_gowa" "1/1" 90
     verify_service "automation_n8n-worker" "2/2" 90
+    
+    # Verify Moltbot if deployed
+    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
+        verify_service "automation_moltbot" "1/1" 90
+    fi
     
     # Cleanup
     rm -f /tmp/apps-stack.yml
@@ -2121,6 +2222,10 @@ EOF
         EVOLUTION_INSTANCES=1
     fi
     
+    echo -ne "${GREEN}${BOLD}Do you want to deploy Moltbot? (y/n, default: n): ${NC}"
+    read INSTALL_MOLTBOT
+    INSTALL_MOLTBOT=${INSTALL_MOLTBOT:-n}
+    
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
         log_error "$(msg "domain_email_required")"
         exit 1
@@ -2158,7 +2263,7 @@ EOF
     create_networks
     
     # Data directory setup
-    setup_data_directories "$EVOLUTION_INSTANCES"
+    setup_data_directories "$EVOLUTION_INSTANCES" "$INSTALL_MOLTBOT"
     
     # Deploy core services (Traefik + Portainer)
     echo
@@ -2194,7 +2299,7 @@ EOF
         echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
     fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
-    deploy_applications "$DOMAIN" "$EVOLUTION_INSTANCES"
+    deploy_applications "$DOMAIN" "$EVOLUTION_INSTANCES" "$INSTALL_MOLTBOT"
     
     # Deploy MEGA and additional services
     echo
@@ -2250,6 +2355,12 @@ EOF
         fi
         
         echo -e "${GREEN}• Gowa WhatsApp API:  ${WHITE}https://gowa.$DOMAIN${NC}"
+        
+        # Show Moltbot if deployed
+        if [[ "$INSTALL_MOLTBOT" =~ ^[Yy]$ ]]; then
+            echo -e "${GREEN}• Moltbot:            ${WHITE}https://moltbot.$DOMAIN${NC}"
+        fi
+        
         echo -e "${GREEN}• Portainer:          ${WHITE}https://portainer.$DOMAIN${NC}"
         echo -e "${GREEN}• Traefik Dashboard:  ${WHITE}https://traefik.$DOMAIN${NC}"
         echo -e "${GREEN}• MinIO Console:      ${WHITE}https://minio.$DOMAIN${NC}"
