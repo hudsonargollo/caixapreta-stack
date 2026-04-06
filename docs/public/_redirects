@@ -1,4 +1,14 @@
-# Cloudflare Pages redirects
-/matrix /matrix.html 200
-/simple /simple.html 200
-/ /matrix.html 200
+# Cloudflare Pages Redirects
+
+# Main routes
+/                    /index.html                200
+/installer           /clean-install.html        200
+/painel              /painel-admin.html         200
+/login               /caixa-preta-login.html    200
+
+# Legacy redirects
+/instalar.html       /clean-install.html        301
+/index-main.html     /index.html                301
+
+# 404 fallback
+/*                   /index.html                404

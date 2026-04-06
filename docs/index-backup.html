@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caixa Preta - Industrial Marketing Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design-tokens.css">
+<style>
+/* Landing Page Specific Styles */
+:root {
+  --bg:#e0e5ec;--panel:#f0f2f5;--muted:#d1d9e6;
+  --text:#2d3436;--text-muted:#4a5568;
+  --accent:#ff4757;--accent-fg:#ffffff;
+  --shadow-dark:#babecc;--shadow-light:#ffffff;--border-dark:#a3b1c6;
+  --dark-bg:#2d3436;--dark-text:#ffffff;--dark-muted:#a8b2d1;
+  --s-card:8px 8px 16px #babecc,-8px -8px 16px #ffffff;
+  --s-float:12px 12px 24px #babecc,-12px -12px 24px #ffffff,inset 1px 1px 0 rgba(255,255,255,0.5);
+  --s-press:inset 6px 6px 12px #babecc,inset -6px -6px 12px #ffffff;
+  --s-recess:inset 4px 4px 8px #babecc,inset -4px -4px 8px #ffffff;
+  --s-sharp:4px 4px 8px rgba(0,0,0,0.15),-1px -1px 1px rgba(255,255,255,0.8);
+  --s-glow:0 0 10px 2px rgba(255,71,87,0.6);
+  --s-glow-green:0 0 10px 2px rgba(34,197,94,0.6);
+  --font:Inter,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --r-sm:4px;--r-md:8px;--r-lg:16px;--r-xl:24px;--r-2xl:30px;--r-full:9999px;
+  --lang-en:block;--lang-pt:none;
+}
+html[lang="pt-BR"]{--lang-en:none;--lang-pt:block;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+.container{max-width:72rem;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.container{padding:0 48px}}
+.lang-en{display:var(--lang-en)}.lang-pt{display:var(--lang-pt)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;background:var(--bg);box-shadow:var(--s-sharp);z-index:1000;padding:14px 0;border-bottom:1px solid var(--shadow-dark)}
+.nav-inner{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:2px;color:var(--text);text-shadow:0 1px 0 var(--shadow-light);text-decoration:none}
+.led{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:var(--s-glow-green);animation:pulse 2s infinite;flex-shrink:0}
+.led-red{background:var(--accent);box-shadow:var(--s-glow)}
+.nav-links{display:flex;gap:4px;list-style:none}
+.nav-link{font-family:var(--mono);font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);text-decoration:none;padding:8px 14px;border-radius:var(--r-md);transition:all .3s cubic-bezier(.175,.885,.32,1.275)}
+.nav-link:hover{color:var(--accent);background:var(--panel);box-shadow:var(--s-card)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:10px;background:var(--bg);border-radius:var(--r-md);box-shadow:var(--s-card);border:none;transition:all .3s ease}
+.hamburger span{width:22px;height:2px;background:var(--text);transition:all .3s ease;display:block}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mobile-menu{position:absolute;top:100%;left:0;right:0;background:var(--bg);box-shadow:var(--s-float);padding:16px 24px;transform:translateY(-8px);opacity:0;visibility:hidden;transition:all .25s ease}
+.mobile-menu.open{transform:translateY(0);opacity:1;visibility:visible}
+.mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.mobile-menu .nav-link{display:block;background:var(--panel);box-shadow:var(--s-card)}
+@media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}}
+
+/* HERO */
+.hero{padding:120px 0 96px;min-height:100vh;display:flex;align-items:center}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center}
+@media(min-width:1024px){.hero-grid{grid-template-columns:1fr 1fr}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);margin-bottom:20px;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted)}
+.hero-title{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:20px;letter-spacing:-.03em;text-shadow:0 1px 0 var(--shadow-light)}
+.hero-title .accent{background:linear-gradient(90deg,var(--text) 0%,var(--accent) 50%,var(--text) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 100%;animation:shimmer 3s ease-in-out infinite}
+.hero-desc{font-size:1.1rem;color:var(--text-muted);margin-bottom:32px;line-height:1.75;max-width:520px}
+.btn-group{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:none;border-radius:var(--r-lg);font-family:var(--mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-decoration:none;cursor:pointer;transition:all .3s cubic-bezier(.175,.885,.32,1.275);min-height:48px;position:relative}
+.btn-primary{background:var(--accent);color:var(--accent-fg);box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:6px 6px 14px rgba(166,50,60,.4),-6px -6px 14px rgba(255,100,110,.4)}
+.btn-primary:active{transform:translateY(2px);box-shadow:var(--s-press)}
+.btn-secondary{background:var(--bg);color:var(--text);box-shadow:var(--s-card)}
+.btn-secondary:hover{color:var(--accent);box-shadow:var(--s-float);transform:translateY(-2px)}
+.btn-secondary:active{transform:translateY(2px);box-shadow:var(--s-press)}
+@media(max-width:768px){.btn-group{flex-direction:column}.btn{width:100%;justify-content:center}.hero-desc{max-width:100%}}
+
+/* DEVICE */
+.device-wrap{perspective:1000px}
+.device{background:var(--dark-bg);border-radius:var(--r-xl);padding:20px;box-shadow:var(--s-float);position:relative;overflow:hidden;transform:rotateX(4deg) rotateY(-4deg);transition:transform .5s cubic-bezier(.175,.885,.32,1.275)}
+.device:hover{transform:rotateX(0) rotateY(0) scale(1.02)}
+.device::after{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.15;pointer-events:none}
+.device-bezel{position:absolute;inset:4px;border:1px solid rgba(255,255,255,.08);border-radius:calc(var(--r-xl) - 4px);pointer-events:none;z-index:1}
+.device-screen{background:#000;border-radius:var(--r-lg);padding:16px;box-shadow:var(--s-recess);position:relative;overflow:hidden;min-height:280px}
+.device-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.2) 50%);background-size:100% 4px;pointer-events:none;z-index:2}
+.screen-inner{position:relative;z-index:3;color:var(--dark-text);font-family:var(--mono)}
+.screen-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.screen-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-live{display:flex;align-items:center;gap:6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.metric-box{background:rgba(255,255,255,.05);border-radius:var(--r-md);padding:12px;text-align:center}
+.metric-val{font-size:22px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.metric-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+.screen-graph{height:70px;background:rgba(255,255,255,.04);border-radius:var(--r-md);display:flex;align-items:flex-end;gap:4px;padding:8px;overflow:hidden}
+.bar{border-radius:2px 2px 0 0;background:var(--accent);opacity:.8;transition:height .3s ease;animation:growBar .8s ease forwards}
+@keyframes growBar{from{height:0}}
+.device-btns{position:absolute;top:50%;right:-14px;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
+.hw-btn{width:10px;height:36px;background:var(--border-dark);border-radius:3px;box-shadow:var(--s-recess)}
+.pwr-led{position:absolute;top:16px;right:16px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:var(--s-glow);animation:pulse 2s infinite;z-index:4}
+
+/* STATS STRIP */
+.stats-strip{background:var(--dark-bg);padding:48px 0;position:relative;overflow:hidden}
+.stats-strip::before{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.1}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;position:relative;z-index:1}
+@media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-item{text-align:center;padding:24px 16px;background:rgba(255,255,255,.04);border-radius:var(--r-lg);border:1px solid rgba(255,255,255,.06)}
+.stat-num{font-family:var(--mono);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:600;color:var(--accent);display:block;margin-bottom:6px;text-shadow:0 0 20px rgba(255,71,87,.3)}
+.stat-lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dark-muted)}
+
+/* FEATURES */
+.features{padding:96px 0}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:16px}
+.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.02em;margin-bottom:12px;text-shadow:0 1px 0 var(--shadow-light)}
+.section-desc{font-size:1.05rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.7}
+.features-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.features-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* CARD - Bolted Module */
+.card{background:var(--bg);border-radius:var(--r-lg);padding:28px;box-shadow:var(--s-card);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.175,.885,.32,1.275);cursor:default}
+.card:hover{transform:translateY(-4px);box-shadow:var(--s-float)}
+/* Corner screws */
+.card::before{content:'';position:absolute;top:10px;left:10px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
+.card::after{content:'';position:absolute;top:10px;right:10px;width:6px;height:6px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 2px,transparent 2.5px);border-radius:50%}
+.card-vents{position:absolute;bottom:14px;right:14px;display:flex;gap:3px}
+.vent{width:2px;height:18px;background:var(--muted);border-radius:1px;box-shadow:inset 1px 1px 2px rgba(0,0,0,.1)}
+.card-icon{width:52px;height:52px;border-radius:var(--r-full);background:var(--bg);box-shadow:var(--s-float);display:flex;align-items:center;justify-content:center;margin-bottom:18px;transition:transform .3s ease}
+.card:hover .card-icon{transform:scale(1.1) rotate(6deg)}
+.card-icon svg{width:24px;height:24px;stroke:var(--accent);stroke-width:1.5;fill:none}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+.card p{font-size:.95rem;color:var(--text-muted);line-height:1.65}
+
+/* HOW IT WORKS */
+.how{padding:96px 0;background:var(--panel)}
+.steps{display:grid;grid-template-columns:1fr;gap:32px;position:relative}
+@media(min-width:768px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{text-align:center;padding:32px 24px;background:var(--bg);border-radius:var(--r-xl);box-shadow:var(--s-card);position:relative}
+.step-num{width:52px;height:52px;border-radius:var(--r-full);background:var(--accent);color:var(--accent-fg);font-family:var(--mono);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:4px 4px 8px rgba(166,50,60,.4),-4px -4px 8px rgba(255,100,110,.4)}
+.step h3{font-size:1.05rem;font-weight:700;margin-bottom:10px}
+.step p{font-size:.9rem;color:var(--text-muted);line-height:1.65}
+.pipe{display:none;height:3px;background:var(--muted);border-radius:var(--r-full);box-shadow:inset 0 1px 3px rgba(0,0,0,.2);flex:1;margin-top:26px}
+@media(min-width:768px){.pipe{display:block}}
+
+/* DARK BENEFITS */
+.benefits{padding:96px 0;background:var(--dark-bg);position:relative;overflow:hidden}
+.benefits::before{content:'';position:absolute;inset:0;background-image:url('https://www.transparenttextures.com/patterns/carbon-fibre.png');background-size:200px;mix-blend-mode:multiply;opacity:.08}
+.benefits-grid{display:grid;grid-template-columns:1fr;gap:24px;position:relative;z-index:1}
+@media(min-width:768px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
+.benefit-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:32px;transition:all .3s ease}
+.benefit-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,71,87,.3);transform:translateY(-2px)}
+.benefit-card h3{font-size:1.1rem;font-weight:700;color:var(--dark-text);margin-bottom:10px}
+.benefit-card p{font-size:.95rem;color:var(--dark-muted);line-height:1.65}
+.benefit-icon{width:44px;height:44px;border-radius:var(--r-md);background:rgba(255,71,87,.15);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.benefit-icon svg{width:22px;height:22px;stroke:var(--accent);stroke-width:1.5;fill:none}
+
+/* CTA */
+.cta{padding:96px 0;text-align:center}
+.cta-card{background:var(--bg);border-radius:var(--r-2xl);padding:64px 48px;box-shadow:var(--s-float);max-width:700px;margin:0 auto;position:relative;overflow:hidden}
+.cta-card::before{content:'';position:absolute;top:12px;left:12px;width:8px;height:8px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 3px,transparent 3.5px);border-radius:50%}
+.cta-card::after{content:'';position:absolute;top:12px;right:12px;width:8px;height:8px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,.2) 3px,transparent 3.5px);border-radius:50%}
+.cta-card h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.03em;margin-bottom:16px;text-shadow:0 1px 0 var(--shadow-light)}
+.cta-card p{font-size:1.05rem;color:var(--text-muted);margin-bottom:32px;line-height:1.7}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media(max-width:480px){.cta-btns{flex-direction:column}.cta-btns .btn{width:100%;justify-content:center}}
+
+/* FOOTER */
+.footer{background:var(--dark-bg);padding:40px 0;border-top:1px solid rgba(255,255,255,.06)}
+.footer-inner{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+@media(min-width:768px){.footer-inner{flex-direction:row;justify-content:space-between;text-align:left}}
+.footer-logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--dark-text)}
+.footer-text{font-family:var(--mono);font-size:11px;color:var(--dark-muted);text-transform:uppercase;letter-spacing:1px}
+.footer-credits{font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+
+/* LANG TOGGLE */
+.lang-toggle{position:fixed;bottom:24px;right:24px;z-index:999}
+.lang-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--panel);border-radius:var(--r-full);box-shadow:var(--s-card);font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);cursor:pointer;border:none;transition:all .3s ease}
+.lang-btn:hover{color:var(--accent);box-shadow:var(--s-float)}
+.flag{width:16px;height:11px;border-radius:2px;display:inline-block}
+.flag-en{background:linear-gradient(to bottom,#00247d 33%,#fff 33%,#fff 66%,#cf142b 66%)}
+.flag-pt{background:linear-gradient(to bottom,#009c3b 33%,#ffdf00 33%,#ffdf00 66%,#009c3b 66%)}
+
+/* ACCESSIBILITY */
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.btn:focus,.nav-link:focus,.lang-btn:focus{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo"><div class="led"></div>CAIXA PRETA</a>
+    <ul class="nav-links">
+      <li><a href="#features" class="nav-link"><span class="lang-en">Features</span><span class="lang-pt">Recursos</span></a></li>
+      <li><a href="#how" class="nav-link"><span class="lang-en">How It Works</span><span class="lang-pt">Como Funciona</span></a></li>
+      <li><a href="#benefits" class="nav-link"><span class="lang-en">Benefits</span><span class="lang-pt">Benefícios</span></a></li>
+      <li><a href="caixa-preta-login-industrial.html" class="btn btn-primary" style="padding:8px 18px;font-size:12px"><span class="lang-en">Login</span><span class="lang-pt">Entrar</span></a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#features" class="nav-link"><span class="lang-en">Features</span><span class="lang-pt">Recursos</span></a></li>
+      <li><a href="#how" class="nav-link"><span class="lang-en">How It Works</span><span class="lang-pt">Como Funciona</span></a></li>
+      <li><a href="#benefits" class="nav-link"><span class="lang-en">Benefits</span><span class="lang-pt">Benefícios</span></a></li>
+      <li><a href="caixa-preta-login-industrial.html" class="nav-link" style="color:var(--accent)"><span class="lang-en">Login</span><span class="lang-pt">Entrar</span></a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge">
+          <div class="led"></div>
+          <span class="lang-en">SYSTEM OPERATIONAL</span>
+          <span class="lang-pt">SISTEMA OPERACIONAL</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="lang-en">INDUSTRIAL<br><span class="accent">INTELLIGENCE</span><br>PLATFORM</span>
+          <span class="lang-pt">PLATAFORMA DE<br><span class="accent">INTELIGÊNCIA</span><br>INDUSTRIAL</span>
+        </h1>
+        <p class="hero-desc">
+          <span class="lang-en">Transform raw data into algorithmic advantage. Precision-engineered marketing tools built for measurable, outsized returns.</span>
+          <span class="lang-pt">Transforme dados brutos em vantagem algorítmica. Ferramentas de marketing de precisão construídas para resultados mensuráveis e extraordinários.</span>
+        </p>
+        <div class="btn-group">
+          <a href="caixa-preta-login-industrial.html" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span class="lang-en">ACCESS PLATFORM</span>
+            <span class="lang-pt">ACESSAR PLATAFORMA</span>
+          </a>
+          <a href="#features" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="lang-en">EXPLORE FEATURES</span>
+            <span class="lang-pt">VER RECURSOS</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- DEVICE MOCKUP -->
+      <div class="device-wrap">
+        <div class="device">
+          <div class="device-bezel"></div>
+          <div class="pwr-led"></div>
+          <div class="device-screen">
+            <div class="screen-inner">
+              <div class="screen-bar">
+                <span class="screen-label lang-en">INTELLIGENCE DASHBOARD</span>
+                <span class="screen-label lang-pt">PAINEL DE INTELIGÊNCIA</span>
+                <div class="screen-live">
+                  <div class="led" style="width:7px;height:7px"></div>
+                  <span class="lang-en">LIVE</span><span class="lang-pt">AO VIVO</span>
+                </div>
+              </div>
+              <div class="screen-metrics">
+                <div class="metric-box">
+                  <div class="metric-val">847%</div>
+                  <div class="metric-lbl lang-en">ROI INCREASE</div>
+                  <div class="metric-lbl lang-pt">AUMENTO ROI</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-val">12.3M</div>
+                  <div class="metric-lbl lang-en">KEYWORDS</div>
+                  <div class="metric-lbl lang-pt">PALAVRAS-CHAVE</div>
+                </div>
+              </div>
+              <div class="screen-graph" id="graph"></div>
+            </div>
+          </div>
+          <div class="device-btns">
+            <div class="hw-btn"></div>
+            <div class="hw-btn"></div>
+            <div class="hw-btn"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num">847%</span>
+        <span class="stat-lbl lang-en">Avg ROI Increase</span>
+        <span class="stat-lbl lang-pt">Aumento Médio ROI</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">12.3M</span>
+        <span class="stat-lbl lang-en">Keywords Analyzed</span>
+        <span class="stat-lbl lang-pt">Palavras Analisadas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2,847</span>
+        <span class="stat-lbl lang-en">Elite Members</span>
+        <span class="stat-lbl lang-pt">Membros Elite</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">99.7%</span>
+        <span class="stat-lbl lang-en">Uptime Guarantee</span>
+        <span class="stat-lbl lang-pt">Garantia de Uptime</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">
+        <div class="led led-red" style="width:7px;height:7px"></div>
+        <span class="lang-en">CAPABILITIES</span><span class="lang-pt">CAPACIDADES</span>
+      </div>
+      <h2 class="section-title">
+        <span class="lang-en">Intelligence Arsenal</span>
+        <span class="lang-pt">Arsenal de Inteligência</span>
+      </h2>
+      <p class="section-desc">
+        <span class="lang-en">Precision-engineered tools that transform standard marketing inputs into disproportionate commercial outputs.</span>
+        <span class="lang-pt">Ferramentas de precisão que transformam entradas de marketing padrão em resultados comerciais desproporcionais.</span>
+      </p>
+    </div>
+    <div class="features-grid">
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <h3><span class="lang-en">Algorithmic SEO Intelligence</span><span class="lang-pt">Inteligência SEO Algorítmica</span></h3>
+        <p><span class="lang-en">Advanced keyword research, competitor analysis, and programmatic SEO pipelines that uncover hidden ranking opportunities.</span><span class="lang-pt">Pesquisa avançada de palavras-chave, análise de concorrentes e pipelines de SEO programático que descobrem oportunidades ocultas.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3><span class="lang-en">AI Copywriting Arsenal</span><span class="lang-pt">Arsenal de Copywriting IA</span></h3>
+        <p><span class="lang-en">Sophisticated copywriting frameworks, conversion-optimized templates, and AI-assisted content generation for high-converting campaigns.</span><span class="lang-pt">Frameworks sofisticados de copywriting, templates otimizados para conversão e geração de conteúdo assistida por IA.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3><span class="lang-en">Proprietary Analytics Engine</span><span class="lang-pt">Motor de Analytics Proprietário</span></h3>
+        <p><span class="lang-en">Deep data synthesis, predictive modeling, and performance metrics that reveal the invisible forces driving your marketing success.</span><span class="lang-pt">Síntese profunda de dados, modelagem preditiva e métricas de desempenho que revelam as forças invisíveis do seu sucesso.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h3><span class="lang-en">Precision Targeting Matrix</span><span class="lang-pt">Matriz de Segmentação de Precisão</span></h3>
+        <p><span class="lang-en">Advanced audience segmentation, behavioral analysis, and targeting algorithms that maximize campaign ROI and customer lifetime value.</span><span class="lang-pt">Segmentação avançada de audiência, análise comportamental e algoritmos de targeting que maximizam o ROI.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3><span class="lang-en">Automation Workflows</span><span class="lang-pt">Workflows de Automação</span></h3>
+        <p><span class="lang-en">Sophisticated marketing automation, lead nurturing sequences, and programmatic campaign optimization that scales your operations.</span><span class="lang-pt">Automação de marketing sofisticada, sequências de nutrição de leads e otimização programática de campanhas.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-vents"><div class="vent"></div><div class="vent"></div><div class="vent"></div></div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3><span class="lang-en">Exclusive Community Access</span><span class="lang-pt">Acesso à Comunidade Exclusiva</span></h3>
+        <p><span class="lang-en">Premium networking with elite marketers, exclusive tactical knowledge sharing, and insider strategies from the Clube do Marketing Digital.</span><span class="lang-pt">Networking premium com marketers de elite, compartilhamento exclusivo de conhecimento tático e estratégias do Clube do Marketing Digital.</span></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">
+        <div class="led led-red" style="width:7px;height:7px"></div>
+        <span class="lang-en">PROCESS</span><span class="lang-pt">PROCESSO</span>
+      </div>
+      <h2 class="section-title">
+        <span class="lang-en">How It Works</span>
+        <span class="lang-pt">Como Funciona</span>
+      </h2>
+      <p class="section-desc">
+        <span class="lang-en">Three precision-engineered steps from raw data to measurable results.</span>
+        <span class="lang-pt">Três etapas de precisão do dado bruto ao resultado mensurável.</span>
+      </p>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:0">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3><span class="lang-en">Connect Your Data</span><span class="lang-pt">Conecte Seus Dados</span></h3>
+          <p><span class="lang-en">Integrate your existing marketing channels, analytics platforms, and data sources into the unified intelligence hub.</span><span class="lang-pt">Integre seus canais de marketing, plataformas de analytics e fontes de dados no hub de inteligência unificado.</span></p>
+        </div>
+        <div class="pipe"></div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3><span class="lang-en">Activate Intelligence</span><span class="lang-pt">Ative a Inteligência</span></h3>
+          <p><span class="lang-en">Our algorithmic engine processes your data, identifies patterns, and surfaces actionable insights in real-time.</span><span class="lang-pt">Nosso motor algorítmico processa seus dados, identifica padrões e apresenta insights acionáveis em tempo real.</span></p>
+        </div>
+        <div class="pipe"></div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3><span class="lang-en">Scale Results</span><span class="lang-pt">Escale os Resultados</span></h3>
+          <p><span class="lang-en">Deploy automated workflows, optimized campaigns, and precision targeting to multiply your marketing output exponentially.</span><span class="lang-pt">Implante workflows automatizados, campanhas otimizadas e targeting de precisão para multiplicar seu output de marketing.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS (DARK PANEL) -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div class="section-header" style="position:relative;z-index:1">
+      <div class="section-tag" style="background:rgba(255,255,255,.08);color:var(--dark-muted)">
+        <div class="led" style="width:7px;height:7px"></div>
+        <span class="lang-en">WHY CAIXA PRETA</span><span class="lang-pt">POR QUE CAIXA PRETA</span>
+      </div>
+      <h2 class="section-title" style="color:var(--dark-text);text-shadow:0 2px 4px rgba(0,0,0,.3)">
+        <span class="lang-en">The Algorithmic Advantage</span>
+        <span class="lang-pt">A Vantagem Algorítmica</span>
+      </h2>
+      <p class="section-desc" style="color:var(--dark-muted)">
+        <span class="lang-en">What separates elite marketers from the rest isn't effort—it's access to the right intelligence.</span>
+        <span class="lang-pt">O que separa os marketers de elite dos demais não é esforço—é acesso à inteligência certa.</span>
+      </p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3><span class="lang-en">10x Faster Insights</span><span class="lang-pt">Insights 10x Mais Rápidos</span></h3>
+        <p><span class="lang-en">What takes competitors weeks to analyze, our engine surfaces in minutes. Speed is the ultimate competitive advantage.</span><span class="lang-pt">O que leva semanas para concorrentes analisarem, nosso motor apresenta em minutos. Velocidade é a vantagem competitiva definitiva.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3><span class="lang-en">Proprietary Data Access</span><span class="lang-pt">Acesso a Dados Proprietários</span></h3>
+        <p><span class="lang-en">Exclusive datasets and intelligence sources unavailable to the general market. The black box contains what others can't see.</span><span class="lang-pt">Conjuntos de dados exclusivos e fontes de inteligência indisponíveis para o mercado geral. A caixa preta contém o que outros não podem ver.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3><span class="lang-en">Measurable ROI</span><span class="lang-pt">ROI Mensurável</span></h3>
+        <p><span class="lang-en">Every tool, every insight, every automation is engineered for one outcome: measurable, attributable return on investment.</span><span class="lang-pt">Cada ferramenta, cada insight, cada automação é projetada para um resultado: retorno sobre investimento mensurável e atribuível.</span></p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3><span class="lang-en">Elite Community Network</span><span class="lang-pt">Rede da Comunidade Elite</span></h3>
+        <p><span class="lang-en">Access to a curated network of high-performance marketers, exclusive masterminds, and tactical knowledge exchanges.</span><span class="lang-pt">Acesso a uma rede curada de marketers de alta performance, masterminds exclusivos e trocas de conhecimento tático.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-card">
+      <div class="hero-badge" style="margin-bottom:24px">
+        <div class="led"></div>
+        <span class="lang-en">READY TO UNLOCK</span>
+        <span class="lang-pt">PRONTO PARA DESBLOQUEAR</span>
+      </div>
+      <h2>
+        <span class="lang-en">Access the Black Box</span>
+        <span class="lang-pt">Acesse a Caixa Preta</span>
+      </h2>
+      <p>
+        <span class="lang-en">Join the elite community of marketing professionals who have discovered the algorithmic advantage hidden within the black box.</span>
+        <span class="lang-pt">Junte-se à comunidade elite de profissionais de marketing que descobriram a vantagem algorítmica escondida dentro da caixa preta.</span>
+      </p>
+      <div class="cta-btns">
+        <a href="caixa-preta-login-industrial.html" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span class="lang-en">ACCESS PLATFORM</span>
+          <span class="lang-pt">ACESSAR PLATAFORMA</span>
+        </a>
+        <a href="clean-install.html" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="lang-en">INSTALL GUIDE</span>
+          <span class="lang-pt">GUIA DE INSTALAÇÃO</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-logo"><div class="led" style="width:8px;height:8px"></div>CAIXA PRETA</div>
+    <div class="footer-text">
+      <span class="lang-en">&copy; 2026 Caixa Preta Marketing Intelligence. All rights reserved.</span>
+      <span class="lang-pt">&copy; 2026 Caixa Preta Marketing Intelligence. Todos os direitos reservados.</span>
+    </div>
+    <div class="footer-credits">
+      <span class="lang-en">Created by Hudson Argollo (@getrules)</span>
+      <span class="lang-pt">Criado por Hudson Argollo (@getrules)</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn" id="langBtn">
+    <span class="flag flag-en" id="langFlag"></span>
+    <span id="langText">EN</span>
+  </button>
+</div>
+
+<script>
+  // Language detection
+  const html = document.documentElement;
+  const langBtn = document.getElementById('langBtn');
+  const langFlag = document.getElementById('langFlag');
+  const langText = document.getElementById('langText');
+  const isBrowserPT = (navigator.language || '').startsWith('pt');
+
+  function setLang(pt) {
+    if (pt) {
+      html.lang = 'pt-BR';
+      langFlag.className = 'flag flag-pt';
+      langText.textContent = 'PT';
+    } else {
+      html.lang = 'en';
+      langFlag.className = 'flag flag-en';
+      langText.textContent = 'EN';
+    }
+  }
+
+  setLang(isBrowserPT);
+
+  langBtn.addEventListener('click', () => setLang(html.lang !== 'pt-BR'));
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      }
+    });
+  });
+
+  // Device 3D tilt
+  const device = document.querySelector('.device');
+  if (device) {
+    device.addEventListener('mousemove', e => {
+      const r = device.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      device.style.transform = `rotateX(${y * -12}deg) rotateY(${x * 12}deg) scale(1.02)`;
+    });
+    device.addEventListener('mouseleave', () => {
+      device.style.transform = 'rotateX(4deg) rotateY(-4deg)';
+    });
+  }
+
+  // Build graph bars
+  const graph = document.getElementById('graph');
+  if (graph) {
+    const heights = [40, 55, 35, 70, 50, 85, 60, 90, 65, 100, 75, 88];
+    heights.forEach((h, i) => {
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.cssText = `height:${h}%;flex:1;animation-delay:${i * 0.08}s`;
+      graph.appendChild(bar);
+    });
+  }
+
+  // Button press physics
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousedown', () => { btn.style.transform = 'translateY(2px)'; });
+    btn.addEventListener('mouseup', () => { btn.style.transform = ''; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+
+  // Scroll-based entrance animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'slideUp .5s cubic-bezier(.175,.885,.32,1.275) forwards';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .step, .benefit-card, .stat-item').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

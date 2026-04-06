@@ -922,6 +922,8 @@ create_networks() {
 }
 # Enhanced data directory setup with proper permissions
 setup_data_directories() {
+    local evolution_instances="${1:-1}"
+    
     log_step "Setting up data directories with proper permissions"
     
     # Create all required directories
@@ -936,8 +938,15 @@ setup_data_directories() {
         "/data/mega/storage"
         "/data/mega/public"
         "/data/evolution"
+        "/data/gowa"
+        "/data/painel"
         "/data/grafana"
     )
+    
+    # Add directories for additional Evolution instances
+    for i in $(seq 2 $evolution_instances); do
+        directories+=("/data/evolution$i")
+    done
     
     for dir in "${directories[@]}"; do
         if mkdir -p "$dir" 2>/dev/null; then
@@ -959,9 +968,15 @@ setup_data_directories() {
     chown -R 1001:1001 /data/minio
     chmod -R 755 /data/minio
     
-    # n8n and Evolution (UID 1000)
-    chown -R 1000:1000 /data/{n8n,evolution}
-    chmod -R 755 /data/{n8n,evolution}
+    # n8n, Evolution, Gowa (UID 1000)
+    chown -R 1000:1000 /data/{n8n,evolution,gowa}
+    chmod -R 755 /data/{n8n,evolution,gowa}
+    
+    # Additional Evolution instances
+    for i in $(seq 2 $evolution_instances); do
+        chown -R 1000:1000 /data/evolution$i
+        chmod -R 755 /data/evolution$i
+    done
     
     # PostgreSQL (UID 999)
     chown -R 999:999 /data/postgres
@@ -979,6 +994,10 @@ setup_data_directories() {
     touch /data/traefik/acme.json
     chmod 600 /data/traefik/acme.json
     chown root:root /data/traefik/acme.json
+    
+    # Painel (UID 1000)
+    chown -R 1000:1000 /data/painel
+    chmod -R 755 /data/painel
     
     # General permissions
     chmod -R 755 /data
@@ -1262,33 +1281,68 @@ initialize_databases() {
     log_info "Allowing PostgreSQL additional stabilization time..."
     sleep 20
     
-    # Create Evolution API database with retry logic
-    log_info "Creating Evolution API database..."
+    # Create Evolution API databases with retry logic
+    log_info "Creating Evolution API databases (instances: $EVOLUTION_INSTANCES)..."
     local max_attempts=5
+    
+    for i in $(seq 1 $EVOLUTION_INSTANCES); do
+        local db_name="evolution_db_$i"
+        local attempt=1
+        
+        while [ $attempt -le $max_attempts ]; do
+            if docker run --rm --network internal-net \
+                -e PGPASSWORD=caixapretastack2626 \
+                postgres:14-alpine \
+                psql -h db_postgres -U postgres -c "CREATE DATABASE $db_name;" >/dev/null 2>&1; then
+                log_success "Evolution database $db_name created successfully"
+                break
+            elif [ $attempt -eq $max_attempts ]; then
+                # Check if database already exists
+                if docker run --rm --network internal-net \
+                    -e PGPASSWORD=caixapretastack2626 \
+                    postgres:14-alpine \
+                    psql -h db_postgres -U postgres -l | grep -q "$db_name"; then
+                    log_info "Evolution database $db_name already exists"
+                    break
+                else
+                    log_error "Failed to create Evolution database $db_name after $max_attempts attempts"
+                    FAILED_SERVICES+=("$db_name")
+                    return 1
+                fi
+            else
+                log_info "Attempt $attempt/$max_attempts: Retrying Evolution database $db_name creation..."
+                sleep 5
+                ((attempt++))
+            fi
+        done
+    done
+    
+    # Create Gowa WhatsApp API database with retry logic
+    log_info "Creating Gowa WhatsApp API database..."
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
         if docker run --rm --network internal-net \
             -e PGPASSWORD=caixapretastack2626 \
             postgres:14-alpine \
-            psql -h db_postgres -U postgres -c "CREATE DATABASE evolution_db;" >/dev/null 2>&1; then
-            log_success "Evolution database created successfully"
+            psql -h db_postgres -U postgres -c "CREATE DATABASE gowa_db;" >/dev/null 2>&1; then
+            log_success "Gowa database created successfully"
             break
         elif [ $attempt -eq $max_attempts ]; then
             # Check if database already exists
             if docker run --rm --network internal-net \
                 -e PGPASSWORD=caixapretastack2626 \
                 postgres:14-alpine \
-                psql -h db_postgres -U postgres -l | grep -q "evolution_db"; then
-                log_info "Evolution database already exists"
+                psql -h db_postgres -U postgres -l | grep -q "gowa_db"; then
+                log_info "Gowa database already exists"
                 break
             else
-                log_error "Failed to create Evolution database after $max_attempts attempts"
-                FAILED_SERVICES+=("evolution_db")
+                log_error "Failed to create Gowa database after $max_attempts attempts"
+                FAILED_SERVICES+=("gowa_db")
                 return 1
             fi
         else
-            log_info "Attempt $attempt/$max_attempts: Retrying Evolution database creation..."
+            log_info "Attempt $attempt/$max_attempts: Retrying Gowa database creation..."
             sleep 5
             ((attempt++))
         fi
@@ -1323,11 +1377,12 @@ initialize_databases() {
 # Enhanced application deployment with comprehensive configuration
 deploy_applications() {
     local domain="$1"
+    local evolution_instances="${2:-1}"
     
     log_step "Deploying automation applications with enhanced configuration"
     
     # Create comprehensive application stack
-    cat > /tmp/apps-stack.yml << EOF
+    cat > /tmp/apps-stack.yml << 'EOFBASE'
 version: '3.8'
 services:
   n8n:
@@ -1375,7 +1430,7 @@ services:
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.n8n.rule=Host(\\`n8n.$domain\\`)"
+        - "traefik.http.routers.n8n.rule=Host(\`n8n.$domain\`)"
         - "traefik.http.routers.n8n.entrypoints=websecure"
         - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
         - "traefik.http.services.n8n.loadbalancer.server.port=5678"
@@ -1412,14 +1467,25 @@ services:
           memory: 256M
         reservations:
           memory: 128M
-EOF
+
+EOFBASE
+
+    # Generate Evolution API services dynamically
+    for i in $(seq 1 $evolution_instances); do
+        local db_name="evolution_db_$i"
+        local service_name="evolution$i"
+        local subdomain="evolution$i"
+        
+        if [ $i -eq 1 ]; then
+            # First instance also gets the base subdomain for backward compatibility
+            cat >> /tmp/apps-stack.yml << EOFEVO
   evolution:
     image: atendai/evolution-api:latest
     environment:
       - SERVER_URL=https://evolution.$domain
       - DATABASE_PROVIDER=postgresql
       - DATABASE_ENABLED=true
-      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/evolution_db
+      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/$db_name
       - REDIS_ENABLED=true
       - REDIS_URI=redis://db_redis-n8n:6379
       - AUTHENTICATION_TYPE=apikey
@@ -1458,17 +1524,125 @@ EOF
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.evolution.rule=Host(\\`evolution.$domain\\`)"
+        - "traefik.http.routers.evolution.rule=Host(\`evolution.$domain\`)"
         - "traefik.http.routers.evolution.entrypoints=websecure"
         - "traefik.http.routers.evolution.tls.certresolver=letsencrypt"
         - "traefik.http.services.evolution.loadbalancer.server.port=8080"
+
+EOFEVO
+        else
+            # Additional instances with numbered subdomains
+            cat >> /tmp/apps-stack.yml << EOFEVO
+  $service_name:
+    image: atendai/evolution-api:latest
+    environment:
+      - SERVER_URL=https://$subdomain.$domain
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_ENABLED=true
+      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/$db_name
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://db_redis-n8n:6379
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=caixapretastack2626
+      - WEBHOOK_GLOBAL_URL=https://$subdomain.$domain
+      - CONFIG_SESSION_SECRET=caixapretastack2626
+      - QRCODE_LIMIT=30
+      - CORS_ORIGIN=*
+      - CORS_METHODS=GET,POST,PUT,DELETE
+      - CORS_CREDENTIALS=true
+      - LOG_LEVEL=ERROR
+      - LOG_COLOR=false
+      - DEL_INSTANCE=false
+    volumes:
+      - /data/evolution$i:/evolution/instances
+    networks:
+      - traefik-public
+      - internal-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/manager/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 20s
+        max_attempts: 5
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.$service_name.rule=Host(\`$subdomain.$domain\`)"
+        - "traefik.http.routers.$service_name.entrypoints=websecure"
+        - "traefik.http.routers.$service_name.tls.certresolver=letsencrypt"
+        - "traefik.http.services.$service_name.loadbalancer.server.port=8080"
+
+EOFEVO
+        fi
+    done
+    
+    # Add Gowa service
+    cat >> /tmp/apps-stack.yml << 'EOFGOWA'
+  gowa:
+    image: gowa/whatsapp-api:latest
+    environment:
+      - SERVER_URL=https://gowa.$domain
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_ENABLED=true
+      - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/gowa_db
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://db_redis-n8n:6379
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=caixapretastack2626
+      - WEBHOOK_GLOBAL_URL=https://gowa.$domain
+      - CONFIG_SESSION_SECRET=caixapretastack2626
+      - CORS_ORIGIN=*
+      - CORS_METHODS=GET,POST,PUT,DELETE
+      - CORS_CREDENTIALS=true
+      - LOG_LEVEL=ERROR
+      - LOG_COLOR=false
+    volumes:
+      - /data/gowa:/gowa/instances
+    networks:
+      - traefik-public
+      - internal-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 20s
+        max_attempts: 5
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gowa.rule=Host(\`gowa.$domain\`)"
+        - "traefik.http.routers.gowa.entrypoints=websecure"
+        - "traefik.http.routers.gowa.tls.certresolver=letsencrypt"
+        - "traefik.http.services.gowa.loadbalancer.server.port=8080"
 
 networks:
   traefik-public:
     external: true
   internal-net:
     external: true
-EOF
+EOFGOWA
 
     # Deploy automation stack
     log_info "Deploying automation stack..."
@@ -1477,6 +1651,14 @@ EOF
     # Verify automation services with extended timeouts
     verify_service "automation_n8n" "1/1" 90
     verify_service "automation_evolution" "1/1" 90
+    
+    # Verify additional Evolution instances
+    for i in $(seq 2 $evolution_instances); do
+        local service_name="evolution$i"
+        verify_service "automation_$service_name" "1/1" 90
+    done
+    
+    verify_service "automation_gowa" "1/1" 90
     verify_service "automation_n8n-worker" "2/2" 90
     
     # Cleanup
@@ -1683,6 +1865,81 @@ EOF
     
     log_success "MEGA and additional services deployed successfully"
 }
+
+# Deploy Admin Painel
+deploy_painel() {
+    local domain="$1"
+    
+    log_step "Deploying Admin Painel"
+    
+    # Setup painel files
+    log_info "Setting up painel files..."
+    bash /tmp/setup-painel.sh 2>/dev/null || true
+    
+    # Create painel stack
+    cat > /tmp/painel-stack.yml << 'EOF'
+version: '3.8'
+services:
+  painel:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - /data/painel/painel-admin.html:/app/painel-admin.html:ro
+      - /data/painel/painel-server.js:/app/server.js:ro
+      - /data/painel/design-tokens.css:/app/design-tokens.css:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    command: sh -c "npm install express --silent && node server.js"
+    networks:
+      - traefik-public
+      - internal-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 5
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.painel.rule=PathPrefix(`/painel`) || PathPrefix(`/api`)"
+        - "traefik.http.routers.painel.entrypoints=web,websecure"
+        - "traefik.http.routers.painel.tls.certresolver=letsencrypt"
+        - "traefik.http.services.painel.loadbalancer.server.port=3000"
+
+networks:
+  traefik-public:
+    external: true
+  internal-net:
+    external: true
+EOF
+
+    # Deploy painel stack
+    log_info "Deploying Admin Painel service..."
+    docker stack deploy -c /tmp/painel-stack.yml painel
+    
+    # Verify painel service
+    verify_service "painel_painel" "1/1" 60
+    
+    # Cleanup
+    rm -f /tmp/painel-stack.yml
+    
+    log_success "Admin Painel deployed successfully"
+}
+
 # Comprehensive final verification
 final_verification() {
     log_step "Performing comprehensive final verification"
@@ -1854,6 +2111,16 @@ EOF
     echo -ne "${GREEN}${BOLD}$(msg "enter_email")${NC}"
     read EMAIL
     
+    echo -ne "${GREEN}${BOLD}How many Evolution API instances do you want to deploy? (default: 1): ${NC}"
+    read EVOLUTION_INSTANCES
+    EVOLUTION_INSTANCES=${EVOLUTION_INSTANCES:-1}
+    
+    # Validate Evolution instances input
+    if ! [[ "$EVOLUTION_INSTANCES" =~ ^[0-9]+$ ]] || [ "$EVOLUTION_INSTANCES" -lt 1 ]; then
+        log_warning "Invalid number of instances, using default: 1"
+        EVOLUTION_INSTANCES=1
+    fi
+    
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
         log_error "$(msg "domain_email_required")"
         exit 1
@@ -1862,6 +2129,7 @@ EOF
     log_success "$(msg "config_accepted")"
     log_info "Domain: $DOMAIN"
     log_info "Email: $EMAIL"
+    log_info "Evolution API instances: $EVOLUTION_INSTANCES"
     
     # Clean previous installations
     clean_previous_installation
@@ -1890,7 +2158,7 @@ EOF
     create_networks
     
     # Data directory setup
-    setup_data_directories
+    setup_data_directories "$EVOLUTION_INSTANCES"
     
     # Deploy core services (Traefik + Portainer)
     echo
@@ -1926,7 +2194,7 @@ EOF
         echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
     fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
-    deploy_applications "$DOMAIN"
+    deploy_applications "$DOMAIN" "$EVOLUTION_INSTANCES"
     
     # Deploy MEGA and additional services
     echo
@@ -1938,6 +2206,17 @@ EOF
     fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_mega_services "$DOMAIN"
+    
+    # Deploy Admin Painel
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                    PAINEL DE ADMINISTRACAO                  │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                    ADMIN PAINEL                             │${NC}"
+    fi
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+    deploy_painel "$DOMAIN"
     
     # Final verification
     echo
@@ -1962,10 +2241,20 @@ EOF
         echo -e "${GREEN}• n8n Automation:     ${WHITE}https://n8n.$DOMAIN${NC}"
         echo -e "${GREEN}• MEGA Chatwoot:      ${WHITE}https://mega.$DOMAIN${NC}"
         echo -e "${GREEN}• Evolution API:      ${WHITE}https://evolution.$DOMAIN${NC}"
+        
+        # Show additional Evolution instances if configured
+        if [ "$EVOLUTION_INSTANCES" -gt 1 ]; then
+            for i in $(seq 2 $EVOLUTION_INSTANCES); do
+                echo -e "${GREEN}• Evolution API $i:    ${WHITE}https://evolution$i.$DOMAIN${NC}"
+            done
+        fi
+        
+        echo -e "${GREEN}• Gowa WhatsApp API:  ${WHITE}https://gowa.$DOMAIN${NC}"
         echo -e "${GREEN}• Portainer:          ${WHITE}https://portainer.$DOMAIN${NC}"
         echo -e "${GREEN}• Traefik Dashboard:  ${WHITE}https://traefik.$DOMAIN${NC}"
         echo -e "${GREEN}• MinIO Console:      ${WHITE}https://minio.$DOMAIN${NC}"
         echo -e "${GREEN}• Grafana:            ${WHITE}https://grafana.$DOMAIN${NC}"
+        echo -e "${GREEN}• Admin Painel:       ${WHITE}https://$DOMAIN/painel${NC}"
         echo
         echo -e "${YELLOW}${BOLD}$(msg "important_notes"):${NC}"
         if [ "$LANG_MODE" = "pt" ]; then
