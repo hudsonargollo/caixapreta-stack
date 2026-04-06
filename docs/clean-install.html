@@ -456,8 +456,17 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
   const unlockBtn = document.getElementById('unlockBtn');
   const errorMsg = document.getElementById('errorMsg');
 
+  // Check if already authorized in this session
+  function checkAuthorization() {
+    if (sessionStorage.getItem('caixapreta_authorized') === 'true') {
+      gate.style.display = 'none';
+      mainContent.classList.add('show');
+    }
+  }
+
   function unlock() {
     if (pwInput.value === 'caixapretastack2626') {
+      sessionStorage.setItem('caixapreta_authorized', 'true');
       gate.style.display = 'none';
       mainContent.classList.add('show');
       errorMsg.classList.remove('show');
@@ -471,6 +480,9 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
       setTimeout(() => { card.style.animation = 'shake .4s ease'; }, 10);
     }
   }
+
+  // Check authorization on page load
+  checkAuthorization();
 
   unlockBtn.addEventListener('click', unlock);
   pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
