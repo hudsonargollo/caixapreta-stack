@@ -497,7 +497,8 @@
             const errorMessage = document.getElementById('error-message');
             
             if (password === 'cxblack26') {
-                // Redirect to installer
+                // Set authorization in sessionStorage and redirect to installer
+                sessionStorage.setItem('caixapreta_authorized', 'true');
                 window.location.href = 'clean-install.html';
             } else {
                 errorMessage.textContent = '❌ Senha incorreta. Tente novamente.';
