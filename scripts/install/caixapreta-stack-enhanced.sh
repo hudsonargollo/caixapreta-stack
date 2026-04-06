@@ -1041,7 +1041,7 @@ deploy_traefik() {
       --mount type=bind,source=/data/traefik,target=/data \
       --network traefik-public \
       --label traefik.enable=true \
-      --label "traefik.http.routers.traefik.rule=Host(\`traefik.$domain\`)" \
+      --label "traefik.http.routers.traefik.rule=Host(\`trae.$domain\`)" \
       --label traefik.http.routers.traefik.service=api@internal \
       --label traefik.http.routers.traefik.entrypoints=websecure \
       --label traefik.http.routers.traefik.tls.certresolver=letsencrypt \
@@ -1072,7 +1072,7 @@ deploy_traefik() {
       --mount type=bind,source=/data/portainer,target=/data \
       --network traefik-public \
       --label traefik.enable=true \
-      --label "traefik.http.routers.portainer.rule=Host(\`portainer.$domain\`)" \
+      --label "traefik.http.routers.portainer.rule=Host(\`port.$domain\`)" \
       --label traefik.http.routers.portainer.entrypoints=websecure \
       --label traefik.http.routers.portainer.tls.certresolver=letsencrypt \
       --label traefik.http.services.portainer.loadbalancer.server.port=9000 \
@@ -1433,11 +1433,11 @@ services:
   n8n:
     image: n8nio/n8n:latest
     environment:
-      - N8N_HOST=n8n.$domain
+      - N8N_HOST=auto.$domain
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_URL=https://n8n.$domain/
+      - WEBHOOK_URL=https://auto.$domain/
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=main_db
       - DB_POSTGRESDB_HOST=db_postgres
@@ -1475,7 +1475,7 @@ services:
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.n8n.rule=Host(\`n8n.$domain\`)"
+        - "traefik.http.routers.n8n.rule=Host(\`auto.$domain\`)"
         - "traefik.http.routers.n8n.entrypoints=websecure"
         - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
         - "traefik.http.services.n8n.loadbalancer.server.port=5678"
@@ -1519,7 +1519,7 @@ EOFBASE
     for i in $(seq 1 $evolution_instances); do
         local db_name="evolution_db_$i"
         local service_name="evolution$i"
-        local subdomain="evolution$i"
+        local subdomain="evo$i"
         
         if [ $i -eq 1 ]; then
             # First instance also gets the base subdomain for backward compatibility
@@ -1527,7 +1527,7 @@ EOFBASE
   evolution:
     image: atendai/evolution-api:latest
     environment:
-      - SERVER_URL=https://evolution.$domain
+      - SERVER_URL=https://evo.$domain
       - DATABASE_PROVIDER=postgresql
       - DATABASE_ENABLED=true
       - DATABASE_CONNECTION_URI=postgresql://postgres:caixapretastack2626@db_postgres:5432/$db_name
@@ -1535,7 +1535,7 @@ EOFBASE
       - REDIS_URI=redis://db_redis-n8n:6379
       - AUTHENTICATION_TYPE=apikey
       - AUTHENTICATION_API_KEY=caixapretastack2626
-      - WEBHOOK_GLOBAL_URL=https://evolution.$domain
+      - WEBHOOK_GLOBAL_URL=https://evo.$domain
       - CONFIG_SESSION_SECRET=caixapretastack2626
       - QRCODE_LIMIT=30
       - CORS_ORIGIN=*
@@ -1569,7 +1569,7 @@ EOFBASE
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.evolution.rule=Host(\`evolution.$domain\`)"
+        - "traefik.http.routers.evolution.rule=Host(\`evo.$domain\`)"
         - "traefik.http.routers.evolution.entrypoints=websecure"
         - "traefik.http.routers.evolution.tls.certresolver=letsencrypt"
         - "traefik.http.services.evolution.loadbalancer.server.port=8080"
@@ -1784,7 +1784,7 @@ services:
       - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
       - REDIS_URL=redis://db_redis-mega:6379/1
       - SECRET_KEY_BASE=caixapretastack2626
-      - FRONTEND_URL=https://mega.$domain
+      - FRONTEND_URL=https://chat.$domain
       - FORCE_SSL=true
       - RAILS_SERVE_STATIC_FILES=true
       - RAILS_LOG_TO_STDOUT=true
@@ -1819,7 +1819,7 @@ services:
           memory: 512M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.mega.rule=Host(\\`mega.$domain\\`)"
+        - "traefik.http.routers.mega.rule=Host(\\`chat.$domain\\`)"
         - "traefik.http.routers.mega.entrypoints=websecure"
         - "traefik.http.routers.mega.tls.certresolver=letsencrypt"
         - "traefik.http.services.mega.loadbalancer.server.port=3000"
@@ -1893,7 +1893,7 @@ EOF
         - "traefik.http.routers.minio-api.service=minio-api"
         - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
         # Console endpoint
-        - "traefik.http.routers.minio-console.rule=Host(\\`minio.$domain\\`)"
+        - "traefik.http.routers.minio-console.rule=Host(\\`min.$domain\\`)"
         - "traefik.http.routers.minio-console.entrypoints=websecure"
         - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
         - "traefik.http.routers.minio-console.service=minio-console"
@@ -1934,7 +1934,7 @@ EOF
           memory: 128M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.grafana.rule=Host(\\`grafana.$domain\\`)"
+        - "traefik.http.routers.grafana.rule=Host(\\`graf.$domain\\`)"
         - "traefik.http.routers.grafana.entrypoints=websecure"
         - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
@@ -1965,6 +1965,60 @@ EOF
     rm -f /tmp/mega-stack.yml
     
     log_success "MEGA and additional services deployed successfully"
+}
+
+# Display DNS Configuration Table
+display_dns_configuration() {
+    local domain="$1"
+    local evolution_instances="${2:-1}"
+    local install_openclaw="${3:-n}"
+    
+    echo
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${YELLOW}Crie os seguintes registros A no seu provedor DNS:${NC}"
+    else
+        echo -e "${YELLOW}Create the following A records at your DNS provider:${NC}"
+    fi
+    echo
+    
+    # Display table header
+    printf "${CYAN}%-30s %-15s %-10s${NC}\n" "Subdomain" "Type" "IP Address"
+    printf "${CYAN}%-30s %-15s %-10s${NC}\n" "$(printf '=%.0s' {1..30})" "$(printf '=%.0s' {1..15})" "$(printf '=%.0s' {1..10})"
+    
+    # Get server IP
+    local server_ip=$(hostname -I | awk '{print $1}')
+    
+    # Display DNS records (using shortened names)
+    printf "%-30s %-15s %-10s\n" "trae.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "port.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "auto.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "chat.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "evo.$domain" "A" "$server_ip"
+    
+    # Additional Evolution instances
+    for i in $(seq 2 $evolution_instances); do
+        printf "%-30s %-15s %-10s\n" "evo$i.$domain" "A" "$server_ip"
+    done
+    
+    printf "%-30s %-15s %-10s\n" "gowa.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "min.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "s3.$domain" "A" "$server_ip"
+    printf "%-30s %-15s %-10s\n" "graf.$domain" "A" "$server_ip"
+    
+    # OpenClaw if enabled
+    if [[ "$install_openclaw" =~ ^[Yy]$ ]]; then
+        printf "%-30s %-15s %-10s\n" "openclaw.$domain" "A" "$server_ip"
+    fi
+    
+    echo
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${YELLOW}⚠️  IMPORTANTE: Todos os registros devem apontar para: ${GREEN}$server_ip${NC}"
+        echo -e "${YELLOW}Aguarde 5-15 minutos para propagação DNS antes de acessar os serviços.${NC}"
+    else
+        echo -e "${YELLOW}⚠️  IMPORTANT: All records must point to: ${GREEN}$server_ip${NC}"
+        echo -e "${YELLOW}Wait 5-15 minutes for DNS propagation before accessing services.${NC}"
+    fi
+    echo
 }
 
 # Deploy Admin Painel
@@ -2323,6 +2377,18 @@ EOF
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
     deploy_painel "$DOMAIN"
     
+    # Display DNS Configuration
+    echo
+    echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
+    if [ "$LANG_MODE" = "pt" ]; then
+        echo -e "${PURPLE}${BOLD}│                  CONFIGURACAO DNS NECESSARIA                │${NC}"
+    else
+        echo -e "${PURPLE}${BOLD}│                  REQUIRED DNS CONFIGURATION                 │${NC}"
+    fi
+    echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
+    
+    display_dns_configuration "$DOMAIN" "$EVOLUTION_INSTANCES" "$INSTALL_OPENCLAW"
+    
     # Final verification
     echo
     echo -e "${PURPLE}${BOLD}┌─────────────────────────────────────────────────────────────┐${NC}"
@@ -2343,14 +2409,14 @@ EOF
         fi
         echo
         echo -e "${CYAN}${BOLD}$(msg "access_endpoints"):${NC}"
-        echo -e "${GREEN}• n8n Automation:     ${WHITE}https://n8n.$DOMAIN${NC}"
-        echo -e "${GREEN}• MEGA Chatwoot:      ${WHITE}https://mega.$DOMAIN${NC}"
-        echo -e "${GREEN}• Evolution API:      ${WHITE}https://evolution.$DOMAIN${NC}"
+        echo -e "${GREEN}• n8n Automation:     ${WHITE}https://auto.$DOMAIN${NC}"
+        echo -e "${GREEN}• MEGA Chatwoot:      ${WHITE}https://chat.$DOMAIN${NC}"
+        echo -e "${GREEN}• Evolution API:      ${WHITE}https://evo.$DOMAIN${NC}"
         
         # Show additional Evolution instances if configured
         if [ "$EVOLUTION_INSTANCES" -gt 1 ]; then
             for i in $(seq 2 $EVOLUTION_INSTANCES); do
-                echo -e "${GREEN}• Evolution API $i:    ${WHITE}https://evolution$i.$DOMAIN${NC}"
+                echo -e "${GREEN}• Evolution API $i:    ${WHITE}https://evo$i.$DOMAIN${NC}"
             done
         fi
         
@@ -2361,10 +2427,10 @@ EOF
             echo -e "${GREEN}• OpenClaw AI Agent:  ${WHITE}https://openclaw.$DOMAIN${NC}"
         fi
         
-        echo -e "${GREEN}• Portainer:          ${WHITE}https://portainer.$DOMAIN${NC}"
-        echo -e "${GREEN}• Traefik Dashboard:  ${WHITE}https://traefik.$DOMAIN${NC}"
-        echo -e "${GREEN}• MinIO Console:      ${WHITE}https://minio.$DOMAIN${NC}"
-        echo -e "${GREEN}• Grafana:            ${WHITE}https://grafana.$DOMAIN${NC}"
+        echo -e "${GREEN}• Portainer:          ${WHITE}https://port.$DOMAIN${NC}"
+        echo -e "${GREEN}• Traefik Dashboard:  ${WHITE}https://trae.$DOMAIN${NC}"
+        echo -e "${GREEN}• MinIO Console:      ${WHITE}https://min.$DOMAIN${NC}"
+        echo -e "${GREEN}• Grafana:            ${WHITE}https://graf.$DOMAIN${NC}"
         echo -e "${GREEN}• Admin Painel:       ${WHITE}https://$DOMAIN/painel${NC}"
         echo
         echo -e "${YELLOW}${BOLD}$(msg "important_notes"):${NC}"
