@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caixa Preta - Redirecting...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .loading {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>CAIXA PRETA</h1>
+        <p class="loading">Redirecting to installation protocol...</p>
+    </div>
+    
+    <script>
+        // Redirect to the landing page after a short delay
+        setTimeout(() => {
+            window.location.href = '/caixa-preta-landing-industrial.html';
+        }, 1500);
+    </script>
+</body>
+</html>
