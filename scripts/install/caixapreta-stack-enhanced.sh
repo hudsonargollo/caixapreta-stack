@@ -1044,7 +1044,6 @@ deploy_traefik() {
       --label "traefik.http.routers.traefik.rule=Host(\`trae.$domain\`)" \
       --label traefik.http.routers.traefik.service=api@internal \
       --label traefik.http.routers.traefik.entrypoints=websecure \
-      --label traefik.http.routers.traefik.tls.certresolver=letsencrypt \
       --label traefik.http.services.traefik.loadbalancer.server.port=8080 \
       traefik:v2.11 \
       --api.dashboard=true \
@@ -1054,9 +1053,6 @@ deploy_traefik() {
       --providers.docker.swarmmode=true \
       --entrypoints.web.address=:80 \
       --entrypoints.websecure.address=:443 \
-      --certificatesresolvers.letsencrypt.acme.email=$email \
-      --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json \
-      --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web \
       --entrypoints.web.http.redirections.entrypoint.to=websecure \
       --entrypoints.web.http.redirections.entrypoint.scheme=https \
       --log.level=INFO
@@ -1074,7 +1070,6 @@ deploy_traefik() {
       --label traefik.enable=true \
       --label "traefik.http.routers.portainer.rule=Host(\`port.$domain\`)" \
       --label traefik.http.routers.portainer.entrypoints=websecure \
-      --label traefik.http.routers.portainer.tls.certresolver=letsencrypt \
       --label traefik.http.services.portainer.loadbalancer.server.port=9000 \
       portainer/portainer-ce:latest \
       -H unix:///var/run/docker.sock
@@ -1477,7 +1472,6 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.n8n.rule=Host(\`auto.$domain\`)"
         - "traefik.http.routers.n8n.entrypoints=websecure"
-        - "traefik.http.routers.n8n.tls.certresolver=letsencrypt"
         - "traefik.http.services.n8n.loadbalancer.server.port=5678"
 
   n8n-worker:
@@ -1571,7 +1565,6 @@ EOFBASE
         - "traefik.enable=true"
         - "traefik.http.routers.evolution.rule=Host(\`evo.$domain\`)"
         - "traefik.http.routers.evolution.entrypoints=websecure"
-        - "traefik.http.routers.evolution.tls.certresolver=letsencrypt"
         - "traefik.http.services.evolution.loadbalancer.server.port=8080"
 
 EOFEVO
@@ -1625,7 +1618,6 @@ EOFEVO
         - "traefik.enable=true"
         - "traefik.http.routers.$service_name.rule=Host(\`$subdomain.$domain\`)"
         - "traefik.http.routers.$service_name.entrypoints=websecure"
-        - "traefik.http.routers.$service_name.tls.certresolver=letsencrypt"
         - "traefik.http.services.$service_name.loadbalancer.server.port=8080"
 
 EOFEVO
@@ -1679,7 +1671,6 @@ EOFEVO
         - "traefik.enable=true"
         - "traefik.http.routers.gowa.rule=Host(\`gowa.$domain\`)"
         - "traefik.http.routers.gowa.entrypoints=websecure"
-        - "traefik.http.routers.gowa.tls.certresolver=letsencrypt"
         - "traefik.http.services.gowa.loadbalancer.server.port=8080"
 
 EOFGOWA
@@ -1726,7 +1717,6 @@ EOFGOWA
         - "traefik.enable=true"
         - "traefik.http.routers.openclaw.rule=Host(\`openclaw.$domain\`)"
         - "traefik.http.routers.openclaw.entrypoints=websecure"
-        - "traefik.http.routers.openclaw.tls.certresolver=letsencrypt"
         - "traefik.http.services.openclaw.loadbalancer.server.port=3000"
 
 EOFOPENCLAW
@@ -1821,7 +1811,6 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.mega.rule=Host(\\`chat.$domain\\`)"
         - "traefik.http.routers.mega.entrypoints=websecure"
-        - "traefik.http.routers.mega.tls.certresolver=letsencrypt"
         - "traefik.http.services.mega.loadbalancer.server.port=3000"
 
   mega-sidekiq:
@@ -1889,13 +1878,11 @@ EOF
         # S3 API endpoint
         - "traefik.http.routers.minio-api.rule=Host(\\`s3.$domain\\`)"
         - "traefik.http.routers.minio-api.entrypoints=websecure"
-        - "traefik.http.routers.minio-api.tls.certresolver=letsencrypt"
         - "traefik.http.routers.minio-api.service=minio-api"
         - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
         # Console endpoint
         - "traefik.http.routers.minio-console.rule=Host(\\`min.$domain\\`)"
         - "traefik.http.routers.minio-console.entrypoints=websecure"
-        - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
         - "traefik.http.routers.minio-console.service=minio-console"
         - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
 
@@ -1936,7 +1923,6 @@ EOF
         - "traefik.enable=true"
         - "traefik.http.routers.grafana.rule=Host(\\`graf.$domain\\`)"
         - "traefik.http.routers.grafana.entrypoints=websecure"
-        - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
 
 networks:
@@ -2072,7 +2058,6 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.painel.rule=PathPrefix(`/painel`) || PathPrefix(`/api`)"
         - "traefik.http.routers.painel.entrypoints=web,websecure"
-        - "traefik.http.routers.painel.tls.certresolver=letsencrypt"
         - "traefik.http.services.painel.loadbalancer.server.port=3000"
 
 networks:
