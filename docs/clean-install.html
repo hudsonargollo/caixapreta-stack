@@ -157,7 +157,7 @@ body {
 .ip-input-group {
   display:flex;
   gap:12px;
-  max-width:500px;
+  max-width:700px;
   margin:0 auto;
   flex-wrap:wrap;
   justify-content:center;
@@ -165,7 +165,7 @@ body {
 
 .ip-input {
   flex:1;
-  min-width:200px;
+  min-width:150px;
   padding:12px 16px;
   background:var(--panel);
   border:1px solid var(--border);
@@ -433,27 +433,28 @@ body {
   </div>
 </div>
 
-<!-- IP INPUT SECTION -->
+<!-- IP & DOMAIN INPUT SECTION -->
 <div class="container">
   <div class="ip-section">
     <h2>
-      <span class="lang-en">🔧 Your Server IP Address</span>
-      <span class="lang-pt">🔧 Endereço IP do Seu Servidor</span>
+      <span class="lang-en">🔧 Configuration</span>
+      <span class="lang-pt">🔧 Configuração</span>
     </h2>
     <p>
-      <span class="lang-en">Enter your VPS IP address to generate personalized installation commands</span>
-      <span class="lang-pt">Digite o endereço IP do seu VPS para gerar comandos de instalação personalizados</span>
+      <span class="lang-en">Enter your VPS IP address and domain to generate personalized installation commands</span>
+      <span class="lang-pt">Digite o endereço IP do seu VPS e domínio para gerar comandos de instalação personalizados</span>
     </p>
     <div class="ip-input-group">
       <input type="text" class="ip-input" id="ipInput" placeholder="192.168.1.1" autocomplete="off">
-      <button class="btn" onclick="setIP()">
-        <span class="lang-en">SET IP</span>
-        <span class="lang-pt">DEFINIR IP</span>
+      <input type="text" class="ip-input" id="domainInput" placeholder="example.com" autocomplete="off">
+      <button class="btn" onclick="setConfig()">
+        <span class="lang-en">SET CONFIG</span>
+        <span class="lang-pt">DEFINIR CONFIG</span>
       </button>
     </div>
-    <div class="ip-status" id="ipStatus">
-      <span class="lang-en">No IP set yet</span>
-      <span class="lang-pt">Nenhum IP definido ainda</span>
+    <div class="ip-status" id="configStatus">
+      <span class="lang-en">No configuration set yet</span>
+      <span class="lang-pt">Nenhuma configuração definida ainda</span>
     </div>
   </div>
 </div>
@@ -561,7 +562,7 @@ body {
           <div class="code-header">
             <span>DNS A RECORD</span>
           </div>
-          <div class="code-content" id="cmd4">*.seudominio.com  A  YOUR_IP_ADDRESS</div>
+          <div class="code-content" id="cmd4">*.example.com  A  YOUR_IP_ADDRESS</div>
         </div>
       </div>
     </div>
@@ -628,13 +629,15 @@ function toggleLang() {
 const savedLang = localStorage.getItem('caixapreta_lang');
 setLang(savedLang === 'pt' || isBrowserPT);
 
-// IP Address Management
-function setIP() {
+// IP & Domain Management
+function setConfig() {
   const ipInput = document.getElementById('ipInput');
+  const domainInput = document.getElementById('domainInput');
   const ip = ipInput.value.trim();
+  const domain = domainInput.value.trim();
   
-  if (!ip) {
-    alert(html.lang === 'pt-BR' ? 'Por favor, digite um endereço IP' : 'Please enter an IP address');
+  if (!ip || !domain) {
+    alert(html.lang === 'pt-BR' ? 'Por favor, digite um endereço IP e domínio' : 'Please enter both IP address and domain');
     return;
   }
   
@@ -645,21 +648,29 @@ function setIP() {
     return;
   }
   
-  // Store IP
+  // Validate domain format (basic)
+  const domainRegex = /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+  if (!domainRegex.test(domain)) {
+    alert(html.lang === 'pt-BR' ? 'Formato de domínio inválido' : 'Invalid domain format');
+    return;
+  }
+  
+  // Store config
   localStorage.setItem('caixapreta_ip', ip);
+  localStorage.setItem('caixapreta_domain', domain);
   
   // Update all commands
-  updateCommands(ip);
+  updateCommands(ip, domain);
   
   // Update status
-  const status = document.getElementById('ipStatus');
+  const status = document.getElementById('configStatus');
   status.classList.add('active');
-  status.innerHTML = `<span class="lang-en">✓ IP set to: <strong>${ip}</strong></span><span class="lang-pt">✓ IP definido para: <strong>${ip}</strong></span>`;
+  status.innerHTML = `<span class="lang-en">✓ IP: <strong>${ip}</strong> | Domain: <strong>${domain}</strong></span><span class="lang-pt">✓ IP: <strong>${ip}</strong> | Domínio: <strong>${domain}</strong></span>`;
 }
 
-function updateCommands(ip) {
+function updateCommands(ip, domain) {
   document.getElementById('cmd1').textContent = `ssh root@${ip}`;
-  document.getElementById('cmd4').textContent = `*.seudominio.com  A  ${ip}`;
+  document.getElementById('cmd4').textContent = `*.${domain}  A  ${ip}`;
 }
 
 function copyCode(btn, text) {
@@ -674,15 +685,17 @@ function copyCode(btn, text) {
   });
 }
 
-// Load saved IP on page load
+// Load saved config on page load
 window.addEventListener('load', () => {
   const savedIP = localStorage.getItem('caixapreta_ip');
-  if (savedIP) {
+  const savedDomain = localStorage.getItem('caixapreta_domain');
+  if (savedIP && savedDomain) {
     document.getElementById('ipInput').value = savedIP;
-    updateCommands(savedIP);
-    const status = document.getElementById('ipStatus');
+    document.getElementById('domainInput').value = savedDomain;
+    updateCommands(savedIP, savedDomain);
+    const status = document.getElementById('configStatus');
     status.classList.add('active');
-    status.innerHTML = `<span class="lang-en">✓ IP set to: <strong>${savedIP}</strong></span><span class="lang-pt">✓ IP definido para: <strong>${savedIP}</strong></span>`;
+    status.innerHTML = `<span class="lang-en">✓ IP: <strong>${savedIP}</strong> | Domain: <strong>${savedDomain}</strong></span><span class="lang-pt">✓ IP: <strong>${savedIP}</strong> | Domínio: <strong>${savedDomain}</strong></span>`;
   }
 });
 </script>
