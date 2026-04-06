@@ -923,7 +923,7 @@ create_networks() {
 # Enhanced data directory setup with proper permissions
 setup_data_directories() {
     local evolution_instances="${1:-1}"
-    local install_moltbot="${2:-n}"
+    local install_openclaw="${2:-n}"
     
     log_step "Setting up data directories with proper permissions"
     
@@ -944,9 +944,9 @@ setup_data_directories() {
         "/data/grafana"
     )
     
-    # Add Moltbot directory if requested
-    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
-        directories+=("/data/moltbot")
+    # Add OpenClaw directory if requested
+    if [[ "$install_openclaw" =~ ^[Yy]$ ]]; then
+        directories+=("/data/openclaw")
     fi
     
     # Add directories for additional Evolution instances
@@ -978,10 +978,10 @@ setup_data_directories() {
     chown -R 1000:1000 /data/{n8n,evolution,gowa}
     chmod -R 755 /data/{n8n,evolution,gowa}
     
-    # Moltbot (UID 1000)
-    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
-        chown -R 1000:1000 /data/moltbot
-        chmod -R 755 /data/moltbot
+    # OpenClaw (UID 1000)
+    if [[ "$install_openclaw" =~ ^[Yy]$ ]]; then
+        chown -R 1000:1000 /data/openclaw
+        chmod -R 755 /data/openclaw
     fi
     
     # Additional Evolution instances
@@ -1360,33 +1360,33 @@ initialize_databases() {
         fi
     done
     
-    # Create Moltbot database if requested
-    if [[ "$INSTALL_MOLTBOT" =~ ^[Yy]$ ]]; then
-        log_info "Creating Moltbot database..."
+    # Create OpenClaw database if requested
+    if [[ "$INSTALL_OPENCLAW" =~ ^[Yy]$ ]]; then
+        log_info "Creating OpenClaw database..."
         attempt=1
         
         while [ $attempt -le $max_attempts ]; do
             if docker run --rm --network internal-net \
                 -e PGPASSWORD=caixapretastack2626 \
                 postgres:14-alpine \
-                psql -h db_postgres -U postgres -c "CREATE DATABASE moltbot_db;" >/dev/null 2>&1; then
-                log_success "Moltbot database created successfully"
+                psql -h db_postgres -U postgres -c "CREATE DATABASE openclaw_db;" >/dev/null 2>&1; then
+                log_success "OpenClaw database created successfully"
                 break
             elif [ $attempt -eq $max_attempts ]; then
                 # Check if database already exists
                 if docker run --rm --network internal-net \
                     -e PGPASSWORD=caixapretastack2626 \
                     postgres:14-alpine \
-                    psql -h db_postgres -U postgres -l | grep -q "moltbot_db"; then
-                    log_info "Moltbot database already exists"
+                    psql -h db_postgres -U postgres -l | grep -q "openclaw_db"; then
+                    log_info "OpenClaw database already exists"
                     break
                 else
-                    log_error "Failed to create Moltbot database after $max_attempts attempts"
-                    FAILED_SERVICES+=("moltbot_db")
+                    log_error "Failed to create OpenClaw database after $max_attempts attempts"
+                    FAILED_SERVICES+=("openclaw_db")
                     return 1
                 fi
             else
-                log_info "Attempt $attempt/$max_attempts: Retrying Moltbot database creation..."
+                log_info "Attempt $attempt/$max_attempts: Retrying OpenClaw database creation..."
                 sleep 5
                 ((attempt++))
             fi
@@ -1422,7 +1422,7 @@ initialize_databases() {
 deploy_applications() {
     local domain="$1"
     local evolution_instances="${2:-1}"
-    local install_moltbot="${3:-n}"
+    local install_openclaw="${3:-n}"
     
     log_step "Deploying automation applications with enhanced configuration"
     
@@ -1684,23 +1684,23 @@ EOFEVO
 
 EOFGOWA
 
-    # Add Moltbot service if requested
-    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
-        cat >> /tmp/apps-stack.yml << 'EOFMOLTBOT'
-  moltbot:
-    image: moltbot/moltbot:latest
+    # Add OpenClaw service if requested
+    if [[ "$install_openclaw" =~ ^[Yy]$ ]]; then
+        cat >> /tmp/apps-stack.yml << 'EOFOPENCLAW'
+  openclaw:
+    image: openclaw/openclaw:latest
     environment:
-      - MOLTBOT_HOST=moltbot.$domain
-      - MOLTBOT_PORT=3000
-      - MOLTBOT_PROTOCOL=https
+      - OPENCLAW_HOST=openclaw.$domain
+      - OPENCLAW_PORT=3000
+      - OPENCLAW_PROTOCOL=https
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/moltbot_db
+      - DATABASE_URL=postgresql://postgres:caixapretastack2626@db_postgres:5432/openclaw_db
       - REDIS_URL=redis://db_redis-n8n:6379/2
       - API_KEY=caixapretastack2626
-      - WEBHOOK_URL=https://moltbot.$domain
+      - WEBHOOK_URL=https://openclaw.$domain
       - LOG_LEVEL=info
     volumes:
-      - /data/moltbot:/app/data
+      - /data/openclaw:/app/data
     networks:
       - traefik-public
       - internal-net
@@ -1724,12 +1724,12 @@ EOFGOWA
           memory: 256M
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.moltbot.rule=Host(\`moltbot.$domain\`)"
-        - "traefik.http.routers.moltbot.entrypoints=websecure"
-        - "traefik.http.routers.moltbot.tls.certresolver=letsencrypt"
-        - "traefik.http.services.moltbot.loadbalancer.server.port=3000"
+        - "traefik.http.routers.openclaw.rule=Host(\`openclaw.$domain\`)"
+        - "traefik.http.routers.openclaw.entrypoints=websecure"
+        - "traefik.http.routers.openclaw.tls.certresolver=letsencrypt"
+        - "traefik.http.services.openclaw.loadbalancer.server.port=3000"
 
-EOFMOLTBOT
+EOFOPENCLAW
     fi
 
     cat >> /tmp/apps-stack.yml << 'EOFNETWORKS'
@@ -1757,9 +1757,9 @@ EOFNETWORKS
     verify_service "automation_gowa" "1/1" 90
     verify_service "automation_n8n-worker" "2/2" 90
     
-    # Verify Moltbot if deployed
-    if [[ "$install_moltbot" =~ ^[Yy]$ ]]; then
-        verify_service "automation_moltbot" "1/1" 90
+    # Verify OpenClaw if deployed
+    if [[ "$install_openclaw" =~ ^[Yy]$ ]]; then
+        verify_service "automation_openclaw" "1/1" 90
     fi
     
     # Cleanup
@@ -2222,9 +2222,9 @@ EOF
         EVOLUTION_INSTANCES=1
     fi
     
-    echo -ne "${GREEN}${BOLD}Do you want to deploy Moltbot? (y/n, default: n): ${NC}"
-    read INSTALL_MOLTBOT
-    INSTALL_MOLTBOT=${INSTALL_MOLTBOT:-n}
+    echo -ne "${GREEN}${BOLD}Do you want to deploy OpenClaw (formerly Clawdbot/Moltbot)? (y/n, default: n): ${NC}"
+    read INSTALL_OPENCLAW
+    INSTALL_OPENCLAW=${INSTALL_OPENCLAW:-n}
     
     if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
         log_error "$(msg "domain_email_required")"
@@ -2263,7 +2263,7 @@ EOF
     create_networks
     
     # Data directory setup
-    setup_data_directories "$EVOLUTION_INSTANCES" "$INSTALL_MOLTBOT"
+    setup_data_directories "$EVOLUTION_INSTANCES" "$INSTALL_OPENCLAW"
     
     # Deploy core services (Traefik + Portainer)
     echo
@@ -2299,7 +2299,7 @@ EOF
         echo -e "${PURPLE}${BOLD}│                    AUTOMATION LAYER                         │${NC}"
     fi
     echo -e "${PURPLE}${BOLD}└─────────────────────────────────────────────────────────────┘${NC}"
-    deploy_applications "$DOMAIN" "$EVOLUTION_INSTANCES" "$INSTALL_MOLTBOT"
+    deploy_applications "$DOMAIN" "$EVOLUTION_INSTANCES" "$INSTALL_OPENCLAW"
     
     # Deploy MEGA and additional services
     echo
@@ -2356,9 +2356,9 @@ EOF
         
         echo -e "${GREEN}• Gowa WhatsApp API:  ${WHITE}https://gowa.$DOMAIN${NC}"
         
-        # Show Moltbot if deployed
-        if [[ "$INSTALL_MOLTBOT" =~ ^[Yy]$ ]]; then
-            echo -e "${GREEN}• Moltbot:            ${WHITE}https://moltbot.$DOMAIN${NC}"
+        # Show OpenClaw if deployed
+        if [[ "$INSTALL_OPENCLAW" =~ ^[Yy]$ ]]; then
+            echo -e "${GREEN}• OpenClaw AI Agent:  ${WHITE}https://openclaw.$DOMAIN${NC}"
         fi
         
         echo -e "${GREEN}• Portainer:          ${WHITE}https://portainer.$DOMAIN${NC}"
