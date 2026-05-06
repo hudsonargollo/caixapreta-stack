@@ -88,8 +88,7 @@
                                         <h4 class="font-semibold text-white mb-2">Baixe o script de instalação</h4>
                                         <p class="text-purple-200 text-sm mb-3">Execute os comandos abaixo para baixar e preparar o script</p>
                                         <div class="bg-slate-900 rounded p-3 font-mono text-sm text-green-400">
-                                            <pre>wget https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/caixapreta-stack.sh
-chmod +x caixapreta-stack.sh</pre>
+                                            <pre>curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/caixapreta-stack-production.sh -o installer.sh && chmod +x installer.sh</pre>
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +101,7 @@ chmod +x caixapreta-stack.sh</pre>
                                         <h4 class="font-semibold text-white mb-2">Execute a instalação</h4>
                                         <p class="text-purple-200 text-sm mb-3">Inicie o processo automatizado</p>
                                         <div class="bg-slate-900 rounded p-3 font-mono text-sm text-green-400">
-                                            <pre>sudo ./caixapreta-stack.sh</pre>
+                                            <pre>bash installer.sh</pre>
                                         </div>
                                     </div>
                                 </div>
@@ -129,13 +128,14 @@ chmod +x caixapreta-stack.sh</pre>
                                         <h4 class="font-semibold text-white mb-2">Configure DNS</h4>
                                         <p class="text-purple-200 text-sm mb-3">Aponte os subdomínios para o IP do seu servidor:</p>
                                         <ul class="space-y-1 text-sm text-purple-200">
-                                            <li>• n8n.seudominio.com</li>
-                                            <li>• mega.seudominio.com</li>
-                                            <li>• evolution.seudominio.com</li>
-                                            <li>• portainer.seudominio.com</li>
-                                            <li>• traefik.seudominio.com</li>
-                                            <li>• minio.seudominio.com</li>
-                                            <li>• grafana.seudominio.com</li>
+                                            <li>• auto.seudominio.com (n8n)</li>
+                                            <li>• chat.seudominio.com (Chatwoot)</li>
+                                            <li>• evo.seudominio.com (Evolution 1)</li>
+                                            <li>• evo2.seudominio.com (Evolution 2)</li>
+                                            <li>• port.seudominio.com (Portainer)</li>
+                                            <li>• min.seudominio.com (MinIO Console)</li>
+                                            <li>• s3.seudominio.com (MinIO API)</li>
+                                            <li>• graf.seudominio.com (Grafana)</li>
                                         </ul>
                                     </div>
                                 </div>
