@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infra Caixa Preta v2 - Installation Guide</title>
+<title>Infra Caixa Preta v3 - Installation Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -413,8 +413,8 @@ body {
     </a>
     <div class="nav-badge">
       <div class="led" style="width:6px;height:6px"></div>
-      <span class="lang-en">INSTALL GUIDE v2</span>
-      <span class="lang-pt">GUIA DE INSTALAÇÃO v2</span>
+      <span class="lang-en">INSTALL GUIDE v3</span>
+      <span class="lang-pt">GUIA DE INSTALAÇÃO v3</span>
     </div>
   </div>
 </nav>
@@ -512,7 +512,7 @@ body {
               <span class="lang-pt">COPIAR</span>
             </button>
           </div>
-          <div class="code-content" id="cmd2">curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/caixapreta-stack-enhanced.sh -o installer.sh && chmod +x installer.sh</div>
+          <div class="code-content" id="cmd2">curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/caixapreta-stack-production.sh -o installer.sh && chmod +x installer.sh</div>
         </div>
       </div>
     </div>
@@ -578,8 +578,8 @@ body {
       </div>
       <div class="step-content">
         <p class="step-desc">
-          <span class="lang-en">SSL certificates are generated automatically via Let's Encrypt. This typically takes 5-15 minutes.</span>
-          <span class="lang-pt">Os certificados SSL são gerados automaticamente via Let's Encrypt. Isso normalmente leva 5-15 minutos.</span>
+          <span class="lang-en">SSL certificates are provided automatically via Cloudflare. Your domain must be proxied through Cloudflare (orange cloud) before running the installer.</span>
+          <span class="lang-pt">Os certificados SSL são fornecidos automaticamente pelo Cloudflare. Seu domínio deve estar com proxy ativo no Cloudflare (nuvem laranja) antes de executar o instalador.</span>
         </p>
         <p class="step-desc" style="color:var(--success)">
           <span class="lang-en">✓ Once complete, your entire stack will be live and accessible!</span>

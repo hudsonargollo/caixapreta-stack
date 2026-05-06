@@ -159,6 +159,7 @@ DIRS=(
     "/data/minio"
     "/data/grafana"
     "/data/mega"
+    "/data/portainer"
     "/data/nginx/certs"
 )
 
