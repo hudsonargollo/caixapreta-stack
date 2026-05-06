@@ -202,49 +202,20 @@ http {
     types_hash_max_size 2048;
     client_max_body_size 100M;
 
+    # Use Docker's internal DNS — resolves upstreams lazily at request time
+    # This prevents nginx from failing to start when services aren't up yet
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
     # Cloudflare terminates HTTPS — Nginx listens on HTTP only (port 80)
     # Traffic flow: User -> HTTPS -> Cloudflare -> HTTP -> Nginx -> Services
-
-    # Upstream services
-    upstream n8n {
-        server automation_n8n:5678;
-    }
-
-    upstream evolution {
-        server automation_evolution:8080;
-    }
-
-    upstream evolution2 {
-        server automation_evolution2:8080;
-    }
-
-    upstream minio {
-        server apps_minio:9000;
-    }
-
-    upstream minio_console {
-        server apps_minio:9001;
-    }
-
-    upstream grafana {
-        server apps_grafana:3000;
-    }
-
-    upstream mega {
-        server apps_mega-rails:3000;
-    }
-
-    upstream portainer {
-        server core_portainer:9000;
-    }
 
     # n8n
     server {
         listen 80;
         server_name auto.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://n8n;
+            set $upstream http://automation_n8n:5678;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -259,9 +230,9 @@ http {
     server {
         listen 80;
         server_name evo.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://evolution;
+            set $upstream http://automation_evolution:8080;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -273,9 +244,9 @@ http {
     server {
         listen 80;
         server_name evo2.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://evolution2;
+            set $upstream http://automation_evolution2:8080;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -287,9 +258,9 @@ http {
     server {
         listen 80;
         server_name s3.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://minio;
+            set $upstream http://apps_minio:9000;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -301,9 +272,9 @@ http {
     server {
         listen 80;
         server_name min.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://minio_console;
+            set $upstream http://apps_minio:9001;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -315,9 +286,9 @@ http {
     server {
         listen 80;
         server_name graf.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://grafana;
+            set $upstream http://apps_grafana:3000;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -329,9 +300,9 @@ http {
     server {
         listen 80;
         server_name chat.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://mega;
+            set $upstream http://apps_mega-rails:3000;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -343,9 +314,9 @@ http {
     server {
         listen 80;
         server_name port.DOMAIN_PLACEHOLDER;
-
         location / {
-            proxy_pass http://portainer;
+            set $upstream http://core_portainer:9000;
+            proxy_pass $upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
