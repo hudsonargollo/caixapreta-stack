@@ -160,7 +160,6 @@ DIRS=(
     "/data/grafana"
     "/data/mega"
     "/data/portainer"
-    "/data/nginx/certs"
 )
 
 for dir in "${DIRS[@]}"; do
@@ -170,15 +169,8 @@ done
 
 log_success "Data directories created"
 
-# Generate self-signed certificate
-log_step "Generating Self-Signed Certificate"
-
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /data/nginx/certs/key.pem \
-    -out /data/nginx/certs/cert.pem \
-    -subj "/CN=$DOMAIN" >/dev/null 2>&1
-
-log_success "Certificate generated"
+# No certificate needed — Cloudflare handles SSL termination
+log_info "Skipping certificate generation (Cloudflare handles SSL)"
 
 # Create nginx config
 log_step "Creating Nginx Configuration"
@@ -209,6 +201,9 @@ http {
     keepalive_timeout 65;
     types_hash_max_size 2048;
     client_max_body_size 100M;
+
+    # Cloudflare terminates HTTPS — Nginx listens on HTTP only (port 80)
+    # Traffic flow: User -> HTTPS -> Cloudflare -> HTTP -> Nginx -> Services
 
     # Upstream services
     upstream n8n {
@@ -243,31 +238,17 @@ http {
         server core_portainer:9000;
     }
 
-    # HTTP to HTTPS redirect
-    server {
-        listen 80;
-        listen [::]:80;
-        server_name _;
-        return 301 https://$host$request_uri;
-    }
-
     # n8n
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name auto.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://n8n;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "upgrade";
@@ -276,141 +257,99 @@ http {
 
     # Evolution API 1
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name evo.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://evolution;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # Evolution API 2
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name evo2.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://evolution2;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # MinIO API
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name s3.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://minio;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # MinIO Console
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name min.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://minio_console;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # Grafana
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name graf.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://grafana;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # Chatwoot/MEGA
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name chat.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://mega;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 
     # Portainer
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
         server_name port.DOMAIN_PLACEHOLDER;
-
-        ssl_certificate /etc/nginx/certs/cert.pem;
-        ssl_certificate_key /etc/nginx/certs/key.pem;
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
             proxy_pass http://portainer;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Proto https;
         }
     }
 }
@@ -419,7 +358,7 @@ EOFNGINX
 # Replace domain placeholder
 sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" /tmp/nginx.conf
 
-log_success "Nginx configuration created"
+log_success "Nginx configuration created (HTTP only — Cloudflare handles HTTPS)"
 
 # Deploy databases
 log_step "Deploying Database Services"
@@ -757,9 +696,7 @@ docker service create \
     --name core_nginx \
     --constraint 'node.role==manager' \
     --publish mode=host,target=80,published=80 \
-    --publish mode=host,target=443,published=443 \
     --mount type=bind,source=/tmp/nginx.conf,target=/etc/nginx/nginx.conf \
-    --mount type=bind,source=/data/nginx/certs,target=/etc/nginx/certs \
     --network traefik-public \
     nginx:latest
 
