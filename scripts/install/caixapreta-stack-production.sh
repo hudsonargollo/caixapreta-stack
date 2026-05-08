@@ -76,6 +76,15 @@ fi
 
 log_success "Configuration: Domain=$DOMAIN, Email=$EMAIL"
 
+# Wipe previous installation
+log_step "Cleaning Previous Installation"
+docker stack rm automation apps core_db 2>/dev/null || true
+docker service rm core_nginx core_portainer 2>/dev/null || true
+sleep 15
+docker network rm traefik-public internal-net 2>/dev/null || true
+sleep 5
+log_success "Previous installation cleaned"
+
 # System checks
 log_step "System Requirements Check"
 
@@ -403,7 +412,7 @@ EOFDB
 docker stack deploy -c /tmp/db-stack.yml core_db
 log_success "Database services deployed"
 
-sleep 30
+sleep 45
 
 # Deploy automation services
 log_step "Deploying Automation Services (n8n, Evolution)"
@@ -530,7 +539,7 @@ sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" /tmp/apps-stack.yml
 docker stack deploy -c /tmp/apps-stack.yml automation
 log_success "Automation services deployed"
 
-sleep 30
+sleep 45
 
 # Deploy MEGA and monitoring
 log_step "Deploying MEGA, MinIO, and Grafana"
@@ -641,7 +650,7 @@ sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" /tmp/mega-stack.yml
 docker stack deploy -c /tmp/mega-stack.yml apps
 log_success "MEGA, MinIO, and Grafana deployed"
 
-sleep 30
+sleep 45
 
 # Deploy Portainer
 log_step "Deploying Portainer"
