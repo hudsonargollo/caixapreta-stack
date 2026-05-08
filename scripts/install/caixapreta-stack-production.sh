@@ -148,10 +148,20 @@ log_step "Creating Docker Networks"
 
 for network in traefik-public internal-net; do
     docker network rm "$network" 2>/dev/null || true
-    sleep 2
+    sleep 3
     docker network create --driver overlay --attachable "$network" >/dev/null 2>&1
-    log_success "Network $network created"
+    # Wait until network is actually available
+    for i in {1..20}; do
+        if docker network ls --format "{{.Name}}" | grep -q "^$network$"; then
+            log_success "Network $network ready"
+            break
+        fi
+        sleep 2
+    done
 done
+
+# Extra wait for overlay networks to propagate in Swarm
+sleep 10
 
 # Setup data directories
 log_step "Setting Up Data Directories"
