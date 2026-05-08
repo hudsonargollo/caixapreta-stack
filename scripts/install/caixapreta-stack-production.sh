@@ -80,9 +80,9 @@ log_success "Configuration: Domain=$DOMAIN, Email=$EMAIL"
 log_step "Cleaning Previous Installation"
 docker stack rm automation apps core_db 2>/dev/null || true
 docker service rm core_nginx core_portainer 2>/dev/null || true
-sleep 15
+sleep 20
 docker network rm traefik-public internal-net 2>/dev/null || true
-sleep 5
+sleep 10
 log_success "Previous installation cleaned"
 
 # System checks
@@ -147,12 +147,10 @@ fi
 log_step "Creating Docker Networks"
 
 for network in traefik-public internal-net; do
-    if docker network ls --format "{{.Name}}" | grep -q "^$network$"; then
-        log_info "Network $network already exists"
-    else
-        docker network create --driver overlay --attachable "$network" >/dev/null 2>&1
-        log_success "Network $network created"
-    fi
+    docker network rm "$network" 2>/dev/null || true
+    sleep 2
+    docker network create --driver overlay --attachable "$network" >/dev/null 2>&1
+    log_success "Network $network created"
 done
 
 # Setup data directories
