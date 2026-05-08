@@ -654,6 +654,7 @@ docker service create \
     --mount type=bind,source=/data/portainer,target=/data \
     --network traefik-public \
     portainer/portainer-ce:latest \
+    --http-enabled \
     -H unix:///var/run/docker.sock
 
 log_success "Portainer deployed"
