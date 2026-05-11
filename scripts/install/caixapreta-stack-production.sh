@@ -311,7 +311,7 @@ cat > /tmp/db-stack.yml << 'EOFDB'
 version: '3.8'
 services:
   db_postgres:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     environment:
       POSTGRES_PASSWORD: caixapretastack2626
     command: ["postgres", "-c", "max_connections=500", "-c", "shared_buffers=256MB"]
