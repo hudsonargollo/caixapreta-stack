@@ -528,7 +528,7 @@ services:
         reservations: {memory: 128M}
 
   mega-rails:
-    image: chatwoot/chatwoot:v3.10.1
+    image: sendingtk/chatwoot:v4.15.1
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
@@ -549,7 +549,7 @@ services:
         reservations: {memory: 256M}
 
   mega-sidekiq:
-    image: chatwoot/chatwoot:v3.10.1
+    image: sendingtk/chatwoot:v4.15.1
     command: bundle exec sidekiq -c 5 -q default -q mailers -q medium -q low -q realtime -q push_notifications -q webhooks -q presence -q analytics
     environment:
       RAILS_ENV: production
