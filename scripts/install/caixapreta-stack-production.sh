@@ -363,6 +363,17 @@ docker stack deploy -c /tmp/db-stack.yml core_db
 log_success "Database services deployed"
 sleep 45
 
+# Enable pgvector extension (required by Chatwoot)
+log_step "Enabling pgvector extension"
+for i in {1..10}; do
+    if docker exec $(docker ps -q -f name=core_db_db_postgres) psql -U postgres -c "CREATE EXTENSION IF NOT EXISTS vector;" >/dev/null 2>&1; then
+        log_success "pgvector extension enabled"
+        break
+    fi
+    log_info "Waiting for postgres... ($i/10)"
+    sleep 5
+done
+
 # ── Automation (n8n + Evolution) ──────────────────────────────────────────────
 log_step "Deploying Automation Services (n8n, Evolution)"
 
@@ -528,10 +539,14 @@ services:
         reservations: {memory: 128M}
 
   mega-rails:
-    image: sendingtk/chatwoot:v4.15.1
+    image: chatwoot/chatwoot:v3.11.0
     environment:
       RAILS_ENV: production
-      DATABASE_URL: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
+      POSTGRES_HOST: db_postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: caixapretastack2626
+      POSTGRES_DB: main_db
       REDIS_URL: redis://db_redis-mega:6379/1
       SECRET_KEY_BASE: caixapretastack2626
       INSTALLATION_ENV: docker
@@ -549,11 +564,15 @@ services:
         reservations: {memory: 256M}
 
   mega-sidekiq:
-    image: sendingtk/chatwoot:v4.15.1
-    command: bundle exec sidekiq -c 5 -q default -q mailers -q medium -q low -q realtime -q push_notifications -q webhooks -q presence -q analytics
+    image: chatwoot/chatwoot:v3.11.0
+    command: bundle exec sidekiq -C config/sidekiq.yml
     environment:
       RAILS_ENV: production
-      DATABASE_URL: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
+      POSTGRES_HOST: db_postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: caixapretastack2626
+      POSTGRES_DB: main_db
       REDIS_URL: redis://db_redis-mega:6379/1
       SECRET_KEY_BASE: caixapretastack2626
       INSTALLATION_ENV: docker
