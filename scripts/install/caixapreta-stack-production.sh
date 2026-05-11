@@ -445,7 +445,11 @@ services:
       QRCODE_LIMIT: "30"
       DEL_INSTANCE: "false"
       CONFIG_SESSION_PHONE_CLIENT: CaixaPreta
-      LOG_LEVEL: info
+      CORS_ORIGIN: "*"
+      CORS_METHODS: "POST,GET,PUT,DELETE"
+      CORS_CREDENTIALS: "true"
+      LOG_LEVEL: "ERROR,WARN,DEBUG,INFO,LOG"
+      LOG_COLOR: "true"
     volumes:
       - /data/evolution:/home/evolution/instances
     networks:
@@ -474,7 +478,11 @@ services:
       QRCODE_LIMIT: "30"
       DEL_INSTANCE: "false"
       CONFIG_SESSION_PHONE_CLIENT: CaixaPreta
-      LOG_LEVEL: info
+      CORS_ORIGIN: "*"
+      CORS_METHODS: "POST,GET,PUT,DELETE"
+      CORS_CREDENTIALS: "true"
+      LOG_LEVEL: "ERROR,WARN,DEBUG,INFO,LOG"
+      LOG_COLOR: "true"
     volumes:
       - /data/evolution2:/home/evolution/instances
     networks:
