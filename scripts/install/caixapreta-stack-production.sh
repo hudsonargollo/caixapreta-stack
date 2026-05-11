@@ -430,7 +430,7 @@ services:
         reservations: {memory: 128M}
 
   evolution:
-    image: atendai/evolution-api:latest
+    image: atendai/evolution-api:v2.2.3
     environment:
       SERVER_URL: https://evo.DOMAIN_PLACEHOLDER
       AUTHENTICATION_TYPE: apikey
@@ -456,7 +456,7 @@ services:
         reservations: {memory: 256M}
 
   evolution2:
-    image: atendai/evolution-api:latest
+    image: atendai/evolution-api:v2.2.3
     environment:
       SERVER_URL: https://evo2.DOMAIN_PLACEHOLDER
       AUTHENTICATION_TYPE: apikey
