@@ -151,6 +151,13 @@ for dir in /data/postgres /data/redis-n8n /data/redis-mega /data/n8n \
     chmod 755 "$dir"
 done
 
+# Fix permissions for specific service users
+chown -R 1000:1000 /data/n8n        # n8n runs as node (uid 1000)
+chown -R 472:472   /data/grafana    # Grafana runs as uid 472
+chown -R 1000:1000 /data/mega       # Chatwoot runs as uid 1000
+chown -R 1000:1000 /data/evolution
+chown -R 1000:1000 /data/evolution2
+
 log_success "Data directories created"
 
 # ── Nginx config ──────────────────────────────────────────────────────────────
