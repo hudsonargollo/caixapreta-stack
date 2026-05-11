@@ -408,6 +408,9 @@ services:
     image: atendai/evolution-api:latest
     environment:
       SERVER_URL: https://evo.DOMAIN_PLACEHOLDER
+      AUTHENTICATION_TYPE: apikey
+      AUTHENTICATION_API_KEY: caixapretastack2626
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: "true"
       DATABASE_PROVIDER: postgresql
       DATABASE_ENABLED: "true"
       DATABASE_CONNECTION_URI: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
@@ -431,6 +434,9 @@ services:
     image: atendai/evolution-api:latest
     environment:
       SERVER_URL: https://evo2.DOMAIN_PLACEHOLDER
+      AUTHENTICATION_TYPE: apikey
+      AUTHENTICATION_API_KEY: caixapretastack2626
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: "true"
       DATABASE_PROVIDER: postgresql
       DATABASE_ENABLED: "true"
       DATABASE_CONNECTION_URI: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
