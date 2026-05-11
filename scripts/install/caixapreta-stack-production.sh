@@ -452,8 +452,8 @@ services:
       placement:
         constraints: [node.role==manager]
       resources:
-        limits: {memory: 512M}
-        reservations: {memory: 256M}
+        limits: {memory: 1G}
+        reservations: {memory: 512M}
 
   evolution2:
     image: atendai/evolution-api:v2.2.3
@@ -478,8 +478,8 @@ services:
       placement:
         constraints: [node.role==manager]
       resources:
-        limits: {memory: 512M}
-        reservations: {memory: 256M}
+        limits: {memory: 1G}
+        reservations: {memory: 512M}
 
 networks:
   traefik-public:
