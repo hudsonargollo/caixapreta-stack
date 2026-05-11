@@ -243,6 +243,7 @@ http {
     server {
         listen 80;
         server_name min.DOMAIN_PLACEHOLDER;
+        # MinIO console needs longer timeouts and websocket support
         location / {
             set $u http://apps_minio:9001;
             proxy_pass $u;
@@ -250,6 +251,12 @@ http {
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto https;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_read_timeout 900;
+            proxy_connect_timeout 900;
+            proxy_send_timeout 900;
         }
     }
 
@@ -521,7 +528,8 @@ services:
         reservations: {memory: 128M}
 
   mega-rails:
-    image: sendingtk/chatwoot:v4.11.2
+    image: chatwoot/chatwoot:v3.13.2
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres:caixapretastack2626@db_postgres:5432/main_db
@@ -542,7 +550,7 @@ services:
         reservations: {memory: 256M}
 
   mega-sidekiq:
-    image: sendingtk/chatwoot:v4.11.2
+    image: chatwoot/chatwoot:v3.13.2
     command: bundle exec sidekiq -c 5 -q default -q mailers -q medium -q low -q realtime -q push_notifications -q webhooks -q presence -q analytics
     environment:
       RAILS_ENV: production
