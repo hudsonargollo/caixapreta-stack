@@ -540,6 +540,7 @@ services:
 
   mega-rails:
     image: chatwoot/chatwoot:v3.11.0
+    command: bundle exec rails s -b 0.0.0.0 -p 3000
     environment:
       RAILS_ENV: production
       POSTGRES_HOST: db_postgres
