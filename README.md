@@ -282,11 +282,72 @@ sudo ./scripts/fix/fix-and-redeploy.sh
 | Aspecto | v2 | v3 |
 |---|---|---|
 | Proxy Reverso | Traefik | Nginx |
-| SSL | Let's Encrypt (ACME) | Cloudflare + self-signed interno |
+| SSL | Let's Encrypt (ACME) | Cloudflare Flexible + HTTP interno |
 | Tempo de Instalação | 15-20 min | 5-10 min |
 | Taxa de Sucesso | ~60% | 95%+ |
 | Problemas de SSL | Frequentes | Resolvidos |
 | Subdomínios | `n8n.`, `mega.`, `evolution.` | `auto.`, `chat.`, `evo.` |
+| Evolution API | atendai (desatualizado) | evoapicloud v2.3.7+ (QR funcionando) |
+| Chatwoot | sendingtk fork (quebrado) | chatwoot/chatwoot v3.11.0 |
+
+---
+
+## 🦞 OpenClaw — Assistente de IA Pessoal
+
+O **OpenClaw** é um assistente de IA pessoal open-source que roda no seu próprio servidor ou máquina. Integra com WhatsApp, Telegram, Slack, Discord e 20+ canais. Extensível com mais de 5.400 skills da comunidade.
+
+### Instalação Rápida
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/openclaw-install.sh | bash
+```
+
+Ou baixe e execute:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hudsonargollo/caixapreta-stack/main/scripts/install/openclaw-install.sh -o openclaw-install.sh
+chmod +x openclaw-install.sh
+bash openclaw-install.sh
+```
+
+### O que o instalador faz:
+
+1. **Verifica/instala Node.js 24** (requisito mínimo: 22+)
+2. **Instala OpenClaw** via npm ou pnpm
+3. **Configura o modelo de IA** (OpenAI, Anthropic, ou manual)
+4. **Instala skill packs** da comunidade:
+   - 🤖 Automação & n8n
+   - 💬 WhatsApp & mensagens
+   - 🔍 Pesquisa & research
+   - 📊 DevOps & cloud
+   - 🌐 Browser & automação web
+5. **Executa o onboard** interativo (opcional)
+
+### Comandos Principais
+
+```bash
+openclaw onboard --install-daemon   # Setup completo com daemon
+openclaw gateway --port 18789       # Iniciar gateway
+openclaw agent --message "Olá"      # Falar com o assistente
+openclaw doctor                     # Verificar saúde
+```
+
+### Skills Recomendadas
+
+Explore mais de 5.400 skills em [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) ou instale diretamente:
+
+```bash
+clawhub install n8n                    # Integração n8n
+clawhub install openclaw-free-web-search  # Busca web gratuita
+clawhub install agent-deep-research    # Pesquisa profunda
+clawhub install agentic-devops         # DevOps automatizado
+clawhub install elevenlabs-tts         # Text-to-speech
+```
+
+**Links:**
+- 🦞 [openclaw.ai](https://openclaw.ai) — Documentação oficial
+- 🔌 [clawhub.ai](https://clawhub.ai) — Registry de skills
+- ⭐ [awesome-openclaw-skills](https://github.com/VoltAgent/awesome-openclaw-skills) — 5.400+ skills categorizadas
 
 ## ⚠️ Requisitos do Servidor
 
