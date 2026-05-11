@@ -430,7 +430,7 @@ services:
         reservations: {memory: 128M}
 
   evolution:
-    image: atendai/evolution-api:v2.2.3
+    image: atendai/evolution-api:v2.1.1
     environment:
       SERVER_URL: https://evo.DOMAIN_PLACEHOLDER
       AUTHENTICATION_TYPE: apikey
@@ -442,6 +442,9 @@ services:
       REDIS_ENABLED: "true"
       REDIS_URI: redis://db_redis-n8n:6379/1
       REDIS_PREFIX_KEY: evolution
+      QRCODE_LIMIT: "30"
+      DEL_INSTANCE: "false"
+      CONFIG_SESSION_PHONE_CLIENT: CaixaPreta
       LOG_LEVEL: info
     volumes:
       - /data/evolution:/home/evolution/instances
@@ -456,7 +459,7 @@ services:
         reservations: {memory: 512M}
 
   evolution2:
-    image: atendai/evolution-api:v2.2.3
+    image: atendai/evolution-api:v2.1.1
     environment:
       SERVER_URL: https://evo2.DOMAIN_PLACEHOLDER
       AUTHENTICATION_TYPE: apikey
@@ -468,6 +471,9 @@ services:
       REDIS_ENABLED: "true"
       REDIS_URI: redis://db_redis-n8n:6379/2
       REDIS_PREFIX_KEY: evolution2
+      QRCODE_LIMIT: "30"
+      DEL_INSTANCE: "false"
+      CONFIG_SESSION_PHONE_CLIENT: CaixaPreta
       LOG_LEVEL: info
     volumes:
       - /data/evolution2:/home/evolution/instances
