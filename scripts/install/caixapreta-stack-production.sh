@@ -528,7 +528,7 @@ services:
         reservations: {memory: 128M}
 
   mega-rails:
-    image: chatwoot/chatwoot:v3.13.2
+    image: chatwoot/chatwoot:v4.4.0
     command: bundle exec rails s -p 3000 -b 0.0.0.0
     environment:
       RAILS_ENV: production
@@ -550,7 +550,7 @@ services:
         reservations: {memory: 256M}
 
   mega-sidekiq:
-    image: chatwoot/chatwoot:v3.13.2
+    image: chatwoot/chatwoot:v4.4.0
     command: bundle exec sidekiq -c 5 -q default -q mailers -q medium -q low -q realtime -q push_notifications -q webhooks -q presence -q analytics
     environment:
       RAILS_ENV: production
